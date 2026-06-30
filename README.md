@@ -13,6 +13,10 @@ data. Two tiers:
 - **Heroes** (`energy`, `weather`, `solar`, `climate_home`) — curated layouts for
   the highest-value use cases.
 
+Plus generic blocks (`stat`, `sparkline`, `badge`, `progress`, `list`, `table`,
+…) and a configurable chart engine with ten presets. See
+[COMPONENTS.md](COMPONENTS.md) for the full catalog, usage, and chart recipes.
+
 ## Run with Docker (Mac / Windows / Linux)
 
 The easiest way — no Ruby needed, one command:
