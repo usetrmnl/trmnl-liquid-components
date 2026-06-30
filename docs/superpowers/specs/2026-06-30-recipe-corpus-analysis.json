@@ -1,0 +1,144 @@
+{
+  "source": "trmnl.com public recipes API (981 published recipes)",
+  "markup_bearing": 979,
+  "block_usage": {
+    "item (meta+content)": 331,
+    "value-- (big number)": 376,
+    "title_bar": 806,
+    "table": 157,
+    "chart (chartkick/hc)": 83,
+    "svg chart (polyline)": 229,
+    "columns (list)": 235,
+    "progress bar/dots": 38,
+    "badge (label--*)": 214,
+    "description (text)": 267,
+    "richtext": 97,
+    "divider": 107,
+    "image / dither": 749,
+    "calendar item": 0,
+    "map/geo": 11,
+    "icon (svg/img)": 201,
+    "layout": 893,
+    "grid": 336,
+    "flex": 489,
+    "data-clamp": 165,
+    "data-overflow/list": 140,
+    "data-fit-value": 140,
+    "data-table-limit": 53,
+    "inline <style>/style=": 657
+  },
+  "domain_categories": [
+    {
+      "cat": "life",
+      "n": 130
+    },
+    {
+      "cat": "entertainment",
+      "n": 78
+    },
+    {
+      "cat": "news",
+      "n": 74
+    },
+    {
+      "cat": "productivity",
+      "n": 72
+    },
+    {
+      "cat": "personal",
+      "n": 65
+    },
+    {
+      "cat": "images",
+      "n": 55
+    },
+    {
+      "cat": "discovery",
+      "n": 52
+    },
+    {
+      "cat": "environment",
+      "n": 51
+    },
+    {
+      "cat": "sports",
+      "n": 49
+    },
+    {
+      "cat": "travel",
+      "n": 46
+    },
+    {
+      "cat": "calendar",
+      "n": 45
+    },
+    {
+      "cat": "analytics",
+      "n": 40
+    },
+    {
+      "cat": "programming",
+      "n": 40
+    },
+    {
+      "cat": "humor",
+      "n": 39
+    },
+    {
+      "cat": "education",
+      "n": 34
+    },
+    {
+      "cat": "games",
+      "n": 34
+    },
+    {
+      "cat": "comics",
+      "n": 33
+    },
+    {
+      "cat": "finance",
+      "n": 29
+    },
+    {
+      "cat": "art",
+      "n": 24
+    },
+    {
+      "cat": "kpi",
+      "n": 15
+    },
+    {
+      "cat": "nature",
+      "n": 15
+    },
+    {
+      "cat": "custom",
+      "n": 11
+    },
+    {
+      "cat": "ecommerce",
+      "n": 6
+    },
+    {
+      "cat": "marketing",
+      "n": 4
+    },
+    {
+      "cat": "sales",
+      "n": 3
+    },
+    {
+      "cat": "album",
+      "n": 1
+    },
+    {
+      "cat": "crm",
+      "n": 1
+    },
+    {
+      "cat": "email",
+      "n": 1
+    }
+  ]
+}
