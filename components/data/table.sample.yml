@@ -1,0 +1,11 @@
+columns: [Device, Power, Status]
+align: [left, right, left]
+rows:
+  - [Oven, "1,240 W", "On"]
+  - [Heat pump, "640 W", "Eco"]
+  - [Dishwasher, "210 W", "On"]
+  - [Fridge, "85 W", "On"]
+  - [TV, "120 W", "On"]
+  - [Router, "12 W", "On"]
+  - [Washer, "0 W", "Off"]
+  - [Lights, "45 W", "On"]

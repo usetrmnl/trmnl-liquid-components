@@ -1,0 +1,8 @@
+title: List
+description: A list of label/value rows (top-N, key stats, leaderboard).
+sizes: [full, half_vertical, half_horizontal]
+wrap: true
+usage: '{% render "homey_list", items: items, trmnl: trmnl %}'
+options:
+  - { key: columns, type: select, label: Columns, default: "1", choices: ["1", "2", "3"] }
+  - { key: numbered, type: boolean, label: Numbered, default: "no" }

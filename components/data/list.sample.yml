@@ -1,0 +1,9 @@
+items:
+  - { label: Oven, value: "1,240", unit: " W" }
+  - { label: Heat pump, value: "640", unit: " W" }
+  - { label: Dishwasher, value: "210", unit: " W" }
+  - { label: Fridge, value: "85", unit: " W" }
+  - { label: Lights, value: "45", unit: " W" }
+  - { label: TV, value: "120", unit: " W" }
+  - { label: Router, value: "12", unit: " W" }
+  - { label: Washer, value: "0", unit: " W" }

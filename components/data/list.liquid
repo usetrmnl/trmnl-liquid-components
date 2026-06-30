@@ -1,0 +1,18 @@
+{% template homey_list %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign cols = cfg.columns | default: "1" %}
+{% assign numbered = cfg.numbered | default: "no" %}
+{% assign n = items | size %}
+{% if n == 0 %}
+<span class="label">No data</span>
+{% else %}
+<div class="grid grid--cols-{{ cols }} gap">
+  {% for item in items %}
+  <div class="flex flex--row flex--between flex--center-y w--full">
+    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label">{{ item.label }}</span></span>
+    <span class="value value--small value--tnums">{{ item.value }}{{ item.unit }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endtemplate %}

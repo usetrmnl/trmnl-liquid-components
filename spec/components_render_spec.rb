@@ -104,6 +104,32 @@ RSpec.describe 'components render' do
     expect(html).to include('progress-dots').and include('dot--filled')
   end
 
+  it 'renders the list items' do
+    expect(render('list')).to include('Oven').and include('Heat pump')
+  end
+
+  it 'numbers the list when configured' do
+    html = renderer.render(catalog.find('list'), size: 'full', data: { 'items' => [{ 'label' => 'Solar', 'value' => '1' }] }, options: { 'numbered' => 'yes' })
+    expect(html).to include('1.').and include('Solar')
+  end
+
+  it 'shows a placeholder for an empty list' do
+    html = renderer.render(catalog.find('list'), size: 'full', data: { 'items' => [] })
+    expect(html).to include('No data')
+    expect(html).not_to include('Liquid error')
+  end
+
+  it 'renders the table header and a cell' do
+    html = render('table')
+    expect(html).to include('Device').and include('Oven')
+    expect(html).to include('>On<') # YAML must not coerce On/Off to booleans
+  end
+
+  it 'survives an empty table without error' do
+    html = renderer.render(catalog.find('table'), size: 'full', data: { 'columns' => ['A'], 'rows' => [] })
+    expect(html).not_to include('Liquid error')
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)

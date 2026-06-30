@@ -1,0 +1,15 @@
+{% template homey_table %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign size = cfg.size | default: "small" %}
+{% assign limit = cfg.limit | default: "yes" %}
+<table class="table table--{{ size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
+  <thead>
+    <tr>{% for col in columns %}<th><span class="title title--small">{{ col }}</span></th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall value--tnums">{{ cell }}</span>{% else %}<span class="label">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endtemplate %}
