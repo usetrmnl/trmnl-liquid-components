@@ -1,0 +1,16 @@
+{% template homey_energy %}
+<div class="flex flex--col gap">
+  <div class="item">
+    <div class="content">
+      <span class="label">Power now</span>
+      <span class="value value--xlarge">{{ energy.total_power.value }} {{ energy.total_power.unit }}</span>
+    </div>
+  </div>
+  <div class="grid grid--cols-2 gap--small">
+    {% for zone in energy.by_zone %}
+      {% render "homey_cap_tile", label: zone.zone, value: zone.value, unit: zone.unit %}
+    {% endfor %}
+  </div>
+  <span class="description">Top consumer: {{ energy.top_consumer.name }} ({{ energy.top_consumer.value }} {{ energy.top_consumer.unit }})</span>
+</div>
+{% endtemplate %}

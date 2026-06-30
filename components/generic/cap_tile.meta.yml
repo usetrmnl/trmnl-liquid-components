@@ -1,0 +1,4 @@
+title: Capability tile
+description: Generic tile for a single device capability (label + value + unit).
+sizes: [full, half_horizontal, half_vertical, quadrant]
+usage: '{% render "homey_cap_tile", label: label, value: value, unit: unit %}'

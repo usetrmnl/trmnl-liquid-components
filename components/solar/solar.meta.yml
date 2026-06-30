@@ -1,0 +1,4 @@
+title: Solar / production
+description: Production now, produced today, and grid feed-in.
+sizes: [full, half_vertical, quadrant]
+usage: '{% render "homey_solar", solar: solar %}'

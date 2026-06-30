@@ -1,0 +1,8 @@
+{% template homey_cap_tile %}
+<div class="item">
+  <div class="content">
+    <span class="label">{{ label }}</span>
+    <span class="value value--large">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+  </div>
+</div>
+{% endtemplate %}

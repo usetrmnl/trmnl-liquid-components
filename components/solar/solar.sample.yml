@@ -1,0 +1,4 @@
+solar:
+  now: { value: "820", unit: W }
+  today: { value: "6.4", unit: kWh }
+  feed_in: { value: "2.1", unit: kWh }

@@ -1,0 +1,4 @@
+title: Weather station
+description: Indoor/outdoor temperature, humidity, wind, rain, pressure.
+sizes: [full, half_vertical]
+usage: '{% render "homey_weather", weather: weather %}'

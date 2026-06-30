@@ -1,0 +1,4 @@
+title: Zone section
+description: Groups device cards under a zone heading.
+sizes: [full]
+usage: '{% render "homey_zone_section", zone: zone %}'

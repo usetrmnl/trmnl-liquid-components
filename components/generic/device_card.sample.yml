@@ -1,0 +1,5 @@
+device:
+  name: Floor lamp
+  capabilities:
+    - { title: Power, value: "5", unit: W }
+    - { title: "On", value: "Yes", unit: "" }

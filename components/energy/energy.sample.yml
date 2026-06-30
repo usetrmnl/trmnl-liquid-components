@@ -1,0 +1,6 @@
+energy:
+  total_power: { value: "1,240", unit: W }
+  by_zone:
+    - { zone: Living room, value: "320", unit: W }
+    - { zone: Kitchen, value: "540", unit: W }
+  top_consumer: { name: Oven, value: "2,100", unit: W }

@@ -1,0 +1,9 @@
+zone:
+  name: Living room
+  devices:
+    - name: Floor lamp
+      capabilities:
+        - { title: Power, value: "5", unit: W }
+    - name: TV
+      capabilities:
+        - { title: Power, value: "60", unit: W }

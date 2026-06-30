@@ -1,0 +1,7 @@
+weather:
+  outdoor_temp: { value: "12.4", unit: "°C" }
+  indoor_temp: { value: "21.1", unit: "°C" }
+  humidity: { value: "63", unit: "%" }
+  wind: { value: "14", unit: "km/h" }
+  rain: { value: "0.2", unit: "mm" }
+  pressure: { value: "1014", unit: hPa }

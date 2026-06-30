@@ -1,0 +1,9 @@
+climate:
+  avg_temp: { value: "21.4", unit: "°C" }
+  sensors:
+    - { name: Bedroom, value: "20.1", unit: "°C" }
+    - { name: Office, value: "22.6", unit: "°C" }
+home:
+  devices_on: 7
+  alarms:
+    - { zone: Garage, type: motion }

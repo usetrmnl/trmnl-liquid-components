@@ -1,0 +1,10 @@
+{% template homey_weather %}
+<div class="grid grid--cols-2 gap--small">
+  {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}
+  {% render "homey_cap_tile", label: "Indoor", value: weather.indoor_temp.value, unit: weather.indoor_temp.unit %}
+  {% render "homey_cap_tile", label: "Humidity", value: weather.humidity.value, unit: weather.humidity.unit %}
+  {% render "homey_cap_tile", label: "Wind", value: weather.wind.value, unit: weather.wind.unit %}
+  {% render "homey_cap_tile", label: "Rain", value: weather.rain.value, unit: weather.rain.unit %}
+  {% render "homey_cap_tile", label: "Pressure", value: weather.pressure.value, unit: weather.pressure.unit %}
+</div>
+{% endtemplate %}
