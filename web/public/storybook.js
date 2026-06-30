@@ -61,6 +61,12 @@ function buildControls(options) {
         input.appendChild(o);
       });
       input.addEventListener('change', () => { state.options[opt.key] = input.value; renderFrame(); });
+    } else if (opt.type === 'textarea') {
+      input = document.createElement('textarea');
+      input.rows = 5;
+      input.spellcheck = false;
+      input.value = String(opt.default ?? '');
+      input.addEventListener('input', () => { state.options[opt.key] = input.value; renderFrame(); });
     } else {
       input = document.createElement('input');
       input.type = opt.type === 'number' ? 'number' : 'text';

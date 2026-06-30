@@ -1,0 +1,56 @@
+{% template homey_chart %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign chart_type = cfg.chart_type | default: "line" %}
+{% assign color_scheme = cfg.color_scheme | default: "black" %}
+{% assign curve = cfg.curve | default: "no" %}
+{% assign points = cfg.points | default: "no" %}
+{% assign legend = cfg.legend | default: "none" %}
+{% assign stacked = cfg.stacked | default: "no" %}
+{% assign data_labels = cfg.data_labels | default: "no" %}
+{% assign gridlines = cfg.gridlines | default: "dotted" %}
+{% assign modules = cfg.modules | default: "no" %}
+{% assign chart_id = "homey-chart" | append_random %}
+{% if color_scheme == "grey" %}{% assign colors = '["#888888"]' %}{% elsif color_scheme == "black+grey" %}{% assign colors = '["#000000","#888888"]' %}{% else %}{% assign colors = '["#000000"]' %}{% endif %}
+{% if gridlines == "solid" %}{% assign dash = "Solid" %}{% assign gw = 1 %}{% elsif gridlines == "none" %}{% assign dash = "Solid" %}{% assign gw = 0 %}{% else %}{% assign dash = "Dot" %}{% assign gw = 1 %}{% endif %}
+{% if legend == "none" %}{% assign legend_js = "false" %}{% else %}{% assign legend_js = legend | prepend: '"' | append: '"' %}{% endif %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+{% if modules == "yes" %}<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts-more.js"></script>
+<script src="https://trmnl.com/js/highcharts/12.3.0/pattern-fill.js"></script>{% endif %}
+<div class="layout layout--col">
+  <div id="{{ chart_id }}" style="width:100%;flex-grow:1;min-height:300px;"></div>
+</div>
+<script>
+  (function () {
+    var data = {{ data | json }};
+    var eink = {
+      chart: { backgroundColor: "transparent", style: { fontFamily: "inherit" } },
+      plotOptions: { series: { animation: false, borderWidth: 0, lineWidth: 3, marker: { enabled: {% if points == "yes" %}true{% else %}false{% endif %} }, dataLabels: { enabled: {% if data_labels == "yes" %}true{% else %}false{% endif %} } } },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      yAxis: { gridLineColor: "#000000", gridLineDashStyle: "{{ dash }}", gridLineWidth: {{ gw }}, title: { text: null }, labels: { style: { color: "#000000", fontSize: "14px" } } },
+      xAxis: { lineColor: "#000000", labels: { style: { color: "#000000", fontSize: "14px" } } }
+    };
+    var raw = {};
+    var rawStr = {{ cfg.library | json }};
+    try { raw = rawStr ? JSON.parse(rawStr) : {}; } catch (e) {}
+    function deepMerge(a, b) {
+      for (var k in b) {
+        if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") { deepMerge(a[k], b[k]); }
+        else { a[k] = b[k]; }
+      }
+      return a;
+    }
+    var opts = {
+      colors: {{ colors }},
+      curve: {% if curve == "yes" %}true{% else %}false{% endif %},
+      points: {% if points == "yes" %}true{% else %}false{% endif %},
+      legend: {{ legend_js }},
+      stacked: {% if stacked == "yes" %}true{% else %}false{% endif %},
+      library: deepMerge(eink, raw)
+    };
+    var make = function () { new Chartkick["{{ chart_type | capitalize }}Chart"]("{{ chart_id }}", data, opts); };
+    if ("Chartkick" in window) { make(); } else { window.addEventListener("chartkick:load", make, true); }
+  })();
+</script>
+{% endtemplate %}

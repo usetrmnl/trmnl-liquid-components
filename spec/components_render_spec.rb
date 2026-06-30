@@ -130,6 +130,34 @@ RSpec.describe 'components render' do
     expect(html).not_to include('Liquid error')
   end
 
+  it 'renders a Chartkick chart with the CDN scripts' do
+    html = renderer.render(catalog.find('chart'), size: 'full')
+    expect(html).to include('Chartkick["LineChart"]').and include('highcharts/12.3.0/highcharts.js').and include('chartkick.min.js')
+  end
+
+  it 'switches the chart constructor with chart_type' do
+    html = renderer.render(catalog.find('chart'), size: 'full', options: { 'chart_type' => 'column' })
+    expect(html).to include('Chartkick["ColumnChart"]')
+  end
+
+  it 'loads the extra modules only when enabled' do
+    off = renderer.render(catalog.find('chart'), size: 'full')
+    on  = renderer.render(catalog.find('chart'), size: 'full', options: { 'modules' => 'yes' })
+    expect(off).not_to include('pattern-fill.js')
+    expect(on).to include('highcharts-more.js').and include('pattern-fill.js')
+  end
+
+  it 'round-trips the raw library box into the chart options' do
+    html = renderer.render(catalog.find('chart'), size: 'full', options: { 'library' => '{"chart":{"type":"waterfall"}}' })
+    expect(html).to include('waterfall')
+  end
+
+  it 'gives each chart a unique container id' do
+    a = renderer.render(catalog.find('chart'), size: 'full')[/id="(homey-chart\w+)"/, 1]
+    b = renderer.render(catalog.find('chart'), size: 'full')[/id="(homey-chart\w+)"/, 1]
+    expect(a).not_to eq(b)
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)
