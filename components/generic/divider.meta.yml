@@ -1,0 +1,5 @@
+title: Divider / section header
+description: A separator line, optionally with a section header above it.
+sizes: [full, half_horizontal, half_vertical, quadrant]
+wrap: true
+usage: '{% render "homey_divider", title: title %}'

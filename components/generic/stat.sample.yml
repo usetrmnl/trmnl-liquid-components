@@ -1,0 +1,5 @@
+value: "1,240"
+unit: " W"
+label: Power now
+delta: "8%"
+delta_dir: up

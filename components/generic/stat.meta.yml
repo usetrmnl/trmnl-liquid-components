@@ -1,0 +1,8 @@
+title: Stat / KPI
+description: One hero metric — giant number, label, and an optional up/down delta.
+sizes: [full, half_vertical, quadrant]
+wrap: true
+usage: '{% render "homey_stat", value: value, label: label, unit: unit, delta: delta, delta_dir: delta_dir, trmnl: trmnl %}'
+options:
+  - { key: size, type: select, label: Value size, default: xxlarge, choices: [large, xlarge, xxlarge, mega] }
+  - { key: color_delta, type: boolean, label: Color the delta, default: "no" }

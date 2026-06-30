@@ -60,6 +60,31 @@ RSpec.describe 'components render' do
     expect(html).not_to include('Liquid error')
   end
 
+  it 'renders the stat value' do
+    expect(render('stat')).to include('1,240')
+  end
+
+  it 'omits the stat delta when none is given' do
+    html = renderer.render(catalog.find('stat'), size: 'full', data: { 'value' => '5', 'label' => 'Idle' })
+    expect(html).not_to include('<svg')
+    expect(html).not_to include('Liquid error')
+  end
+
+  it 'renders a divider section header from its title' do
+    expect(render('divider')).to include('Living room').and include('class="divider"')
+  end
+
+  it 'renders a bare divider when no title is given' do
+    html = renderer.render(catalog.find('divider'), size: 'full', data: {})
+    expect(html).to include('class="divider"')
+    expect(html).not_to include('title--small')
+  end
+
+  it 'renders the text body with the configured clamp' do
+    html = renderer.render(catalog.find('text'), size: 'full', data: { 'body' => 'Hello there' }, options: { 'clamp' => '3' })
+    expect(html).to include('Hello there').and include('data-clamp="3"')
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)

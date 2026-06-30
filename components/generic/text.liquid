@@ -1,0 +1,9 @@
+{% template homey_text %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign clamp = cfg.clamp | default: "4" %}
+{% assign align = cfg.align | default: "left" %}
+{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+<div class="richtext richtext--{{ align }}">
+  <div class="content content--base" data-clamp="{{ clamp }}">{{ body }}</div>
+</div>
+{% endtemplate %}

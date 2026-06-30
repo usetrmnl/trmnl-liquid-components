@@ -1,0 +1,22 @@
+{% template homey_stat %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign size = cfg.size | default: "xxlarge" %}
+{% assign color_delta = cfg.color_delta | default: "no" %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value value--{{ size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
+    <div class="flex flex--row flex--center-y gap--small">
+      <span class="label">{{ label }}</span>
+      {% if delta %}
+      {% assign tone = "" %}
+      {% if color_delta == "yes" %}{% if delta_dir == "down" %}{% assign tone = "text--error" %}{% else %}{% assign tone = "text--success" %}{% endif %}{% endif %}
+      <span class="flex flex--row flex--center-y gap--xsmall {{ tone }}">
+        <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">{% if delta_dir == "down" %}<path d="M1,3 L9,3 L5,9 Z" fill="currentColor"/>{% else %}<path d="M5,1 L9,7 L1,7 Z" fill="currentColor"/>{% endif %}</svg>
+        <span class="label">{{ delta }}</span>
+      </span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endtemplate %}
