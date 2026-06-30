@@ -1,0 +1,10 @@
+{% template homey_badge %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign size = cfg.size | default: "base" %}
+{% assign default_style = cfg.default_style | default: "outline" %}
+<div class="flex flex--row flex--wrap gap--small">
+  {% for b in badges %}
+  <span class="label label--{{ b.style | default: default_style }}{% if size == 'small' %} label--small{% elsif size == 'large' %} label--large{% endif %}">{{ b.text }}</span>
+  {% endfor %}
+</div>
+{% endtemplate %}

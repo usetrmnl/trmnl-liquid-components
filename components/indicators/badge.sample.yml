@@ -1,0 +1,5 @@
+badges:
+  - { text: Online, style: filled }
+  - { text: Heating, style: outline }
+  - { text: Window open, style: warning }
+  - { text: Battery low, style: error }

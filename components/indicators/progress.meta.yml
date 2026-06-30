@@ -1,0 +1,8 @@
+title: Progress
+description: Progress toward a target (battery, capacity, goal) as a bar or dots.
+sizes: [full, half_horizontal, half_vertical, quadrant]
+wrap: true
+usage: '{% render "homey_progress", value: value, label: label, total: total, trmnl: trmnl %}'
+options:
+  - { key: style, type: select, label: Style, default: bar, choices: [bar, dots] }
+  - { key: size, type: select, label: Size, default: base, choices: [small, base, large] }

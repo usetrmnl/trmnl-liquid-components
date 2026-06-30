@@ -85,6 +85,25 @@ RSpec.describe 'components render' do
     expect(html).to include('Hello there').and include('data-clamp="3"')
   end
 
+  it 'renders all badges with their styles' do
+    html = render('badge')
+    expect(html).to include('Online').and include('label--warning').and include('label--error')
+  end
+
+  it 'falls back to the default style for a badge with no style' do
+    html = renderer.render(catalog.find('badge'), size: 'full', data: { 'badges' => [{ 'text' => 'Idle' }] }, options: { 'default_style' => 'filled' })
+    expect(html).to include('label--filled').and include('Idle')
+  end
+
+  it 'renders a progress bar filled to its value' do
+    expect(render('progress')).to include('progress-bar').and include('width: 65%')
+  end
+
+  it 'switches progress to dots when configured' do
+    html = renderer.render(catalog.find('progress'), size: 'full', data: { 'value' => 3, 'label' => 'Steps', 'total' => 5 }, options: { 'style' => 'dots' })
+    expect(html).to include('progress-dots').and include('dot--filled')
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)
