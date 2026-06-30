@@ -1,0 +1,13 @@
+services:
+  storybook:
+    build: .
+    ports:
+      - "9292:9292"
+    environment:
+      RACK_ENV: development
+    # Mount the component + UI sources so edits show up on refresh (the app
+    # reloads the catalog every request in development). No rebuild needed.
+    volumes:
+      - ./components:/app/components
+      - ./web:/app/web
+    command: bundle exec rackup --host 0.0.0.0 --port 9292

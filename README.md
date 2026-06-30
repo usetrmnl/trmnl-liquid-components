@@ -13,7 +13,17 @@ data. Two tiers:
 - **Heroes** (`energy`, `weather`, `solar`, `climate_home`) — curated layouts for
   the highest-value use cases.
 
-## Develop
+## Run with Docker (Mac / Windows / Linux)
+
+The easiest way — no Ruby needed, one command:
+
+    docker compose up
+
+Then open http://localhost:9292. Component files under `components/` and the UI
+under `web/` are mounted into the container, so editing them shows up on refresh
+(no rebuild). Stop with `Ctrl-C` (or `docker compose down`).
+
+## Run with Ruby (local)
 
     bundle install
     bundle exec rackup        # storybook at http://localhost:9292

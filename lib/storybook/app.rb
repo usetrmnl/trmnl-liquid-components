@@ -17,8 +17,18 @@ module Storybook
       attr_accessor :catalog
     end
 
-    def catalog = self.class.catalog ||= Catalog.load(File.expand_path('../../components', __dir__))
-    def renderer = @renderer ||= Renderer.new(catalog)
+    def components_dir = File.expand_path('../../components', __dir__)
+
+    # Reload from disk every request in development so editing a component's
+    # markup/sample/meta reflects on refresh (great inside a mounted Docker
+    # volume); memoize once in production.
+    def catalog
+      return Catalog.load(components_dir) if settings.development?
+
+      self.class.catalog ||= Catalog.load(components_dir)
+    end
+
+    def renderer = Renderer.new(catalog)
 
     get '/' do
       @catalog = catalog
