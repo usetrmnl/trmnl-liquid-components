@@ -9,5 +9,6 @@ gem 'trmnl-liquid', '~> 0.7'
 
 group :development, :test do
   gem 'rack-test', '~> 2.1'
+  gem 'rake', '~> 13.2'
   gem 'rspec', '~> 3.13'
 end

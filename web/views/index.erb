@@ -1,0 +1,27 @@
+<div class="layout">
+  <nav class="sidebar">
+    <h1>Homey components</h1>
+    <% @catalog.by_category.each do |category, components| %>
+      <h3><%= category.tr('_', ' ') %></h3>
+      <% components.each do |c| %>
+        <button class="nav-item" data-name="<%= c.name %>" data-sizes="<%= c.sizes.join(',') %>"
+                data-sample='<%= c.sample.to_json %>' title="<%= c.description %>">
+          <%= c.title %>
+        </button>
+      <% end %>
+    <% end %>
+  </nav>
+  <main class="stage">
+    <div class="toolbar">
+      <span id="title"></span>
+      <span id="sizes"></span>
+      <button id="copy">Copy markup</button>
+    </div>
+    <iframe id="preview" title="preview"></iframe>
+    <details open>
+      <summary>Sample data (edit to re-render)</summary>
+      <textarea id="data" spellcheck="false"></textarea>
+    </details>
+  </main>
+</div>
+<script>window.MARKUP = <%= @catalog.components.to_h { |c| [c.name, c.markup] }.to_json %>;</script>

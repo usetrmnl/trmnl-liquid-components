@@ -1,0 +1,91 @@
+{% template homey_climate_home %}
+<div class="flex flex--col gap">
+  <div class="grid grid--cols-2 gap--small">
+    {% render "homey_cap_tile", label: "Avg temp", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
+    {% render "homey_cap_tile", label: "Devices on", value: home.devices_on, unit: "" %}
+  </div>
+  <div class="grid grid--cols-2 gap--small">
+    {% for sensor in climate.sensors %}
+      {% render "homey_cap_tile", label: sensor.name, value: sensor.value, unit: sensor.unit %}
+    {% endfor %}
+  </div>
+  {% if home.alarms.size > 0 %}
+    <span class="description">Alarms: {% for alarm in home.alarms %}{{ alarm.zone }} ({{ alarm.type }}){% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+  {% endif %}
+</div>
+{% endtemplate %}
+
+{% template homey_energy %}
+<div class="flex flex--col gap">
+  <div class="item">
+    <div class="content">
+      <span class="label">Power now</span>
+      <span class="value value--xlarge">{{ energy.total_power.value }} {{ energy.total_power.unit }}</span>
+    </div>
+  </div>
+  <div class="grid grid--cols-2 gap--small">
+    {% for zone in energy.by_zone %}
+      {% render "homey_cap_tile", label: zone.zone, value: zone.value, unit: zone.unit %}
+    {% endfor %}
+  </div>
+  <span class="description">Top consumer: {{ energy.top_consumer.name }} ({{ energy.top_consumer.value }} {{ energy.top_consumer.unit }})</span>
+</div>
+{% endtemplate %}
+
+{% template homey_cap_tile %}
+<div class="item">
+  <div class="content">
+    <span class="label">{{ label }}</span>
+    <span class="value value--large">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+  </div>
+</div>
+{% endtemplate %}
+
+{% template homey_device_card %}
+<div class="flex flex--col gap--small">
+  <span class="title title--small">{{ device.name }}</span>
+  <div class="grid grid--cols-2 gap--small">
+    {% for cap in device.capabilities %}
+      {% render "homey_cap_tile", label: cap.title, value: cap.value, unit: cap.unit %}
+    {% endfor %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template homey_zone_section %}
+<div class="flex flex--col gap">
+  <span class="title">{{ zone.name }}</span>
+  <div class="grid grid--cols-2 gap--small">
+    {% for device in zone.devices %}
+      {% render "homey_device_card", device: device %}
+    {% endfor %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template homey_solar %}
+<div class="flex flex--col gap">
+  <div class="item">
+    <div class="content">
+      <span class="label">Producing now</span>
+      <span class="value value--xlarge">{{ solar.now.value }} {{ solar.now.unit }}</span>
+    </div>
+  </div>
+  <div class="grid grid--cols-2 gap--small">
+    {% render "homey_cap_tile", label: "Today", value: solar.today.value, unit: solar.today.unit %}
+    {% render "homey_cap_tile", label: "Feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
+  </div>
+</div>
+{% endtemplate %}
+
+{% template homey_weather %}
+<div class="grid grid--cols-2 gap--small">
+  {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}
+  {% render "homey_cap_tile", label: "Indoor", value: weather.indoor_temp.value, unit: weather.indoor_temp.unit %}
+  {% render "homey_cap_tile", label: "Humidity", value: weather.humidity.value, unit: weather.humidity.unit %}
+  {% render "homey_cap_tile", label: "Wind", value: weather.wind.value, unit: weather.wind.unit %}
+  {% render "homey_cap_tile", label: "Rain", value: weather.rain.value, unit: weather.rain.unit %}
+  {% render "homey_cap_tile", label: "Pressure", value: weather.pressure.value, unit: weather.pressure.unit %}
+</div>
+{% endtemplate %}
+
