@@ -1,3 +1,11 @@
+// TRMNL device screen dimensions per layout size (px).
+const DIMENSIONS = {
+  full: [800, 480],
+  half_horizontal: [800, 240],
+  half_vertical: [400, 480],
+  quadrant: [400, 240],
+};
+
 const state = { name: null, size: null };
 const preview = document.getElementById('preview');
 const dataBox = document.getElementById('data');
@@ -12,8 +20,15 @@ function renderFrame() {
   }).then((r) => r.text()).then((html) => { preview.srcdoc = html; });
 }
 
+function applyDimensions(size) {
+  const [w, h] = DIMENSIONS[size] || DIMENSIONS.full;
+  preview.style.width = `${w}px`;
+  preview.style.height = `${h}px`;
+}
+
 function selectSize(size, button) {
   state.size = size;
+  applyDimensions(size);
   sizesBox.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === button));
   renderFrame();
 }
@@ -35,6 +50,7 @@ function selectComponent(button) {
     sizesBox.appendChild(b);
   });
   state.size = sizes[0];
+  applyDimensions(sizes[0]);
   renderFrame();
 }
 
