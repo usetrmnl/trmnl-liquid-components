@@ -11,9 +11,9 @@ module Storybook
   class Renderer
     def initialize(catalog) = @catalog = catalog
 
-    def render(component, size:, data: component.sample, options: {})
+    def render(component, size:, data: component.sample, options: {}, markup: nil)
       context = context_for(component, data, options)
-      body = render_liquid("#{@catalog.shared_markup}\n#{component.usage}", context)
+      body = render_liquid("#{scope_for(component, markup)}\n#{component.usage}", context)
       # Fragment components (tiles/cards) declare `wrap: true` so previews frame
       # them in a layout the way a host plugin would; screen-level components
       # (heroes, zone_section) emit their own layout + title_bar.
@@ -22,6 +22,15 @@ module Storybook
     end
 
     private
+
+    # Shared template scope, with this component's markup swapped for the live
+    # editor's version when one is supplied (other components stay intact so
+    # dependencies like cap_tile/homey_chart still resolve). Blank = use on-disk.
+    def scope_for(component, markup)
+      return @catalog.shared_markup if markup.nil? || markup.strip.empty?
+
+      @catalog.components.map { |c| c.name == component.name ? markup : c.markup }.join("\n")
+    end
 
     # Merge option defaults with any overrides and expose them exactly where a
     # real TRMNL plugin reads its settings, so a component is drop-in compatible.

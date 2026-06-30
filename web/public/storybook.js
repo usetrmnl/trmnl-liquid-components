@@ -6,9 +6,10 @@ const DIMENSIONS = {
   quadrant: [400, 240],
 };
 
-const state = { name: null, size: null, options: {} };
+const state = { name: null, size: null, options: {}, markup: null };
 const preview = document.getElementById('preview');
 const dataBox = document.getElementById('data');
+const markupBox = document.getElementById('markup');
 const sizesBox = document.getElementById('sizes');
 const titleBox = document.getElementById('title');
 const controlsBox = document.getElementById('controls');
@@ -19,7 +20,7 @@ function renderFrame() {
   fetch(`/c/${state.name}/${state.size}/render`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data, options: state.options }),
+    body: JSON.stringify({ data, options: state.options, markup: state.markup }),
   }).then((r) => r.text()).then((html) => { preview.srcdoc = html; });
 }
 
@@ -84,6 +85,8 @@ function selectComponent(button) {
   state.name = button.dataset.name;
   titleBox.textContent = button.textContent.trim();
   dataBox.value = JSON.stringify(JSON.parse(button.dataset.sample), null, 2);
+  markupBox.value = window.MARKUP[state.name] || '';
+  state.markup = null; // null = render the on-disk markup until the user edits it
   buildControls(JSON.parse(button.dataset.options || '[]'));
 
   const sizes = button.dataset.sizes.split(',');
@@ -102,8 +105,9 @@ function selectComponent(button) {
 
 document.querySelectorAll('.nav-item').forEach((b) => b.addEventListener('click', () => selectComponent(b)));
 dataBox.addEventListener('input', renderFrame);
+markupBox.addEventListener('input', () => { state.markup = markupBox.value; renderFrame(); });
 document.getElementById('copy').addEventListener('click', () => {
-  navigator.clipboard.writeText(window.MARKUP[state.name]);
+  navigator.clipboard.writeText(markupBox.value);
 });
 
 const first = document.querySelector('.nav-item');

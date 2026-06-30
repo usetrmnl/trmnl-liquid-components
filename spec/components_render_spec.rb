@@ -158,6 +158,17 @@ RSpec.describe 'components render' do
     expect(a).not_to eq(b)
   end
 
+  it 'renders an edited markup override instead of the on-disk template' do
+    edited = '{% template homey_divider %}<div class="edited-marker"></div>{% endtemplate %}'
+    html = renderer.render(catalog.find('divider'), size: 'full', markup: edited)
+    expect(html).to include('edited-marker')
+  end
+
+  it 'falls back to the on-disk markup when the override is blank' do
+    html = renderer.render(catalog.find('divider'), size: 'full', data: { 'title' => 'Living room' }, markup: '   ')
+    expect(html).to include('Living room')
+  end
+
   # Each preset is a thin wrapper whose defining config lives in its meta/sample;
   # this proves that config actually reaches the engine output (the adapter quirks
   # that make combo/waterfall/donut work are easy to regress in the meta).
