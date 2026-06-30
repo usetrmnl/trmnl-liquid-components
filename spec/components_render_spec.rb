@@ -158,6 +158,22 @@ RSpec.describe 'components render' do
     expect(a).not_to eq(b)
   end
 
+  # Each preset is a thin wrapper whose defining config lives in its meta/sample;
+  # this proves that config actually reaches the engine output (the adapter quirks
+  # that make combo/waterfall/donut work are easy to regress in the meta).
+  {
+    'bar' => 'Chartkick["BarChart"]',
+    'combo' => '"type":"spline"',          # per-series type rides on the data, not library.series
+    'donut' => 'innerSize',                # ring hole via raw library
+    'stacked_column' => '#888888',         # grey second series so the stack is legible
+    'waterfall' => 'highcharts-more.js',   # waterfall series type lives in the more module
+    'pattern_area' => 'pattern-fill.js'    # dithered fill needs the pattern module
+  }.each do |preset, marker|
+    it "carries the #{preset} preset's defining config into the engine output" do
+      expect(render(preset)).to include(marker)
+    end
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)

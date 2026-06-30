@@ -1,0 +1,12 @@
+---
+data:
+- - Solar
+  - 6
+- - Grid
+  - 9
+- - Battery
+  - -3
+- - Export
+  - -2
+- - Net
+  - 10

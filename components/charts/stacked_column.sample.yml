@@ -1,0 +1,26 @@
+---
+data:
+- name: Grid
+  data:
+  - - Mon
+    - 12
+  - - Tue
+    - 9
+  - - Wed
+    - 14
+  - - Thu
+    - 8
+  - - Fri
+    - 11
+- name: Solar
+  data:
+  - - Mon
+    - 6
+  - - Tue
+    - 8
+  - - Wed
+    - 5
+  - - Thu
+    - 9
+  - - Fri
+    - 7

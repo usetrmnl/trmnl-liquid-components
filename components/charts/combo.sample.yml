@@ -1,0 +1,28 @@
+---
+data:
+- name: Grid
+  type: column
+  data:
+  - - Mon
+    - 12
+  - - Tue
+    - 9
+  - - Wed
+    - 14
+  - - Thu
+    - 8
+  - - Fri
+    - 11
+- name: Solar
+  type: spline
+  data:
+  - - Mon
+    - 6
+  - - Tue
+    - 8
+  - - Wed
+    - 5
+  - - Thu
+    - 9
+  - - Fri
+    - 7

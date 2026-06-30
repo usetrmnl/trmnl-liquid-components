@@ -1,0 +1,10 @@
+---
+data:
+- - Heating
+  - 42
+- - Lighting
+  - 15
+- - Appliances
+  - 28
+- - Other
+  - 15
