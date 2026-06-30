@@ -2,6 +2,8 @@
 {% assign cfg = trmnl.plugin_settings.custom_fields_values %}
 {% assign show_chart = cfg.show_chart | default: "yes" %}
 {% assign chart_type = cfg.chart_type | default: "column" %}
+{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% assign chart_id = "homey-energy-chart" | append_random %}
 {% if show_chart == "yes" %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
 <script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
@@ -31,7 +33,7 @@
     </div>
   </div>
   {% if show_chart == "yes" %}
-  <div id="homey-energy-chart" style="width: 100%; flex-grow: 1;"></div>
+  <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
   {% endif %}
 </div>
 <div class="title_bar">
@@ -44,7 +46,7 @@
     {% for zone in energy.by_zone %}["{{ zone.zone }}", {{ zone.value }}]{% unless forloop.last %},{% endunless %}{% endfor %}
   ];
   var createHomeyEnergyChart = function () {
-    new Chartkick["{{ chart_type | capitalize }}Chart"]("homey-energy-chart", homeyEnergyData, {
+    new Chartkick["{{ chart_type | capitalize }}Chart"]("{{ chart_id }}", homeyEnergyData, {
       colors: ["black"], legend: false, suffix: " W",
       library: {
         chart: { backgroundColor: "transparent" },
