@@ -1,0 +1,50 @@
+{% template homey_sparkline %}
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign fill = cfg.fill | default: "no" %}
+{% assign show_dots = cfg.show_dots | default: "no" %}
+{% comment %} Zero-JS SVG trend (Meteogramm pattern): geometry in Liquid, viewBox 320x100. {% endcomment %}
+{% assign X0 = 6 %}
+{% assign Y_BOT = 92 %}
+{% assign PLOT_W = 308 %}
+{% assign PLOT_H = 82 %}
+{% assign n = series | size %}
+{% if n == 0 %}
+<div class="layout"><div class="item"><div class="content"><span class="label">No data</span></div></div></div>
+{% else %}
+{% comment %} scale: actual min/max for labels; bump hi when flat so range is never 0 (divide-by-zero guard). {% endcomment %}
+{% assign vmax = series.first.value %}
+{% assign vmin = series.first.value %}
+{% for p in series %}{% if p.value > vmax %}{% assign vmax = p.value %}{% endif %}{% if p.value < vmin %}{% assign vmin = p.value %}{% endif %}{% endfor %}
+{% assign lo = vmin %}
+{% assign hi = vmax %}
+{% if hi == lo %}{% assign hi = lo | plus: 1 %}{% endif %}
+{% assign range = hi | minus: lo %}
+{% comment %} x step spans n-1 gaps; guard a single point. {% endcomment %}
+{% assign last_i = n | minus: 1 %}
+{% if last_i < 1 %}{% assign last_i = 1 %}{% endif %}
+{% assign step = PLOT_W | divided_by: last_i %}
+{% assign last_x = last_i | times: step | plus: X0 %}
+{% capture pts %}{% for p in series %}{% assign x = forloop.index0 | times: step | plus: X0 %}{% assign rel = p.value | minus: lo %}{% assign y = rel | times: PLOT_H | divided_by: range %}{% assign y = Y_BOT | minus: y %}{{ x }},{{ y | round: 1 }} {% endfor %}{% endcapture %}
+<div class="layout layout--col gap">
+  <div class="item">
+    <div class="meta"></div>
+    <div class="content">
+      <span class="value value--large value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+      <span class="label">{{ title }}</span>
+    </div>
+  </div>
+  <svg viewBox="0 0 320 100" width="100%" preserveAspectRatio="none" style="display:block;width:100%;height:120px;font-family:inherit;">
+    <line x1="{{ X0 }}" y1="{{ Y_BOT }}" x2="{{ last_x }}" y2="{{ Y_BOT }}" stroke="#000" stroke-width="0.5" opacity="0.4"/>
+    {% if fill == "yes" %}<polygon points="{{ X0 }},{{ Y_BOT }} {{ pts }}{{ last_x }},{{ Y_BOT }}" fill="#000" opacity="0.12"/>{% endif %}
+    <polyline points="{{ pts }}" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    {% if show_dots == "yes" %}{% for p in series %}{% assign x = forloop.index0 | times: step | plus: X0 %}{% assign rel = p.value | minus: lo %}{% assign y = rel | times: PLOT_H | divided_by: range %}{% assign y = Y_BOT | minus: y %}<circle cx="{{ x }}" cy="{{ y | round: 1 }}" r="2" fill="#000"/>{% endfor %}{% endif %}
+    <text x="{{ X0 }}" y="10" style="font-size:9px;font-family:Helvetica,Arial,sans-serif;" opacity="0.55">{{ vmax }}{{ unit }}</text>
+    <text x="{{ last_x }}" y="90" text-anchor="end" style="font-size:9px;font-family:Helvetica,Arial,sans-serif;" opacity="0.55">{{ vmin }}{{ unit }}</text>
+  </svg>
+</div>
+<div class="title_bar">
+  <span class="title">{{ title }}</span>
+  <span class="instance">Trend</span>
+</div>
+{% endif %}
+{% endtemplate %}

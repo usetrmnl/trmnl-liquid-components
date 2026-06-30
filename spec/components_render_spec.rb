@@ -41,6 +41,25 @@ RSpec.describe 'components render' do
     expect(render('climate_home')).to include('7').and include('Bedroom')
   end
 
+  it 'plots one sparkline point per series entry' do
+    html = render('sparkline')
+    points = html[/<polyline points="([^"]*)"/, 1].split(/\s+/).reject(&:empty?)
+    expect(points.size).to eq(12)
+  end
+
+  it 'shows a placeholder instead of crashing on an empty sparkline series' do
+    html = renderer.render(catalog.find('sparkline'), size: 'full', data: { 'series' => [] })
+    expect(html).to include('No data')
+    expect(html).not_to include('Liquid error')
+  end
+
+  it 'survives a flat sparkline series without dividing by zero' do
+    flat = { 'series' => [{ 'value' => 5 }, { 'value' => 5 }, { 'value' => 5 }], 'unit' => 'W' }
+    html = renderer.render(catalog.find('sparkline'), size: 'full', data: flat)
+    expect(html).to include('<polyline')
+    expect(html).not_to include('Liquid error')
+  end
+
   it 'surfaces no Liquid errors in any component render' do
     catalog.components.each do |component|
       html = renderer.render(component, size: component.sizes.first)

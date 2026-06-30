@@ -1,0 +1,7 @@
+title: Trend (SVG sparkline)
+description: Zero-JS SVG line chart for any time series — no chart library, no async load, best e-ink reliability. Meteogramm pattern.
+sizes: [full, half_horizontal, half_vertical]
+usage: '{% render "homey_sparkline", series: series, title: title, unit: unit, trmnl: trmnl %}'
+options:
+  - { key: fill, type: boolean, label: Area fill, default: "no" }
+  - { key: show_dots, type: boolean, label: Point markers, default: "no" }
