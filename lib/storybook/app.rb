@@ -42,8 +42,8 @@ module Storybook
 
     post '/c/:name/:size/render' do
       component = catalog.find(params[:name]) or halt 404, 'unknown component'
-      data = JSON.parse(request.body.read)
-      renderer.render(component, size: params[:size], data:)
+      payload = JSON.parse(request.body.read)
+      renderer.render(component, size: params[:size], data: payload['data'] || {}, options: payload['options'] || {})
     rescue JSON::ParserError
       halt 422, 'invalid JSON'
     end

@@ -1,16 +1,24 @@
 {% template homey_climate_home %}
-<div class="flex flex--col gap">
-  <div class="grid grid--cols-2 gap--small">
-    {% render "homey_cap_tile", label: "Avg temp", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-2 gap">
+    {% render "homey_cap_tile", label: "Avg temperature", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
     {% render "homey_cap_tile", label: "Devices on", value: home.devices_on, unit: "" %}
   </div>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% for sensor in climate.sensors %}
       {% render "homey_cap_tile", label: sensor.name, value: sensor.value, unit: sensor.unit %}
     {% endfor %}
   </div>
   {% if home.alarms.size > 0 %}
-    <span class="description">Alarms: {% for alarm in home.alarms %}{{ alarm.zone }} ({{ alarm.type }}){% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+    <div class="flex flex--row flex--wrap gap--small">
+      {% for alarm in home.alarms %}
+        <span class="label label--outline">{{ alarm.zone }}: {{ alarm.type }}</span>
+      {% endfor %}
+    </div>
   {% endif %}
+</div>
+<div class="title_bar">
+  <span class="title">Home</span>
+  <span class="instance">Climate</span>
 </div>
 {% endtemplate %}

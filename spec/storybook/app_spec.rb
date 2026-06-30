@@ -21,8 +21,18 @@ RSpec.describe Storybook::App do
   end
 
   it 're-renders a component from posted JSON data' do
-    post '/c/cap_tile/full/render', { value: '777', label: 'X', unit: 'W' }.to_json, 'CONTENT_TYPE' => 'application/json'
+    post '/c/cap_tile/full/render', { data: { value: '777', label: 'X', unit: 'W' } }.to_json, 'CONTENT_TYPE' => 'application/json'
     expect(last_response.body).to include('777')
+  end
+
+  it 'shows the energy chart by default' do
+    post '/c/energy/full/render', { data: {} }.to_json, 'CONTENT_TYPE' => 'application/json'
+    expect(last_response.body).to include('homey-energy-chart')
+  end
+
+  it 'applies posted options that alter the render' do
+    post '/c/energy/full/render', { data: {}, options: { show_chart: 'no' } }.to_json, 'CONTENT_TYPE' => 'application/json'
+    expect(last_response.body).not_to include('homey-energy-chart')
   end
 
   it '404s an unknown component' do

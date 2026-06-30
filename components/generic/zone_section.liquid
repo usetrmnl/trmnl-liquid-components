@@ -1,7 +1,7 @@
 {% template homey_zone_section %}
-<div class="flex flex--col gap">
+<div class="layout layout--col gap">
   <span class="title">{{ zone.name }}</span>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% for device in zone.devices %}
       {% render "homey_device_card", device: device %}
     {% endfor %}

@@ -11,16 +11,34 @@ module Storybook
   class Renderer
     def initialize(catalog) = @catalog = catalog
 
-    def render(component, size:, data: component.sample)
-      markup = "#{@catalog.shared_markup}\n#{component.usage}"
-      Framework.wrap(render_liquid(markup, data), size:)
+    def render(component, size:, data: component.sample, options: {})
+      context = context_for(component, data, options)
+      body = render_liquid("#{@catalog.shared_markup}\n#{component.usage}", context)
+      # Fragment components (tiles/cards) declare `wrap: true` so previews frame
+      # them in a layout the way a host plugin would; screen-level components
+      # (heroes, zone_section) emit their own layout + title_bar.
+      body = %(<div class="layout layout--col gap">\n#{body}\n</div>) if component.meta['wrap']
+      Framework.wrap(body, size:)
     end
 
     private
 
-    def render_liquid(markup, data)
+    # Merge option defaults with any overrides and expose them exactly where a
+    # real TRMNL plugin reads its settings, so a component is drop-in compatible.
+    def context_for(component, data, options)
+      values = option_defaults(component).merge(stringify(options))
+      stringify(data).merge(
+        'trmnl' => { 'plugin_settings' => { 'instance_name' => 'Sample', 'custom_fields_values' => values } }
+      )
+    end
+
+    def option_defaults(component)
+      component.options.to_h { |option| [option['key'].to_s, option['default'].to_s] }
+    end
+
+    def render_liquid(markup, context)
       environment = TRMNL::Liquid.new
-      ::Liquid::Template.parse(markup, environment:).render(stringify(data))
+      ::Liquid::Template.parse(markup, environment:).render(context)
     rescue StandardError => e
       "Liquid error: #{e.message}"
     end

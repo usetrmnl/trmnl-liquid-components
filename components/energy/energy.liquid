@@ -1,16 +1,62 @@
 {% template homey_energy %}
-<div class="flex flex--col gap">
-  <div class="item">
-    <div class="content">
-      <span class="label">Power now</span>
-      <span class="value value--xlarge">{{ energy.total_power.value }} {{ energy.total_power.unit }}</span>
+{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
+{% assign show_chart = cfg.show_chart | default: "yes" %}
+{% assign chart_type = cfg.chart_type | default: "column" %}
+{% if show_chart == "yes" %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+{% endif %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-3 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ energy.total_power.value }}</span>
+        <span class="label">Power now ({{ energy.total_power.unit }})</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ energy.top_consumer.value }}</span>
+        <span class="label">Top: {{ energy.top_consumer.name }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums">{{ energy.by_zone | size }}</span>
+        <span class="label">Zones</span>
+      </div>
     </div>
   </div>
-  <div class="grid grid--cols-2 gap--small">
-    {% for zone in energy.by_zone %}
-      {% render "homey_cap_tile", label: zone.zone, value: zone.value, unit: zone.unit %}
-    {% endfor %}
-  </div>
-  <span class="description">Top consumer: {{ energy.top_consumer.name }} ({{ energy.top_consumer.value }} {{ energy.top_consumer.unit }})</span>
+  {% if show_chart == "yes" %}
+  <div id="homey-energy-chart" style="width: 100%; flex-grow: 1;"></div>
+  {% endif %}
 </div>
+<div class="title_bar">
+  <span class="title">Energy</span>
+  <span class="instance">Home</span>
+</div>
+{% if show_chart == "yes" %}
+<script>
+  var homeyEnergyData = [
+    {% for zone in energy.by_zone %}["{{ zone.zone }}", {{ zone.value }}]{% unless forloop.last %},{% endunless %}{% endfor %}
+  ];
+  var createHomeyEnergyChart = function () {
+    new Chartkick["{{ chart_type | capitalize }}Chart"]("homey-energy-chart", homeyEnergyData, {
+      colors: ["black"], legend: false, suffix: " W",
+      library: {
+        chart: { backgroundColor: "transparent" },
+        plotOptions: { series: { animation: false, borderWidth: 0 } },
+        yAxis: { gridLineColor: "#000", gridLineDashStyle: "dot", title: { text: null }, labels: { style: { color: "#000", fontSize: "14px" } } },
+        xAxis: { lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "14px" } } },
+        credits: { enabled: false }, tooltip: { enabled: false }
+      }
+    });
+  };
+  if ("Chartkick" in window) { createHomeyEnergyChart(); }
+  else { window.addEventListener("chartkick:load", createHomeyEnergyChart, true); }
+</script>
+{% endif %}
 {% endtemplate %}

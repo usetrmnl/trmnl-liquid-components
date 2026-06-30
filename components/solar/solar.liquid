@@ -1,14 +1,19 @@
 {% template homey_solar %}
-<div class="flex flex--col gap">
+<div class="layout layout--col gap">
   <div class="item">
+    <div class="meta"></div>
     <div class="content">
+      <span class="value value--xxlarge value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
       <span class="label">Producing now</span>
-      <span class="value value--xlarge">{{ solar.now.value }} {{ solar.now.unit }}</span>
     </div>
   </div>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% render "homey_cap_tile", label: "Today", value: solar.today.value, unit: solar.today.unit %}
-    {% render "homey_cap_tile", label: "Feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
+    {% render "homey_cap_tile", label: "Grid feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
   </div>
+</div>
+<div class="title_bar">
+  <span class="title">Solar</span>
+  <span class="instance">Production</span>
 </div>
 {% endtemplate %}

@@ -1,4 +1,5 @@
 title: Device card
 description: A device's name with every capability rendered through cap_tile.
 sizes: [full, half_vertical]
+wrap: true
 usage: '{% render "homey_device_card", device: device %}'

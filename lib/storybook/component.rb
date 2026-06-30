@@ -21,5 +21,9 @@ module Storybook
     def title = meta.fetch('title', name)
     def description = meta['description']
     def sizes = meta.fetch('sizes', %w[full])
+
+    # Configurable controls (Storybook "args"): each {key, type, label, default, choices}.
+    # Their values are injected as trmnl.plugin_settings.custom_fields_values.<key>.
+    def options = meta.fetch('options', [])
   end
 end

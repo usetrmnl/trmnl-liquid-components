@@ -1,4 +1,6 @@
 title: Weather station
 description: Indoor/outdoor temperature, humidity, wind, rain, pressure.
 sizes: [full, half_vertical]
-usage: '{% render "homey_weather", weather: weather %}'
+usage: '{% render "homey_weather", weather: weather, trmnl: trmnl %}'
+options:
+  - { key: columns, type: select, label: Columns, default: "3", choices: ["2", "3"] }
