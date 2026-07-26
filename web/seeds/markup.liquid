@@ -1,0 +1,36 @@
+{%- assign total_power = 0 -%}
+{%- assign on_count = 0 -%}
+{%- for device in devices -%}
+{%- if device.power != nil %}{% assign total_power = total_power | plus: device.power %}{% endif -%}
+{%- if device.on == true %}{% assign on_count = on_count | plus: 1 %}{% endif -%}
+{%- endfor -%}
+<div class="layout layout--col gap">
+  {% if devices == blank %}
+    <div class="flex flex--center flex--grow">
+      <span class="label label--gray">Waiting for the first push from Homey…</span>
+    </div>
+  {% else %}
+    {% assign zone_list = devices | map: "zone" | uniq %}
+    {% for zone_name in zone_list %}
+      {% assign zone_devices = devices | where: "zone", zone_name %}
+      <div class="column">
+        <span class="title title--small">{{ zone_name }}</span>
+        <div class="grid grid--cols-2">
+          {% for device in zone_devices %}
+          <div class="item">
+            <div class="content">
+              <span class="value value--xsmall value--tnums">{% if device.temperature != nil %}{{ device.temperature }}° {% endif %}{% if device.humidity != nil %}{{ device.humidity }}% {% endif %}{% if device.power != nil %}{{ device.power }}W {% endif %}{% if device.on == true %}On{% endif %}{% if device.on == false %}Off{% endif %}{% if device.temperature == nil and device.humidity == nil and device.power == nil and device.on == nil %}—{% endif %}</span>
+              <span class="label" data-clamp="1">{{ device.name }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="title_bar">
+  <span class="title">Homey</span>
+  <span class="instance">{{ devices | size }} devices · {{ on_count }} on · {{ total_power }}W</span>
+</div>

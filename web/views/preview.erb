@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Preview playground — Homey components</title>
+  <link rel="stylesheet" href="/storybook.css">
+</head>
+<body>
+  <div class="layout">
+    <main class="stage">
+      <div class="toolbar">
+        <a href="/">&larr; components</a>
+        <strong>Preview playground</strong>
+        <span id="sizes"></span>
+        <button id="copy">Copy markup</button>
+      </div>
+      <div class="preview-wrap">
+        <iframe id="preview" title="preview"></iframe>
+      </div>
+      <details open>
+        <summary>Data — your Homey snapshot (edit to re-render)</summary>
+        <textarea id="data" spellcheck="false"></textarea>
+      </details>
+      <details open>
+        <summary>Markup — paste your plugin markup here (edit to re-render)</summary>
+        <textarea id="markup" spellcheck="false"></textarea>
+      </details>
+    </main>
+  </div>
+  <%# JSON-encode seeds so any character survives; escape </ so it can't close this script early %>
+  <script>window.SEED = <%= { markup: @seed_markup, data: @seed_data }.to_json.gsub('</', '<\\/') %>;</script>
+  <script src="/preview.js"></script>
+</body>
+</html>

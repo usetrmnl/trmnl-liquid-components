@@ -1,6 +1,7 @@
 <div class="layout">
   <nav class="sidebar">
     <h1>Homey components</h1>
+    <a class="nav-item" href="/preview">▸ Preview playground</a>
     <% @catalog.by_category.each do |category, components| %>
       <h3><%= category.tr('_', ' ') %></h3>
       <% components.each do |c| %>

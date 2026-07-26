@@ -31,4 +31,16 @@ RSpec.describe Storybook::Renderer do
     html = renderer.render(component, size: 'full', data: { 'value' => '99' })
     expect(html).to include('<span>99</span>')
   end
+
+  describe '#render_markup (preview playground)' do
+    it 'renders arbitrary top-level markup against data, framed like a plugin' do
+      html = renderer.render_markup('<b>{{ greeting }}</b>', size: 'full', data: { 'greeting' => 'hi' })
+      expect(html).to include('<b>hi</b>').and include('view view--full')
+    end
+
+    it 'exposes the registered component templates to the pasted markup' do
+      html = renderer.render_markup('{% render "homey_tile", value: "77" %}', size: 'quadrant', data: {})
+      expect(html).to include('<span>77</span>')
+    end
+  end
 end

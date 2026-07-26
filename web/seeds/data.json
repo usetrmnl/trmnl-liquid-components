@@ -1,0 +1,50 @@
+{
+  "source": "companion",
+  "zone_names": {
+    "d299cf43-21fa-4fe9-9219-6dfe71dcc1d1": "Lounge",
+    "f5fc92e2-a0fd-4969-952d-f2d31a50333f": "Kitchen",
+    "47b8951f-6f69-4843-99b5-fb1bf395b3e5": "Bedroom"
+  },
+  "devices": [
+    {
+      "name": "Thermometer SNZB-02D",
+      "zone": "Lounge",
+      "klass": "sensor",
+      "power": null,
+      "temperature": 20,
+      "humidity": 53,
+      "on": null,
+      "alarms": []
+    },
+    {
+      "name": "Button SNZB-01P",
+      "zone": "Lounge",
+      "klass": "button",
+      "power": null,
+      "temperature": null,
+      "humidity": null,
+      "on": null,
+      "alarms": []
+    },
+    {
+      "name": "Sample Kettle Plug",
+      "zone": "Kitchen",
+      "klass": "socket",
+      "power": 1840,
+      "temperature": null,
+      "humidity": null,
+      "on": true,
+      "alarms": []
+    },
+    {
+      "name": "Sample Bedside Lamp",
+      "zone": "Bedroom",
+      "klass": "light",
+      "power": null,
+      "temperature": null,
+      "humidity": null,
+      "on": false,
+      "alarms": []
+    }
+  ]
+}

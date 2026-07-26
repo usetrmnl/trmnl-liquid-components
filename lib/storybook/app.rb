@@ -35,6 +35,21 @@ module Storybook
       erb :index
     end
 
+    def seed(name) = File.read(File.expand_path("../../web/seeds/#{name}", __dir__))
+
+    get '/preview' do
+      @seed_markup = seed('markup.liquid')
+      @seed_data = seed('data.json')
+      erb :preview, layout: false
+    end
+
+    post '/preview/:size' do
+      payload = JSON.parse(request.body.read)
+      renderer.render_markup(payload['markup'].to_s, size: params[:size], data: payload['data'] || {})
+    rescue JSON::ParserError
+      halt 422, 'invalid JSON'
+    end
+
     get '/c/:name/:size.html' do
       component = catalog.find(params[:name]) or halt 404, 'unknown component'
       renderer.render(component, size: params[:size])

@@ -21,6 +21,12 @@ module Storybook
       Framework.wrap(body, size:)
     end
 
+    # Mirrors a real private plugin: data as top-level vars, every template in scope.
+    def render_markup(markup, size:, data: {})
+      context = stringify(data).merge('trmnl' => { 'plugin_settings' => { 'instance_name' => 'Preview' } })
+      Framework.wrap(render_liquid("#{@catalog.shared_markup}\n#{markup}", context), size:)
+    end
+
     private
 
     # Shared template scope, with this component's markup swapped for the live

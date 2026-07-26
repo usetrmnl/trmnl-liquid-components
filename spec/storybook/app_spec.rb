@@ -39,4 +39,21 @@ RSpec.describe Storybook::App do
     get '/c/nope/full.html'
     expect(last_response.status).to eq(404)
   end
+
+  it 'serves the preview playground page' do
+    get '/preview'
+    expect(last_response).to be_ok
+    expect(last_response.body).to include('Preview playground')
+  end
+
+  it 'renders pasted markup against posted data, framed like a plugin' do
+    body = { markup: '<b>{{ devices | size }}</b>', data: { devices: [{ name: 'A' }, { name: 'B' }] } }.to_json
+    post '/preview/full', body, 'CONTENT_TYPE' => 'application/json'
+    expect(last_response.body).to include('<b>2</b>').and include('view view--full')
+  end
+
+  it '422s malformed preview JSON' do
+    post '/preview/full', '{not json', 'CONTENT_TYPE' => 'application/json'
+    expect(last_response.status).to eq(422)
+  end
 end
