@@ -52,6 +52,12 @@ RSpec.describe Storybook::App do
     expect(last_response.body).to include('<b>2</b>').and include('view view--full')
   end
 
+  it 'renders a chart preset with no custom fields set (self-contained config)' do
+    body = { markup: '{% render "homey_chart_waterfall", data: data, trmnl: trmnl %}', data: { data: [%w[A 6], ['B', -3]] } }.to_json
+    post '/preview/full', body, 'CONTENT_TYPE' => 'application/json'
+    expect(last_response.body).to include('waterfall').and include('LineChart')
+  end
+
   it '422s malformed preview JSON' do
     post '/preview/full', '{not json', 'CONTENT_TYPE' => 'application/json'
     expect(last_response.status).to eq(422)
