@@ -18,6 +18,7 @@ module Storybook
     end
 
     def usage = meta.fetch('usage')
+    def template = markup[/\{%\s*template\s+(\w+)/, 1]
     def title = meta.fetch('title', name)
     def description = meta['description']
     def sizes = meta.fetch('sizes', %w[full])

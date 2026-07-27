@@ -47,6 +47,15 @@ needs no Ruby at request time, so any static host will serve it:
 
     cd _site && python3 -m http.server
 
+The same build writes the library as markdown for coding agents, following the
+[llms.txt](https://llmstxt.org) convention:
+
+| File | For |
+|---|---|
+| `llms.txt` | Index — every component, one line each, linked |
+| `llms-full.txt` | Every component inline (~31KB), so one fetch is enough |
+| `c/<name>.md` | One component: template, usage, variants, sample data, markup |
+
 ## Regenerate the copy-paste master
 
     bundle exec rake build:shared   # writes shared.liquid (all components)

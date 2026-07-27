@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require_relative 'lib/storybook/catalog'
+require_relative 'lib/storybook/docs'
 require_relative 'lib/storybook/site'
 
-def catalog = Storybook::Catalog.load(File.expand_path('components', __dir__))
+def catalog = @catalog ||= Storybook::Catalog.load(File.expand_path('components', __dir__))
 
 namespace :build do
   desc 'Regenerate shared.liquid (the copy-paste master of all components)'
@@ -16,6 +17,7 @@ namespace :build do
   task :site do
     root = File.expand_path('_site', __dir__)
     pages = Storybook::Site.new(catalog).build(root)
-    puts "Wrote #{root} (#{pages.size} previews, #{catalog.components.size} components)"
+    docs = Storybook::Docs.new(catalog).build(root)
+    puts "Wrote #{root} (#{pages.size} previews, #{docs.size} markdown pages, llms.txt)"
   end
 end
