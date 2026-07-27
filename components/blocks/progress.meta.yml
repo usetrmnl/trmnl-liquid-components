@@ -14,6 +14,7 @@ variants:
 - name: Dots
   args:
     style: dots
+    total: '8'
 - name: Large bar
   args:
     size: large

@@ -5,5 +5,3 @@ items:
   - { label: Fridge, value: "85", unit: " W" }
   - { label: Lights, value: "45", unit: " W" }
   - { label: TV, value: "120", unit: " W" }
-  - { label: Router, value: "12", unit: " W" }
-  - { label: Washer, value: "0", unit: " W" }

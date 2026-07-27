@@ -10,7 +10,6 @@ usage: '{% render "trmnl_table", columns: columns, rows: rows, align: align %}'
 variants:
 - name: Small
   args: {}
-- name: Base, no row limit
+- name: Base
   args:
     size: base
-    limit: 'no'

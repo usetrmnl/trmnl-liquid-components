@@ -35,7 +35,12 @@ under `web/` are mounted into the container, so editing them shows up on refresh
 
 ## Test
 
-    bundle exec rspec
+    bundle exec rspec                                  # fast, no browser
+    BROWSER=1 bundle exec rspec spec/browser_spec.rb   # headless Chrome, ~90s
+
+The browser pass catches what a string comparison cannot: a preview painting
+past the edge of its device screen, and the gallery script failing to run. Both
+need real layout, so they are opt-in locally and always run in CI.
 
 ## Build the static gallery
 
