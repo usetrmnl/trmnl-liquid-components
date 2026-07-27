@@ -1,15 +1,8 @@
+---
 title: Donut chart
 description: Proportions as a ring.
-sizes: [full, half_horizontal, half_vertical]
-usage: '{% render "homey_chart_donut", data: data, trmnl: trmnl %}'
-options:
-  - {"key":"chart_type","type":"select","label":"Type","default":"pie","choices":["line","column","bar","area","pie","scatter"]}
-  - {"key":"color_scheme","type":"select","label":"Colors","default":"black","choices":["black","grey","black+grey"]}
-  - {"key":"curve","type":"boolean","label":"Smooth curve","default":"no"}
-  - {"key":"points","type":"boolean","label":"Point markers","default":"no"}
-  - {"key":"legend","type":"select","label":"Legend","default":"none","choices":["none","bottom","right"]}
-  - {"key":"stacked","type":"boolean","label":"Stacked","default":"no"}
-  - {"key":"data_labels","type":"boolean","label":"Data labels","default":"no"}
-  - {"key":"gridlines","type":"select","label":"Gridlines","default":"dotted","choices":["dotted","solid","none"]}
-  - {"key":"modules","type":"boolean","label":"Load more+pattern modules","default":"no"}
-  - {"key":"library","type":"textarea","label":"Raw Highcharts library (JSON)","default":"{\"plotOptions\":{\"pie\":{\"innerSize\":\"60%\"}},\"colors\":[\"#000000\",\"#606060\",\"#a0a0a0\",\"#d0d0d0\"]}"}
+sizes:
+- full
+- half_horizontal
+- half_vertical
+usage: '{% render "trmnl_chart_donut", data: data %}'

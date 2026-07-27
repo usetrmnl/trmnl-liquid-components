@@ -1,0 +1,13 @@
+---
+title: Energy
+description: Live power, per-zone breakdown, and the biggest consumer.
+sizes:
+- full
+- half_vertical
+usage: '{% render "homey_energy", energy: energy %}'
+variants:
+- name: With chart
+  args: {}
+- name: Numbers only
+  args:
+    show_chart: 'no'

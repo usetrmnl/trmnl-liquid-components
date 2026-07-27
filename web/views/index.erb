@@ -6,7 +6,7 @@
       <h3><%= category.tr('_', ' ') %></h3>
       <% components.each do |c| %>
         <button class="nav-item" data-name="<%= c.name %>" data-sizes="<%= c.sizes.join(',') %>"
-                data-sample='<%= c.sample.to_json %>' data-options='<%= c.options.to_json %>'
+                data-sample='<%= c.sample.to_json %>' data-variants='<%= c.variants.to_json %>'
                 title="<%= c.description %>">
           <%= c.title %>
         </button>
@@ -22,7 +22,7 @@
     <div class="preview-wrap">
       <iframe id="preview" title="preview"></iframe>
     </div>
-    <div id="controls" class="controls"></div>
+    <div id="variants" class="controls"></div>
     <details open>
       <summary>Sample data (edit to re-render)</summary>
       <textarea id="data" spellcheck="false"></textarea>

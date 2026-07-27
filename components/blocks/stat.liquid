@@ -1,7 +1,6 @@
-{% template homey_stat %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign size = cfg.size | default: "xxlarge" %}
-{% assign color_delta = cfg.color_delta | default: "no" %}
+{% template trmnl_stat %}
+{% assign size = size | default: "xxlarge" %}
+{% assign color_delta = color_delta | default: "no" %}
 <div class="item">
   <div class="meta"></div>
   <div class="content">

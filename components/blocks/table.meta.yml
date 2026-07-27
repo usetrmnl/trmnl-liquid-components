@@ -1,0 +1,16 @@
+---
+title: Table
+description: Structured rows with the framework table-overflow engine ("and N more").
+sizes:
+- full
+- half_horizontal
+- half_vertical
+wrap: true
+usage: '{% render "trmnl_table", columns: columns, rows: rows, align: align %}'
+variants:
+- name: Small
+  args: {}
+- name: Base, no row limit
+  args:
+    size: base
+    limit: 'no'

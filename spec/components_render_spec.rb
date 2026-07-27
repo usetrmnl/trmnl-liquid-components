@@ -81,7 +81,7 @@ RSpec.describe 'components render' do
   end
 
   it 'renders the text body with the configured clamp' do
-    html = renderer.render(catalog.find('text'), size: 'full', data: { 'body' => 'Hello there' }, options: { 'clamp' => '3' })
+    html = renderer.render(catalog.find('text'), size: 'full', data: { 'body' => 'Hello there' }, args: { 'clamp' => '3' })
     expect(html).to include('Hello there').and include('data-clamp="3"')
   end
 
@@ -91,7 +91,7 @@ RSpec.describe 'components render' do
   end
 
   it 'falls back to the default style for a badge with no style' do
-    html = renderer.render(catalog.find('badge'), size: 'full', data: { 'badges' => [{ 'text' => 'Idle' }] }, options: { 'default_style' => 'filled' })
+    html = renderer.render(catalog.find('badge'), size: 'full', data: { 'badges' => [{ 'text' => 'Idle' }] }, args: { 'default_style' => 'filled' })
     expect(html).to include('label--filled').and include('Idle')
   end
 
@@ -100,7 +100,7 @@ RSpec.describe 'components render' do
   end
 
   it 'switches progress to dots when configured' do
-    html = renderer.render(catalog.find('progress'), size: 'full', data: { 'value' => 3, 'label' => 'Steps', 'total' => 5 }, options: { 'style' => 'dots' })
+    html = renderer.render(catalog.find('progress'), size: 'full', data: { 'value' => 3, 'label' => 'Steps', 'total' => 5 }, args: { 'style' => 'dots' })
     expect(html).to include('progress-dots').and include('dot--filled')
   end
 
@@ -109,7 +109,7 @@ RSpec.describe 'components render' do
   end
 
   it 'numbers the list when configured' do
-    html = renderer.render(catalog.find('list'), size: 'full', data: { 'items' => [{ 'label' => 'Solar', 'value' => '1' }] }, options: { 'numbered' => 'yes' })
+    html = renderer.render(catalog.find('list'), size: 'full', data: { 'items' => [{ 'label' => 'Solar', 'value' => '1' }] }, args: { 'numbered' => 'yes' })
     expect(html).to include('1.').and include('Solar')
   end
 
@@ -136,19 +136,19 @@ RSpec.describe 'components render' do
   end
 
   it 'switches the chart constructor with chart_type' do
-    html = renderer.render(catalog.find('chart'), size: 'full', options: { 'chart_type' => 'column' })
+    html = renderer.render(catalog.find('chart'), size: 'full', args: { 'chart_type' => 'column' })
     expect(html).to include('Chartkick["ColumnChart"]')
   end
 
   it 'loads the extra modules only when enabled' do
     off = renderer.render(catalog.find('chart'), size: 'full')
-    on  = renderer.render(catalog.find('chart'), size: 'full', options: { 'modules' => 'yes' })
+    on  = renderer.render(catalog.find('chart'), size: 'full', args: { 'modules' => 'yes' })
     expect(off).not_to include('pattern-fill.js')
     expect(on).to include('highcharts-more.js').and include('pattern-fill.js')
   end
 
   it 'round-trips the raw library box into the chart options' do
-    html = renderer.render(catalog.find('chart'), size: 'full', options: { 'library' => '{"chart":{"type":"waterfall"}}' })
+    html = renderer.render(catalog.find('chart'), size: 'full', args: { 'library' => '{"chart":{"type":"waterfall"}}' })
     expect(html).to include('waterfall')
   end
 
@@ -159,7 +159,7 @@ RSpec.describe 'components render' do
   end
 
   it 'renders an edited markup override instead of the on-disk template' do
-    edited = '{% template homey_divider %}<div class="edited-marker"></div>{% endtemplate %}'
+    edited = '{% template trmnl_divider %}<div class="edited-marker"></div>{% endtemplate %}'
     html = renderer.render(catalog.find('divider'), size: 'full', markup: edited)
     expect(html).to include('edited-marker')
   end
@@ -185,10 +185,24 @@ RSpec.describe 'components render' do
     end
   end
 
-  it 'surfaces no Liquid errors in any component render' do
+  it 'renders every declared variant of every component without a Liquid error' do
     catalog.components.each do |component|
-      html = renderer.render(component, size: component.sizes.first)
-      expect(html).not_to include('Liquid error'), "#{component.name} produced a Liquid error"
+      component.variants.each do |variant|
+        html = renderer.render(component, size: component.sizes.first, args: variant['args'] || {})
+        expect(html).not_to include('Liquid error'), "#{component.name}/#{variant['name']} produced a Liquid error"
+      end
     end
+  end
+
+  it 'reads no option from the plugin custom fields, which every instance would share' do
+    offenders = catalog.components.select { it.markup.include?('custom_fields_values') }
+    expect(offenders.map(&:name)).to be_empty
+  end
+
+  it 'gives two instances of one component independent argument values' do
+    base = renderer.render(catalog.find('stat'), size: 'full', data: { 'value' => '5' })
+    mega = renderer.render(catalog.find('stat'), size: 'full', data: { 'value' => '5' }, args: { 'size' => 'mega' })
+    expect(base).to include('value--xxlarge')
+    expect(mega).to include('value--mega')
   end
 end

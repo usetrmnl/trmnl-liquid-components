@@ -1,16 +1,14 @@
-{% template homey_chart %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% comment %} Precedence: custom field, then preset argument, then default — a pasted preset needs no custom fields. {% endcomment %}
-{% assign chart_type = cfg.chart_type | default: chart_type | default: "line" %}
-{% assign color_scheme = cfg.color_scheme | default: color_scheme | default: "black" %}
-{% assign curve = cfg.curve | default: curve | default: "no" %}
-{% assign points = cfg.points | default: points | default: "no" %}
-{% assign legend = cfg.legend | default: legend | default: "none" %}
-{% assign stacked = cfg.stacked | default: stacked | default: "no" %}
-{% assign data_labels = cfg.data_labels | default: data_labels | default: "no" %}
-{% assign gridlines = cfg.gridlines | default: gridlines | default: "dotted" %}
-{% assign modules = cfg.modules | default: modules | default: "no" %}
-{% assign library = cfg.library | default: library | default: "{}" %}
+{% template trmnl_chart %}
+{% assign chart_type = chart_type | default: "line" %}
+{% assign color_scheme = color_scheme | default: "black" %}
+{% assign curve = curve | default: "no" %}
+{% assign points = points | default: "no" %}
+{% assign legend = legend | default: "none" %}
+{% assign stacked = stacked | default: "no" %}
+{% assign data_labels = data_labels | default: "no" %}
+{% assign gridlines = gridlines | default: "dotted" %}
+{% assign modules = modules | default: "no" %}
+{% assign library = library | default: "{}" %}
 {% assign chart_id = "homey-chart" | append_random %}
 {% if color_scheme == "grey" %}{% assign colors = '["#888888"]' %}{% elsif color_scheme == "black+grey" %}{% assign colors = '["#000000","#888888"]' %}{% else %}{% assign colors = '["#000000"]' %}{% endif %}
 {% if gridlines == "solid" %}{% assign dash = "Solid" %}{% assign gw = 1 %}{% elsif gridlines == "none" %}{% assign dash = "Solid" %}{% assign gw = 0 %}{% else %}{% assign dash = "Dot" %}{% assign gw = 1 %}{% endif %}

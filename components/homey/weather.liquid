@@ -1,5 +1,5 @@
 {% template homey_weather %}
-{% assign columns = trmnl.plugin_settings.custom_fields_values.columns | default: "3" %}
+{% assign columns = columns | default: "3" %}
 <div class="layout layout--col gap">
   <div class="grid grid--cols-{{ columns }} gap">
     {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}

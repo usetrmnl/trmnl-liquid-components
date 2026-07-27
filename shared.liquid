@@ -1,50 +1,268 @@
+{% template trmnl_badge %}
+{% assign size = size | default: "base" %}
+{% assign default_style = default_style | default: "outline" %}
+<div class="flex flex--row flex--wrap gap--small">
+  {% for b in badges %}
+  <span class="label label--{{ b.style | default: default_style }}{% if size == 'small' %} label--small{% elsif size == 'large' %} label--large{% endif %}">{{ b.text }}</span>
+  {% endfor %}
+</div>
+{% endtemplate %}
+
+{% template trmnl_divider %}
+{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+<div class="divider"></div>
+{% endtemplate %}
+
+{% template trmnl_list %}
+{% assign cols = columns | default: "1" %}
+{% assign numbered = numbered | default: "no" %}
+{% assign n = items | size %}
+{% if n == 0 %}
+<span class="label">No data</span>
+{% else %}
+<div class="grid grid--cols-{{ cols }} gap">
+  {% for item in items %}
+  <div class="flex flex--row flex--between flex--center-y w--full">
+    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label">{{ item.label }}</span></span>
+    <span class="value value--small value--tnums">{{ item.value }}{{ item.unit }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endtemplate %}
+
+{% template trmnl_progress %}
+{% assign style = style | default: "bar" %}
+{% assign size = size | default: "base" %}
+<div class="flex flex--row flex--between flex--center-y w--full">
+  <span class="label">{{ label }}</span>
+  <span class="value value--small value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
+</div>
+{% if style == "dots" %}
+{% assign total_dots = total | default: 5 %}
+<div class="progress-dots{% if size == 'small' %} progress-dots--small{% elsif size == 'large' %} progress-dots--large{% endif %}">
+  <div class="track">{% for i in (1..total_dots) %}<div class="dot{% if i <= value %} dot--filled{% endif %}"></div>{% endfor %}</div>
+</div>
+{% else %}
+{% comment %} explicit track/fill so it renders without the data-progress JS engine; fill width is the data binding the engine would set inline {% endcomment %}
+<div class="progress-bar w--full{% if size == 'small' %} progress-bar--small{% elsif size == 'large' %} progress-bar--large{% endif %}">
+  <div class="track"><div class="fill" style="width: {{ value }}%"></div></div>
+</div>
+{% endif %}
+{% endtemplate %}
+
+{% template trmnl_sparkline %}
+{% assign fill = fill | default: "no" %}
+{% assign show_dots = show_dots | default: "no" %}
+{% comment %} Zero-JS SVG trend (Meteogramm pattern): geometry in Liquid, viewBox 320x100. {% endcomment %}
+{% assign X0 = 6 %}
+{% assign Y_BOT = 92 %}
+{% assign PLOT_W = 308 %}
+{% assign PLOT_H = 82 %}
+{% assign n = series | size %}
+{% if n == 0 %}
+<div class="layout"><div class="item"><div class="content"><span class="label">No data</span></div></div></div>
+{% else %}
+{% comment %} scale: actual min/max for labels; bump hi when flat so range is never 0 (divide-by-zero guard). {% endcomment %}
+{% assign vmax = series.first.value %}
+{% assign vmin = series.first.value %}
+{% for p in series %}{% if p.value > vmax %}{% assign vmax = p.value %}{% endif %}{% if p.value < vmin %}{% assign vmin = p.value %}{% endif %}{% endfor %}
+{% assign lo = vmin %}
+{% assign hi = vmax %}
+{% if hi == lo %}{% assign hi = lo | plus: 1 %}{% endif %}
+{% assign range = hi | minus: lo %}
+{% comment %} x step spans n-1 gaps; guard a single point. {% endcomment %}
+{% assign last_i = n | minus: 1 %}
+{% if last_i < 1 %}{% assign last_i = 1 %}{% endif %}
+{% assign step = PLOT_W | divided_by: last_i %}
+{% assign last_x = last_i | times: step | plus: X0 %}
+{% capture pts %}{% for p in series %}{% assign x = forloop.index0 | times: step | plus: X0 %}{% assign rel = p.value | minus: lo %}{% assign y = rel | times: PLOT_H | divided_by: range %}{% assign y = Y_BOT | minus: y %}{{ x }},{{ y | round: 1 }} {% endfor %}{% endcapture %}
+<div class="layout layout--col gap">
+  <div class="item">
+    <div class="meta"></div>
+    <div class="content">
+      <span class="value value--large value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+      <span class="label">{{ title }}</span>
+    </div>
+  </div>
+  <svg viewBox="0 0 320 100" width="100%" preserveAspectRatio="none" style="display:block;width:100%;height:120px;font-family:inherit;">
+    <line x1="{{ X0 }}" y1="{{ Y_BOT }}" x2="{{ last_x }}" y2="{{ Y_BOT }}" stroke="#000" stroke-width="0.5" opacity="0.4"/>
+    {% if fill == "yes" %}<polygon points="{{ X0 }},{{ Y_BOT }} {{ pts }}{{ last_x }},{{ Y_BOT }}" fill="#000" opacity="0.12"/>{% endif %}
+    <polyline points="{{ pts }}" fill="none" stroke="#000" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    {% if show_dots == "yes" %}{% for p in series %}{% assign x = forloop.index0 | times: step | plus: X0 %}{% assign rel = p.value | minus: lo %}{% assign y = rel | times: PLOT_H | divided_by: range %}{% assign y = Y_BOT | minus: y %}<circle cx="{{ x }}" cy="{{ y | round: 1 }}" r="2" fill="#000"/>{% endfor %}{% endif %}
+    <text x="{{ X0 }}" y="10" style="font-size:9px;font-family:Helvetica,Arial,sans-serif;" opacity="0.55">{{ vmax }}{{ unit }}</text>
+    <text x="{{ last_x }}" y="90" text-anchor="end" style="font-size:9px;font-family:Helvetica,Arial,sans-serif;" opacity="0.55">{{ vmin }}{{ unit }}</text>
+  </svg>
+</div>
+<div class="title_bar">
+  <span class="title">{{ title }}</span>
+  <span class="instance">Trend</span>
+</div>
+{% endif %}
+{% endtemplate %}
+
+{% template trmnl_stat %}
+{% assign size = size | default: "xxlarge" %}
+{% assign color_delta = color_delta | default: "no" %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value value--{{ size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
+    <div class="flex flex--row flex--center-y gap--small">
+      <span class="label">{{ label }}</span>
+      {% if delta %}
+      {% assign tone = "" %}
+      {% if color_delta == "yes" %}{% if delta_dir == "down" %}{% assign tone = "text--error" %}{% else %}{% assign tone = "text--success" %}{% endif %}{% endif %}
+      <span class="flex flex--row flex--center-y gap--xsmall {{ tone }}">
+        <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">{% if delta_dir == "down" %}<path d="M1,3 L9,3 L5,9 Z" fill="currentColor"/>{% else %}<path d="M5,1 L9,7 L1,7 Z" fill="currentColor"/>{% endif %}</svg>
+        <span class="label">{{ delta }}</span>
+      </span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endtemplate %}
+
+{% template trmnl_table %}
+{% assign size = size | default: "small" %}
+{% assign limit = limit | default: "yes" %}
+<table class="table table--{{ size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
+  <thead>
+    <tr>{% for col in columns %}<th><span class="title title--small">{{ col }}</span></th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall value--tnums">{{ cell }}</span>{% else %}<span class="label">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endtemplate %}
+
+{% template trmnl_text %}
+{% assign clamp = clamp | default: "4" %}
+{% assign align = align | default: "left" %}
+{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+<div class="richtext richtext--{{ align }}">
+  <div class="content content--base" data-clamp="{{ clamp }}">{{ body }}</div>
+</div>
+{% endtemplate %}
+
+{% template trmnl_chart_area %}{% render "trmnl_chart", data: data, chart_type: "area", curve: "yes" %}{% endtemplate %}
+
+{% template trmnl_chart_bar %}{% render "trmnl_chart", data: data, chart_type: "bar" %}{% endtemplate %}
+
+{% template trmnl_chart %}
+{% assign chart_type = chart_type | default: "line" %}
+{% assign color_scheme = color_scheme | default: "black" %}
+{% assign curve = curve | default: "no" %}
+{% assign points = points | default: "no" %}
+{% assign legend = legend | default: "none" %}
+{% assign stacked = stacked | default: "no" %}
+{% assign data_labels = data_labels | default: "no" %}
+{% assign gridlines = gridlines | default: "dotted" %}
+{% assign modules = modules | default: "no" %}
+{% assign library = library | default: "{}" %}
+{% assign chart_id = "homey-chart" | append_random %}
+{% if color_scheme == "grey" %}{% assign colors = '["#888888"]' %}{% elsif color_scheme == "black+grey" %}{% assign colors = '["#000000","#888888"]' %}{% else %}{% assign colors = '["#000000"]' %}{% endif %}
+{% if gridlines == "solid" %}{% assign dash = "Solid" %}{% assign gw = 1 %}{% elsif gridlines == "none" %}{% assign dash = "Solid" %}{% assign gw = 0 %}{% else %}{% assign dash = "Dot" %}{% assign gw = 1 %}{% endif %}
+{% if legend == "none" %}{% assign legend_js = "false" %}{% else %}{% assign legend_js = legend | prepend: '"' | append: '"' %}{% endif %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+{% if modules == "yes" %}<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts-more.js"></script>
+<script src="https://trmnl.com/js/highcharts/12.3.0/pattern-fill.js"></script>{% endif %}
+<div class="layout layout--col">
+  <div id="{{ chart_id }}" style="width:100%;flex-grow:1;min-height:300px;"></div>
+</div>
+<script>
+  (function () {
+    var data = {{ data | json }};
+    var eink = {
+      chart: { backgroundColor: "transparent", style: { fontFamily: "inherit" } },
+      plotOptions: { series: { animation: false, borderWidth: 0, lineWidth: 3, marker: { enabled: {% if points == "yes" %}true{% else %}false{% endif %} }, dataLabels: { enabled: {% if data_labels == "yes" %}true{% else %}false{% endif %} } } },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      yAxis: { gridLineColor: "#000000", gridLineDashStyle: "{{ dash }}", gridLineWidth: {{ gw }}, title: { text: null }, labels: { style: { color: "#000000", fontSize: "14px" } } },
+      xAxis: { lineColor: "#000000", labels: { style: { color: "#000000", fontSize: "14px" } } }
+    };
+    var raw = {};
+    var rawStr = {{ library | json }};
+    try { raw = rawStr ? JSON.parse(rawStr) : {}; } catch (e) {}
+    function deepMerge(a, b) {
+      for (var k in b) {
+        if (b[k] && typeof b[k] === "object" && !Array.isArray(b[k]) && a[k] && typeof a[k] === "object") { deepMerge(a[k], b[k]); }
+        else { a[k] = b[k]; }
+      }
+      return a;
+    }
+    var opts = {
+      colors: {{ colors }},
+      curve: {% if curve == "yes" %}true{% else %}false{% endif %},
+      points: {% if points == "yes" %}true{% else %}false{% endif %},
+      legend: {{ legend_js }},
+      stacked: {% if stacked == "yes" %}true{% else %}false{% endif %},
+      library: deepMerge(eink, raw)
+    };
+    var make = function () { new Chartkick["{{ chart_type | capitalize }}Chart"]("{{ chart_id }}", data, opts); };
+    if ("Chartkick" in window) { make(); } else { window.addEventListener("chartkick:load", make, true); }
+  })();
+</script>
+{% endtemplate %}
+
+{% template trmnl_chart_column %}{% render "trmnl_chart", data: data, chart_type: "column" %}{% endtemplate %}
+
+{% template trmnl_chart_combo %}{% render "trmnl_chart", data: data, legend: "bottom" %}{% endtemplate %}
+
+{% template trmnl_chart_donut %}{% render "trmnl_chart", data: data, chart_type: "pie", library: '{"plotOptions":{"pie":{"innerSize":"60%"}},"colors":["#000000","#606060","#a0a0a0","#d0d0d0"]}' %}{% endtemplate %}
+
+{% template trmnl_chart_line %}{% render "trmnl_chart", data: data %}{% endtemplate %}
+
+{% template trmnl_chart_pattern_area %}{% render "trmnl_chart", data: data, chart_type: "area", modules: "yes", library: '{"plotOptions":{"series":{"fillOpacity":1,"fillColor":{"pattern":{"path":{"d":"M 0 0 L 6 6 M -1 5 L 1 7 M 5 -1 L 7 1","stroke":"#000000","strokeWidth":1},"width":6,"height":6,"color":"#000000"}}}}}' %}{% endtemplate %}
+
+{% template trmnl_chart_scatter %}{% render "trmnl_chart", data: data, chart_type: "scatter", points: "yes" %}{% endtemplate %}
+
+{% template trmnl_chart_stacked_column %}{% render "trmnl_chart", data: data, chart_type: "column", color_scheme: "black+grey", legend: "bottom", stacked: "yes" %}{% endtemplate %}
+
+{% template trmnl_chart_waterfall %}{% render "trmnl_chart", data: data, modules: "yes", library: '{"chart":{"type":"waterfall"}}' %}{% endtemplate %}
+
+{% template homey_cap_tile %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value value--large value--tnums" data-fit-value="true">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+    <span class="label">{{ label }}</span>
+  </div>
+</div>
+{% endtemplate %}
+
 {% template homey_climate_home %}
-<div class="flex flex--col gap">
-  <div class="grid grid--cols-2 gap--small">
-    {% render "homey_cap_tile", label: "Avg temp", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-2 gap">
+    {% render "homey_cap_tile", label: "Avg temperature", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
     {% render "homey_cap_tile", label: "Devices on", value: home.devices_on, unit: "" %}
   </div>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% for sensor in climate.sensors %}
       {% render "homey_cap_tile", label: sensor.name, value: sensor.value, unit: sensor.unit %}
     {% endfor %}
   </div>
   {% if home.alarms.size > 0 %}
-    <span class="description">Alarms: {% for alarm in home.alarms %}{{ alarm.zone }} ({{ alarm.type }}){% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+    <div class="flex flex--row flex--wrap gap--small">
+      {% for alarm in home.alarms %}
+        <span class="label label--outline">{{ alarm.zone }}: {{ alarm.type }}</span>
+      {% endfor %}
+    </div>
   {% endif %}
 </div>
-{% endtemplate %}
-
-{% template homey_energy %}
-<div class="flex flex--col gap">
-  <div class="item">
-    <div class="content">
-      <span class="label">Power now</span>
-      <span class="value value--xlarge">{{ energy.total_power.value }} {{ energy.total_power.unit }}</span>
-    </div>
-  </div>
-  <div class="grid grid--cols-2 gap--small">
-    {% for zone in energy.by_zone %}
-      {% render "homey_cap_tile", label: zone.zone, value: zone.value, unit: zone.unit %}
-    {% endfor %}
-  </div>
-  <span class="description">Top consumer: {{ energy.top_consumer.name }} ({{ energy.top_consumer.value }} {{ energy.top_consumer.unit }})</span>
-</div>
-{% endtemplate %}
-
-{% template homey_cap_tile %}
-<div class="item">
-  <div class="content">
-    <span class="label">{{ label }}</span>
-    <span class="value value--large">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-  </div>
+<div class="title_bar">
+  <span class="title">Home</span>
+  <span class="instance">Climate</span>
 </div>
 {% endtemplate %}
 
 {% template homey_device_card %}
 <div class="flex flex--col gap--small">
   <span class="title title--small">{{ device.name }}</span>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% for cap in device.capabilities %}
       {% render "homey_cap_tile", label: cap.title, value: cap.value, unit: cap.unit %}
     {% endfor %}
@@ -52,40 +270,116 @@
 </div>
 {% endtemplate %}
 
-{% template homey_zone_section %}
-<div class="flex flex--col gap">
-  <span class="title">{{ zone.name }}</span>
-  <div class="grid grid--cols-2 gap--small">
-    {% for device in zone.devices %}
-      {% render "homey_device_card", device: device %}
-    {% endfor %}
+{% template homey_energy %}
+{% assign show_chart = show_chart | default: "yes" %}
+{% assign chart_type = chart_type | default: "column" %}
+{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% assign chart_id = "homey-energy-chart" | append_random %}
+{% if show_chart == "yes" %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+{% endif %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-3 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ energy.total_power.value }}</span>
+        <span class="label">Power now ({{ energy.total_power.unit }})</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ energy.top_consumer.value }}</span>
+        <span class="label">Top: {{ energy.top_consumer.name }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums">{{ energy.by_zone | size }}</span>
+        <span class="label">Zones</span>
+      </div>
+    </div>
   </div>
+  {% if show_chart == "yes" %}
+  <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
+  {% endif %}
 </div>
+<div class="title_bar">
+  <span class="title">Energy</span>
+  <span class="instance">Home</span>
+</div>
+{% if show_chart == "yes" %}
+<script>
+  var homeyEnergyData = [
+    {% for zone in energy.by_zone %}["{{ zone.zone }}", {{ zone.value }}]{% unless forloop.last %},{% endunless %}{% endfor %}
+  ];
+  var createHomeyEnergyChart = function () {
+    new Chartkick["{{ chart_type | capitalize }}Chart"]("{{ chart_id }}", homeyEnergyData, {
+      colors: ["black"], legend: false, suffix: " W",
+      library: {
+        chart: { backgroundColor: "transparent" },
+        plotOptions: { series: { animation: false, borderWidth: 0 } },
+        yAxis: { gridLineColor: "#000", gridLineDashStyle: "dot", title: { text: null }, labels: { style: { color: "#000", fontSize: "14px" } } },
+        xAxis: { lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "14px" } } },
+        credits: { enabled: false }, tooltip: { enabled: false }
+      }
+    });
+  };
+  if ("Chartkick" in window) { createHomeyEnergyChart(); }
+  else { window.addEventListener("chartkick:load", createHomeyEnergyChart, true); }
+</script>
+{% endif %}
 {% endtemplate %}
 
 {% template homey_solar %}
-<div class="flex flex--col gap">
+<div class="layout layout--col gap">
   <div class="item">
+    <div class="meta"></div>
     <div class="content">
+      <span class="value value--xxlarge value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
       <span class="label">Producing now</span>
-      <span class="value value--xlarge">{{ solar.now.value }} {{ solar.now.unit }}</span>
     </div>
   </div>
-  <div class="grid grid--cols-2 gap--small">
+  <div class="grid grid--cols-2 gap">
     {% render "homey_cap_tile", label: "Today", value: solar.today.value, unit: solar.today.unit %}
-    {% render "homey_cap_tile", label: "Feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
+    {% render "homey_cap_tile", label: "Grid feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
   </div>
+</div>
+<div class="title_bar">
+  <span class="title">Solar</span>
+  <span class="instance">Production</span>
 </div>
 {% endtemplate %}
 
 {% template homey_weather %}
-<div class="grid grid--cols-2 gap--small">
-  {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}
-  {% render "homey_cap_tile", label: "Indoor", value: weather.indoor_temp.value, unit: weather.indoor_temp.unit %}
-  {% render "homey_cap_tile", label: "Humidity", value: weather.humidity.value, unit: weather.humidity.unit %}
-  {% render "homey_cap_tile", label: "Wind", value: weather.wind.value, unit: weather.wind.unit %}
-  {% render "homey_cap_tile", label: "Rain", value: weather.rain.value, unit: weather.rain.unit %}
-  {% render "homey_cap_tile", label: "Pressure", value: weather.pressure.value, unit: weather.pressure.unit %}
+{% assign columns = columns | default: "3" %}
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-{{ columns }} gap">
+    {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}
+    {% render "homey_cap_tile", label: "Indoor", value: weather.indoor_temp.value, unit: weather.indoor_temp.unit %}
+    {% render "homey_cap_tile", label: "Humidity", value: weather.humidity.value, unit: weather.humidity.unit %}
+    {% render "homey_cap_tile", label: "Wind", value: weather.wind.value, unit: weather.wind.unit %}
+    {% render "homey_cap_tile", label: "Rain", value: weather.rain.value, unit: weather.rain.unit %}
+    {% render "homey_cap_tile", label: "Pressure", value: weather.pressure.value, unit: weather.pressure.unit %}
+  </div>
+</div>
+<div class="title_bar">
+  <span class="title">Weather</span>
+  <span class="instance">Home</span>
+</div>
+{% endtemplate %}
+
+{% template homey_zone_section %}
+<div class="layout layout--col gap">
+  <span class="title">{{ zone.name }}</span>
+  <div class="grid grid--cols-2 gap">
+    {% for device in zone.devices %}
+      {% render "homey_device_card", device: device %}
+    {% endfor %}
+  </div>
 </div>
 {% endtemplate %}
 

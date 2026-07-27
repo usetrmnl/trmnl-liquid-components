@@ -1,7 +1,6 @@
 {% template homey_energy %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign show_chart = cfg.show_chart | default: "yes" %}
-{% assign chart_type = cfg.chart_type | default: "column" %}
+{% assign show_chart = show_chart | default: "yes" %}
+{% assign chart_type = chart_type | default: "column" %}
 {% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
 {% assign chart_id = "homey-energy-chart" | append_random %}
 {% if show_chart == "yes" %}

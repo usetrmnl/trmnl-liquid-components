@@ -31,7 +31,7 @@ RSpec.describe Storybook::App do
   end
 
   it 'applies posted options that alter the render' do
-    post '/c/energy/full/render', { data: {}, options: { show_chart: 'no' } }.to_json, 'CONTENT_TYPE' => 'application/json'
+    post '/c/energy/full/render', { data: {}, args: { show_chart: 'no' } }.to_json, 'CONTENT_TYPE' => 'application/json'
     expect(last_response.body).not_to include('homey-energy-chart')
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Storybook::App do
   end
 
   it 'renders a chart preset with no custom fields set (self-contained config)' do
-    body = { markup: '{% render "homey_chart_waterfall", data: data, trmnl: trmnl %}', data: { data: [%w[A 6], ['B', -3]] } }.to_json
+    body = { markup: '{% render "trmnl_chart_waterfall", data: data, trmnl: trmnl %}', data: { data: [%w[A 6], ['B', -3]] } }.to_json
     post '/preview/full', body, 'CONTENT_TYPE' => 'application/json'
     expect(last_response.body).to include('waterfall').and include('LineChart')
   end

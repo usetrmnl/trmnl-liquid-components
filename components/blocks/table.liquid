@@ -1,7 +1,6 @@
-{% template homey_table %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign size = cfg.size | default: "small" %}
-{% assign limit = cfg.limit | default: "yes" %}
+{% template trmnl_table %}
+{% assign size = size | default: "small" %}
+{% assign limit = limit | default: "yes" %}
 <table class="table table--{{ size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
   <thead>
     <tr>{% for col in columns %}<th><span class="title title--small">{{ col }}</span></th>{% endfor %}</tr>

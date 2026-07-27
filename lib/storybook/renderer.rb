@@ -11,9 +11,9 @@ module Storybook
   class Renderer
     def initialize(catalog) = @catalog = catalog
 
-    def render(component, size:, data: component.sample, options: {}, markup: nil)
-      context = context_for(component, data, options)
-      body = render_liquid("#{scope_for(component, markup)}\n#{component.usage}", context)
+    def render(component, size:, data: component.sample, args: {}, markup: nil)
+      context = stringify(data).merge('trmnl' => { 'plugin_settings' => { 'instance_name' => 'Sample' } })
+      body = render_liquid("#{scope_for(component, markup)}\n#{render_call(component, args)}", context)
       # Fragment components (tiles/cards) declare `wrap: true` so previews frame
       # them in a layout the way a host plugin would; screen-level components
       # (heroes, zone_section) emit their own layout + title_bar.
@@ -29,26 +29,29 @@ module Storybook
 
     private
 
+    def render_call(component, args)
+      return component.usage if args.empty?
+
+      extra = args.map { |key, value| ", #{key}: #{liquid_literal(value)}" }.join
+      component.usage.sub(/\s*%\}\s*\z/, "#{extra} %}")
+    end
+
+    # Liquid strings have no escapes, so pick the quote char the value lacks (chart args carry raw JSON).
+    def liquid_literal(value)
+      string = value.to_s
+      return "'#{string}'" unless string.include?("'")
+      return %("#{string}") unless string.include?('"')
+
+      raise ArgumentError, "argument value cannot contain both quote styles: #{string}"
+    end
+
     # Shared template scope, with this component's markup swapped for the live
     # editor's version when one is supplied (other components stay intact so
-    # dependencies like cap_tile/homey_chart still resolve). Blank = use on-disk.
+    # dependencies like cap_tile/trmnl_chart still resolve). Blank = use on-disk.
     def scope_for(component, markup)
       return @catalog.shared_markup if markup.nil? || markup.strip.empty?
 
       @catalog.components.map { |c| c.name == component.name ? markup : c.markup }.join("\n")
-    end
-
-    # Merge option defaults with any overrides and expose them exactly where a
-    # real TRMNL plugin reads its settings, so a component is drop-in compatible.
-    def context_for(component, data, options)
-      values = option_defaults(component).merge(stringify(options))
-      stringify(data).merge(
-        'trmnl' => { 'plugin_settings' => { 'instance_name' => 'Sample', 'custom_fields_values' => values } }
-      )
-    end
-
-    def option_defaults(component)
-      component.options.to_h { |option| [option['key'].to_s, option['default'].to_s] }
     end
 
     def render_liquid(markup, context)

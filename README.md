@@ -5,17 +5,18 @@ smart-home data on [TRMNL](https://trmnl.com) e-ink screens, plus a storybook to
 preview components with editable sample data and copy their markup.
 
 The components are plain TRMNL `{% template %}` blocks — paste them into a
-private plugin's **shared markup** and `{% render %}` them against your Homey
-data. Two tiers:
+private plugin's **shared markup** and `{% render %}` them against your data.
+Options are render arguments, so every instance is configured independently and
+nothing depends on plugin custom fields.
 
-- **Generic** (`cap_tile`, `device_card`, `zone_section`) — render any device by
-  its capabilities.
-- **Heroes** (`energy`, `weather`, `solar`, `climate_home`) — curated layouts for
-  the highest-value use cases.
+- **`trmnl_*` blocks** (`stat`, `sparkline`, `badge`, `progress`, `list`,
+  `table`, `text`, `divider`) — generic, any data source.
+- **`trmnl_chart`** — a configurable chart engine plus ten one-line presets.
+- **`homey_*`** — Homey-shaped: `cap_tile`, `device_card`, `zone_section`, and
+  the curated `energy`, `weather`, `solar`, `climate_home` screens.
 
-Plus generic blocks (`stat`, `sparkline`, `badge`, `progress`, `list`, `table`,
-…) and a configurable chart engine with ten presets. See
-[COMPONENTS.md](COMPONENTS.md) for the full catalog, usage, and chart recipes.
+See [COMPONENTS.md](COMPONENTS.md) for the full catalog, usage, and chart
+recipes.
 
 ## Run with Docker (Mac / Windows / Linux)
 

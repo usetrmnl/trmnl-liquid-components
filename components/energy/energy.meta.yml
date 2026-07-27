@@ -1,7 +1,0 @@
-title: Energy
-description: Live power, per-zone breakdown, and the biggest consumer.
-sizes: [full, half_vertical]
-usage: '{% render "homey_energy", energy: energy, trmnl: trmnl %}'
-options:
-  - { key: show_chart, type: boolean, label: Show chart, default: "yes" }
-  - { key: chart_type, type: select, label: Chart type, default: column, choices: [column, bar, line, area] }

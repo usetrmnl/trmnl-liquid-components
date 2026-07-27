@@ -1,0 +1,19 @@
+---
+title: Stat / KPI
+description: One hero metric — giant number, label, and an optional up/down delta.
+sizes:
+- full
+- half_vertical
+- quadrant
+wrap: true
+usage: '{% render "trmnl_stat", value: value, label: label, unit: unit, delta: delta,
+  delta_dir: delta_dir %}'
+variants:
+- name: Default
+  args: {}
+- name: Mega
+  args:
+    size: mega
+- name: Coloured delta
+  args:
+    color_delta: 'yes'

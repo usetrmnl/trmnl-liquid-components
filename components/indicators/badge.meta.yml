@@ -1,8 +1,0 @@
-title: Badges
-description: A row of status badges for device states and alarms.
-sizes: [full, half_horizontal, half_vertical, quadrant]
-wrap: true
-usage: '{% render "homey_badge", badges: badges, trmnl: trmnl %}'
-options:
-  - { key: size, type: select, label: Size, default: base, choices: [small, base, large] }
-  - { key: default_style, type: select, label: Default style, default: outline, choices: [outline, filled, inverted, primary, success, warning, error, gray] }

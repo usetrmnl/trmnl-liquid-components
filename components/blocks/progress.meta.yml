@@ -1,0 +1,19 @@
+---
+title: Progress
+description: Progress toward a target (battery, capacity, goal) as a bar or dots.
+sizes:
+- full
+- half_horizontal
+- half_vertical
+- quadrant
+wrap: true
+usage: '{% render "trmnl_progress", value: value, label: label, total: total %}'
+variants:
+- name: Bar
+  args: {}
+- name: Dots
+  args:
+    style: dots
+- name: Large bar
+  args:
+    size: large

@@ -6,13 +6,13 @@ const DIMENSIONS = {
   quadrant: [400, 240],
 };
 
-const state = { name: null, size: null, options: {}, markup: null };
+const state = { name: null, size: null, args: {}, markup: null };
 const preview = document.getElementById('preview');
 const dataBox = document.getElementById('data');
 const markupBox = document.getElementById('markup');
 const sizesBox = document.getElementById('sizes');
 const titleBox = document.getElementById('title');
-const controlsBox = document.getElementById('controls');
+const variantsBox = document.getElementById('variants');
 
 function renderFrame() {
   let data;
@@ -20,7 +20,7 @@ function renderFrame() {
   fetch(`/c/${state.name}/${state.size}/render`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data, options: state.options, markup: state.markup }),
+    body: JSON.stringify({ data, args: state.args, markup: state.markup }),
   }).then((r) => r.text()).then((html) => { preview.srcdoc = html; });
 }
 
@@ -37,57 +37,32 @@ function selectSize(size, button) {
   renderFrame();
 }
 
-// Build the options/controls panel ("args") from a component's option specs.
-function buildControls(options) {
-  controlsBox.innerHTML = '';
-  state.options = {};
-  options.forEach((opt) => {
-    state.options[opt.key] = String(opt.default);
-    const wrap = document.createElement('label');
-    wrap.className = 'control';
-    wrap.append(Object.assign(document.createElement('span'), { textContent: opt.label || opt.key }));
-
-    let input;
-    if (opt.type === 'boolean') {
-      input = document.createElement('input');
-      input.type = 'checkbox';
-      input.checked = String(opt.default) === 'yes';
-      input.addEventListener('change', () => { state.options[opt.key] = input.checked ? 'yes' : 'no'; renderFrame(); });
-    } else if (opt.type === 'select') {
-      input = document.createElement('select');
-      (opt.choices || []).forEach((choice) => {
-        const o = document.createElement('option');
-        o.value = String(choice); o.textContent = String(choice);
-        if (String(choice) === String(opt.default)) o.selected = true;
-        input.appendChild(o);
-      });
-      input.addEventListener('change', () => { state.options[opt.key] = input.value; renderFrame(); });
-    } else if (opt.type === 'textarea') {
-      input = document.createElement('textarea');
-      input.rows = 5;
-      input.spellcheck = false;
-      input.value = String(opt.default ?? '');
-      input.addEventListener('input', () => { state.options[opt.key] = input.value; renderFrame(); });
-    } else {
-      input = document.createElement('input');
-      input.type = opt.type === 'number' ? 'number' : 'text';
-      input.value = String(opt.default ?? '');
-      input.addEventListener('input', () => { state.options[opt.key] = input.value; renderFrame(); });
-    }
-    wrap.appendChild(input);
-    controlsBox.appendChild(wrap);
+function buildVariants(variants) {
+  variantsBox.innerHTML = '';
+  state.args = variants[0]?.args || {};
+  if (variants.length < 2) return; // a lone Default variant is not worth a switcher
+  variants.forEach((variant, i) => {
+    const button = document.createElement('button');
+    button.textContent = variant.name;
+    button.addEventListener('click', () => {
+      state.args = variant.args || {};
+      variantsBox.querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === button));
+      renderFrame();
+    });
+    if (i === 0) button.classList.add('active');
+    variantsBox.appendChild(button);
   });
 }
 
 function selectComponent(button) {
-  document.querySelectorAll('.nav-item').forEach((b) => b.classList.remove('active'));
+  document.querySelectorAll('button.nav-item').forEach((b) => b.classList.remove('active'));
   button.classList.add('active');
   state.name = button.dataset.name;
   titleBox.textContent = button.textContent.trim();
   dataBox.value = JSON.stringify(JSON.parse(button.dataset.sample), null, 2);
   markupBox.value = window.MARKUP[state.name] || '';
   state.markup = null; // null = render the on-disk markup until the user edits it
-  buildControls(JSON.parse(button.dataset.options || '[]'));
+  buildVariants(JSON.parse(button.dataset.variants || '[]'));
 
   const sizes = button.dataset.sizes.split(',');
   sizesBox.innerHTML = '';
@@ -103,12 +78,12 @@ function selectComponent(button) {
   renderFrame();
 }
 
-document.querySelectorAll('.nav-item').forEach((b) => b.addEventListener('click', () => selectComponent(b)));
+document.querySelectorAll('button.nav-item').forEach((b) => b.addEventListener('click', () => selectComponent(b)));
 dataBox.addEventListener('input', renderFrame);
 markupBox.addEventListener('input', () => { state.markup = markupBox.value; renderFrame(); });
 document.getElementById('copy').addEventListener('click', () => {
   navigator.clipboard.writeText(markupBox.value);
 });
 
-const first = document.querySelector('.nav-item');
+const first = document.querySelector('button.nav-item');
 if (first) selectComponent(first);

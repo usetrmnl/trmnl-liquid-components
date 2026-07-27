@@ -1,8 +1,0 @@
-title: Text / description
-description: A prose block with line-clamp overflow control.
-sizes: [full, half_vertical, half_horizontal]
-wrap: true
-usage: '{% render "homey_text", title: title, body: body, trmnl: trmnl %}'
-options:
-  - { key: clamp, type: select, label: Max lines, default: "4", choices: ["2", "3", "4", "6"] }
-  - { key: align, type: select, label: Align, default: left, choices: [left, center] }

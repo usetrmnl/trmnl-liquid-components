@@ -1,0 +1,16 @@
+---
+title: List
+description: A list of label/value rows (top-N, key stats, leaderboard).
+sizes:
+- full
+- half_vertical
+- half_horizontal
+wrap: true
+usage: '{% render "trmnl_list", items: items %}'
+variants:
+- name: Single column
+  args: {}
+- name: Two column, numbered
+  args:
+    columns: '2'
+    numbered: 'yes'

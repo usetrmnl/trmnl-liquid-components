@@ -1,7 +1,6 @@
-{% template homey_list %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign cols = cfg.columns | default: "1" %}
-{% assign numbered = cfg.numbered | default: "no" %}
+{% template trmnl_list %}
+{% assign cols = columns | default: "1" %}
+{% assign numbered = numbered | default: "no" %}
 {% assign n = items | size %}
 {% if n == 0 %}
 <span class="label">No data</span>

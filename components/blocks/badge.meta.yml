@@ -1,0 +1,17 @@
+---
+title: Badges
+description: A row of status badges for device states and alarms.
+sizes:
+- full
+- half_horizontal
+- half_vertical
+- quadrant
+wrap: true
+usage: '{% render "trmnl_badge", badges: badges %}'
+variants:
+- name: Default
+  args: {}
+- name: Large filled
+  args:
+    size: large
+    default_style: filled

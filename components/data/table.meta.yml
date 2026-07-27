@@ -1,8 +1,0 @@
-title: Table
-description: Structured rows with the framework table-overflow engine ("and N more").
-sizes: [full, half_horizontal, half_vertical]
-wrap: true
-usage: '{% render "homey_table", columns: columns, rows: rows, align: align, trmnl: trmnl %}'
-options:
-  - { key: size, type: select, label: Size, default: small, choices: [xsmall, small, base, large] }
-  - { key: limit, type: boolean, label: Hide overflow rows, default: "yes" }

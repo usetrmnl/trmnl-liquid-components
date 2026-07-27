@@ -1,0 +1,16 @@
+---
+title: Text / description
+description: A prose block with line-clamp overflow control.
+sizes:
+- full
+- half_vertical
+- half_horizontal
+wrap: true
+usage: '{% render "trmnl_text", title: title, body: body %}'
+variants:
+- name: Default
+  args: {}
+- name: Centred, two lines
+  args:
+    clamp: '2'
+    align: center

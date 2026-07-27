@@ -1,7 +1,6 @@
-{% template homey_sparkline %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign fill = cfg.fill | default: "no" %}
-{% assign show_dots = cfg.show_dots | default: "no" %}
+{% template trmnl_sparkline %}
+{% assign fill = fill | default: "no" %}
+{% assign show_dots = show_dots | default: "no" %}
 {% comment %} Zero-JS SVG trend (Meteogramm pattern): geometry in Liquid, viewBox 320x100. {% endcomment %}
 {% assign X0 = 6 %}
 {% assign Y_BOT = 92 %}

@@ -1,7 +1,6 @@
-{% template homey_progress %}
-{% assign cfg = trmnl.plugin_settings.custom_fields_values %}
-{% assign style = cfg.style | default: "bar" %}
-{% assign size = cfg.size | default: "base" %}
+{% template trmnl_progress %}
+{% assign style = style | default: "bar" %}
+{% assign size = size | default: "base" %}
 <div class="flex flex--row flex--between flex--center-y w--full">
   <span class="label">{{ label }}</span>
   <span class="value value--small value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
