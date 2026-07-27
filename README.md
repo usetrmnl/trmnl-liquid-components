@@ -58,7 +58,11 @@ The same build writes the library as markdown for coding agents, following the
 
 ## Regenerate the copy-paste master
 
-    bundle exec rake build:shared   # writes shared.liquid (all components)
+    bundle exec rake build:shared                # all 26 templates
+    bundle exec rake 'build:shared[donut,stat]'  # just those, plus what they need
+
+Naming components writes only those and their dependencies — asking for `donut`
+brings `trmnl_chart` with it, because a preset renders blank without its engine.
 
 ## Contributing
 

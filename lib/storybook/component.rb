@@ -19,6 +19,7 @@ module Storybook
 
     def usage = meta.fetch('usage')
     def template = markup[/\{%\s*template\s+(\w+)/, 1]
+    def dependencies = markup.scan(/\{%\s*render\s+"(\w+)"/).flatten.uniq
     def title = meta.fetch('title', name)
     def description = meta['description']
     def sizes = meta.fetch('sizes', %w[full])

@@ -45,7 +45,7 @@ module Storybook
         components.map do |component|
           {
             name: component.name, title: component.title, description: component.description,
-            sizes: component.sizes, markup: component.markup, usage: component.usage,
+            sizes: component.sizes, bundle: @catalog.bundle_for(component), usage: component.usage,
             variants: component.variants.map { { name: it['name'], slug: self.class.slug(it['name']) } }
           }
         end

@@ -5,9 +5,12 @@ A cheat-sheet for every component in the library. For setup, Docker, and the
 
 ## How to use one
 
-1. Run `rake build:shared` and paste `shared.liquid` into your private plugin's
-   **shared markup** (it defines every `{% template %}`).
-2. `{% render %}` the component you want in a view, passing your data.
+1. Paste the component's **shared markup** into your plugin's shared markup. The
+   gallery shows exactly what to copy — the component plus every template it
+   renders. Copying the template alone is not enough for the chart presets or
+   anything built on `homey_cap_tile`: Liquid renders an unknown `{% render %}`
+   as blank, so the content silently disappears.
+2. Paste the `{% render %}` call into a view, passing your data.
 3. Options are `{% render %}` arguments — pass them inline, per instance. Two
    `trmnl_stat`s on one screen can use different sizes. Omit an argument and the
    component falls back to its own default. No plugin custom fields required.

@@ -16,14 +16,19 @@
       <div class="toolbar">
         <span id="title"></span>
         <span id="sizes"></span>
-        <button id="copy">Copy markup</button>
       </div>
       <div class="preview-wrap">
         <iframe id="preview" title="preview"></iframe>
       </div>
       <div id="variants" class="controls"></div>
       <details open>
-        <summary>Usage</summary>
+        <summary>1. Shared markup — paste into your plugin's shared markup</summary>
+        <button class="copy" data-copies="bundle">Copy</button>
+        <pre id="bundle"></pre>
+      </details>
+      <details open>
+        <summary>2. View markup — paste into a view</summary>
+        <button class="copy" data-copies="usage">Copy</button>
         <pre id="usage"></pre>
       </details>
     </main>

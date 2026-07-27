@@ -73,8 +73,9 @@ function selectComponent(button) {
 document.querySelectorAll('button.nav-item').forEach((b) => b.addEventListener('click', () => selectComponent(b)));
 dataBox.addEventListener('input', renderFrame);
 markupBox.addEventListener('input', () => { state.markup = markupBox.value; renderFrame(); });
+// Copies the resolved bundle, not the edited box — markup alone renders blank without its dependencies.
 document.getElementById('copy').addEventListener('click', () => {
-  navigator.clipboard.writeText(markupBox.value);
+  navigator.clipboard.writeText(window.BUNDLES[state.name] || markupBox.value);
 });
 
 const first = document.querySelector('button.nav-item');

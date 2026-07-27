@@ -13,6 +13,13 @@ RSpec.describe 'components render' do
     component.sizes.map { |size| renderer.render(component, size:) }.join
   end
 
+  # Normalizes scope-size noise: chart ids' random suffix and each template's blank line.
+  def render_scope(scope, component)
+    html = Liquid::Template.parse("#{scope}\n#{component.usage}", environment: TRMNL::Liquid.new)
+                           .render(component.sample)
+    html.gsub(/(chart)[0-9a-f]{4}/, '\1').gsub(/\s+/, ' ').strip
+  end
+
   it 'renders cap_tile with its sample value' do
     expect(render('cap_tile')).to include('1,240')
   end
@@ -182,6 +189,14 @@ RSpec.describe 'components render' do
   }.each do |preset, marker|
     it "carries the #{preset} preset's defining config into the engine output" do
       expect(render(preset)).to include(marker)
+    end
+  end
+
+  it 'renders every component from its bundle alone as it does from the whole catalog, which previews always use' do
+    catalog.components.each do |component|
+      isolated = render_scope(catalog.bundle_for(component), component)
+      complete = render_scope(catalog.shared_markup, component)
+      expect(isolated).to eq(complete), "#{component.name} needs more than its bundle to render"
     end
   end
 

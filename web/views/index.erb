@@ -34,4 +34,7 @@
   </main>
 </div>
 <%# escape </ so a component's own <script> tags can't terminate this inline script %>
-<script>window.MARKUP = <%= @catalog.components.to_h { |c| [c.name, c.markup] }.to_json.gsub("</", "<\\/") %>;</script>
+<script>
+  window.MARKUP = <%= @catalog.components.to_h { |c| [c.name, c.markup] }.to_json.gsub("</", "<\\/") %>;
+  window.BUNDLES = <%= @catalog.components.to_h { |c| [c.name, @catalog.bundle_for(c)] }.to_json.gsub("</", "<\\/") %>;
+</script>
