@@ -1,10 +1,3 @@
-const DIMENSIONS = {
-  full: [800, 480],
-  half_horizontal: [800, 240],
-  half_vertical: [400, 480],
-  quadrant: [400, 240],
-};
-
 const preview = document.getElementById('preview');
 const dataBox = document.getElementById('data');
 const markupBox = document.getElementById('markup');
@@ -25,12 +18,12 @@ function render() {
 }
 
 function applyDimensions(s) {
-  const [w, h] = DIMENSIONS[s] || DIMENSIONS.full;
+  const [w, h] = window.DIMENSIONS[s] || window.DIMENSIONS.full;
   preview.style.width = `${w}px`;
   preview.style.height = `${h}px`;
 }
 
-Object.keys(DIMENSIONS).forEach((s, i) => {
+Object.keys(window.DIMENSIONS).forEach((s, i) => {
   const button = document.createElement('button');
   button.textContent = s;
   button.addEventListener('click', () => {

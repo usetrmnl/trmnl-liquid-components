@@ -37,6 +37,30 @@ under `web/` are mounted into the container, so editing them shows up on refresh
 
     bundle exec rspec
 
+## Build the static gallery
+
+    bundle exec rake build:site     # writes _site/
+
+`_site/` is plain HTML — every component, variant and size is rendered to its
+own file at build time, and the index is a picker that swaps between them. It
+needs no Ruby at request time, so any static host will serve it:
+
+    cd _site && python3 -m http.server
+
 ## Regenerate the copy-paste master
 
     bundle exec rake build:shared   # writes shared.liquid (all components)
+
+## Contributing
+
+1. Add `components/<category>/<name>.{liquid,meta.yml,sample.yml}`. The
+   `.liquid` defines one `{% template %}`; `.meta.yml` carries the title,
+   sizes, copy-paste `usage`, and any named `variants`; `.sample.yml` is the
+   data the preview renders against.
+2. `docker compose up` and check it at every size it declares.
+3. `bundle exec rspec` — the suite renders every variant of every component.
+4. Open a pull request. CI builds the site and deploys a preview.
+
+Pull requests from forks build but do not deploy: GitHub withholds repository
+secrets from forked workflows, so there is no preview URL for them. Push a
+branch to this repository to get one.

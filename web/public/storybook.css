@@ -5,6 +5,7 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; color: #111; }
 .sidebar h1 { font-size: 1rem; margin: 0 0 1rem; }
 .sidebar h3 { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; color: #888; margin: 1rem 0 .25rem; }
 .nav-item { display: block; width: 100%; text-align: left; padding: .4rem; border: 0; border-radius: 4px; background: none; cursor: pointer; font-size: .9rem; }
+a.nav-item { color: inherit; text-decoration: none; }
 .nav-item:hover { background: #f3f3f3; }
 .nav-item.active { background: #111; color: #fff; }
 .stage { flex: 1; display: flex; flex-direction: column; padding: 1rem; gap: .75rem; min-width: 0; }
@@ -22,3 +23,4 @@ body { margin: 0; font-family: Inter, system-ui, sans-serif; color: #111; }
 .controls button.active { background: #111; color: #fff; border-color: #111; }
 details summary { cursor: pointer; font-size: .85rem; color: #555; }
 textarea { width: 100%; height: 180px; margin-top: .5rem; font-family: ui-monospace, monospace; font-size: .8rem; padding: .5rem; border: 1px solid #ccc; border-radius: 6px; }
+#usage { margin: .5rem 0 0; padding: .5rem; background: #f4f4f5; border: 1px solid #e3e3e3; border-radius: 6px; font-size: .8rem; overflow-x: auto; }

@@ -29,6 +29,7 @@
   </div>
   <%# JSON-encode seeds so any character survives; escape </ so it can't close this script early %>
   <script>window.SEED = <%= { markup: @seed_markup, data: @seed_data }.to_json.gsub('</', '<\\/') %>;</script>
+  <script src="/sizes.js"></script>
   <script src="/preview.js"></script>
 </body>
 </html>

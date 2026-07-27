@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TRMNL components</title>
+  <link rel="stylesheet" href="storybook.css">
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <h1>TRMNL components</h1>
+      <div id="nav"></div>
+    </nav>
+    <main class="stage">
+      <div class="toolbar">
+        <span id="title"></span>
+        <span id="sizes"></span>
+        <button id="copy">Copy markup</button>
+      </div>
+      <div class="preview-wrap">
+        <iframe id="preview" title="preview"></iframe>
+      </div>
+      <div id="variants" class="controls"></div>
+      <details open>
+        <summary>Usage</summary>
+        <pre id="usage"></pre>
+      </details>
+    </main>
+  </div>
+  <%# escape </ so a component's own <script> tags can't terminate this inline script %>
+  <script>window.CATALOG = <%= catalog.gsub('</', '<\\/') %>;</script>
+  <script src="sizes.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>
