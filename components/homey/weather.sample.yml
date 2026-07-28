@@ -1,7 +1,63 @@
-weather:
-  outdoor_temp: { value: "12.4", unit: "°C" }
-  indoor_temp: { value: "21.1", unit: "°C" }
-  humidity: { value: "63", unit: "%" }
-  wind: { value: "14", unit: "km/h" }
-  rain: { value: "0.2", unit: "mm" }
-  pressure: { value: "1014", unit: hPa }
+---
+devices:
+- name: Thermometer SNZB-02D
+  zone: Lounge
+  klass: sensor
+  power:
+  temperature: 20
+  humidity: 53
+  'on':
+  alarms: []
+  wind:
+  energy:
+- name: Button SNZB-01P
+  zone: Lounge
+  klass: button
+  power:
+  temperature:
+  humidity:
+  'on':
+  alarms: []
+  wind:
+  energy:
+- name: Sample Kettle Plug
+  zone: Kitchen
+  klass: socket
+  power: 1840
+  temperature:
+  humidity:
+  'on': true
+  alarms: []
+  wind:
+  energy:
+- name: Sample Bedside Lamp
+  zone: Bedroom
+  klass: light
+  power:
+  temperature:
+  humidity:
+  'on': false
+  alarms: []
+  wind:
+  energy:
+- name: Weather station
+  zone: Garden
+  klass: sensor
+  power:
+  temperature: 12.4
+  humidity: 63
+  wind: 14
+  energy:
+  'on':
+  alarms: []
+- name: Solar inverter
+  zone: Roof
+  klass: sensor
+  power: 820
+  temperature:
+  humidity:
+  wind:
+  energy: 6.4
+  'on':
+  alarms: []
+match: Weather

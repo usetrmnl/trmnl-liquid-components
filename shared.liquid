@@ -359,40 +359,55 @@
 {% endtemplate %}
 
 {% template homey_solar %}
+{% comment %} Nothing marks a device as an inverter, so match names the producing device(s); without it this totals every meter in the home. {% endcomment %}
+{% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign metered = pool | where: "energy" %}
+{% assign producing = pool | where: "power" %}
+{% assign current_power = 0 %}
+{% for device in producing %}{% assign current_power = current_power | plus: device.power %}{% endfor %}
+{% assign total = 0 %}
+{% for device in metered %}{% assign total = total | plus: device.energy %}{% endfor %}
 <div class="layout layout--col gap">
   <div class="item">
     <div class="meta"></div>
     <div class="content">
-      <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
+      <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ current_power }} W</span>
       <span class="label lg:label--large">Producing now</span>
     </div>
   </div>
   <div class="grid grid--cols-2 gap">
-    {% render "homey_cap_tile", label: "Today", value: solar.today.value, unit: solar.today.unit %}
-    {% render "homey_cap_tile", label: "Grid feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
+    {% render "homey_cap_tile", label: "Energy total", value: total, unit: "kWh" %}
+    {% render "homey_cap_tile", label: "Meters", value: metered.size, unit: "" %}
   </div>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Solar</span>
-  <span class="instance">Production</span>
+  <span class="instance">{{ producing | size }} producing</span>
 </div>
 {% endtemplate %}
 
 {% template homey_weather %}
+{% comment %} The snapshot has no indoor/outdoor flag, so which sensor is "outside" is the user's call — match filters devices by name. {% endcomment %}
+{% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign temps = pool | where: "temperature" %}
+{% assign humidities = pool | where: "humidity" %}
+{% assign winds = pool | where: "wind" %}
 {% assign columns = columns | default: "3" %}
 <div class="layout layout--col gap">
-  <div class="grid grid--cols-{{ columns }} gap">
-    {% render "homey_cap_tile", label: "Outdoor", value: weather.outdoor_temp.value, unit: weather.outdoor_temp.unit %}
-    {% render "homey_cap_tile", label: "Indoor", value: weather.indoor_temp.value, unit: weather.indoor_temp.unit %}
-    {% render "homey_cap_tile", label: "Humidity", value: weather.humidity.value, unit: weather.humidity.unit %}
-    {% render "homey_cap_tile", label: "Wind", value: weather.wind.value, unit: weather.wind.unit %}
-    {% render "homey_cap_tile", label: "Rain", value: weather.rain.value, unit: weather.rain.unit %}
-    {% render "homey_cap_tile", label: "Pressure", value: weather.pressure.value, unit: weather.pressure.unit %}
+  <div class="grid grid--cols-{{ columns }} lg:grid--cols-3 gap">
+    {% if temps != empty %}{% render "homey_cap_tile", label: temps.first.name, value: temps.first.temperature, unit: "°C" %}{% endif %}
+    {% if humidities != empty %}{% render "homey_cap_tile", label: "Humidity", value: humidities.first.humidity, unit: "%" %}{% endif %}
+    {% if winds != empty %}{% render "homey_cap_tile", label: "Wind", value: winds.first.wind, unit: "km/h" %}{% endif %}
+  </div>
+  <div class="grid grid--cols-2 lg:grid--cols-4 gap">
+    {% for sensor in temps offset: 1 %}
+      {% render "homey_cap_tile", label: sensor.zone, value: sensor.temperature, unit: "°C" %}
+    {% endfor %}
   </div>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Weather</span>
-  <span class="instance">Home</span>
+  <span class="instance">{{ temps | size }} sensors</span>
 </div>
 {% endtemplate %}
 

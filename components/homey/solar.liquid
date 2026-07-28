@@ -1,19 +1,27 @@
 {% template homey_solar %}
+{% comment %} Nothing marks a device as an inverter, so match names the producing device(s); without it this totals every meter in the home. {% endcomment %}
+{% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign metered = pool | where: "energy" %}
+{% assign producing = pool | where: "power" %}
+{% assign current_power = 0 %}
+{% for device in producing %}{% assign current_power = current_power | plus: device.power %}{% endfor %}
+{% assign total = 0 %}
+{% for device in metered %}{% assign total = total | plus: device.energy %}{% endfor %}
 <div class="layout layout--col gap">
   <div class="item">
     <div class="meta"></div>
     <div class="content">
-      <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
+      <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ current_power }} W</span>
       <span class="label lg:label--large">Producing now</span>
     </div>
   </div>
   <div class="grid grid--cols-2 gap">
-    {% render "homey_cap_tile", label: "Today", value: solar.today.value, unit: solar.today.unit %}
-    {% render "homey_cap_tile", label: "Grid feed-in", value: solar.feed_in.value, unit: solar.feed_in.unit %}
+    {% render "homey_cap_tile", label: "Energy total", value: total, unit: "kWh" %}
+    {% render "homey_cap_tile", label: "Meters", value: metered.size, unit: "" %}
   </div>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Solar</span>
-  <span class="instance">Production</span>
+  <span class="instance">{{ producing | size }} producing</span>
 </div>
 {% endtemplate %}

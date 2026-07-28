@@ -47,12 +47,22 @@ RSpec.describe 'components render' do
     expect(catalog.find('device_card').sample['device']).to eq(snapshot['devices'].first)
   end
 
-  it 'renders the weather hero with outdoor temperature' do
-    expect(render('weather')).to include('12.4')
+  it 'reads temperature, humidity and wind off the matched weather device' do
+    html = render('weather')
+    expect(html).to include('12.4').and include('63').and include('14')
+    expect(html).to include('km/h')
   end
 
-  it 'renders the solar hero with production now' do
-    expect(render('solar')).to include('820')
+  it 'totals live power and cumulative energy for the matched inverter' do
+    html = render('solar')
+    expect(html).to include('820').and include('6.4').and include('kWh')
+  end
+
+  it 'restricts weather and solar to the matched device, not the whole home' do
+    solar = catalog.find('solar')
+    unmatched = renderer.render(solar, size: 'full', data: solar.sample.merge('match' => 'Nothing'))
+    expect(unmatched).to include('0 W')
+    expect(unmatched).not_to include('Liquid error')
   end
 
   it 'averages sensor temperature and counts what is on, from the raw device list' do

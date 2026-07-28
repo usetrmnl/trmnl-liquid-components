@@ -1,10 +1,8 @@
 ---
 title: Solar / production
-description: 'Production now, produced today, and grid feed-in. NOTE: not derivable
-  from the Homey snapshot — power is instantaneous, so the kWh totals need a device
-  reporting meter_power. Sample data only.'
+description: Live production and cumulative energy. match picks the inverter.
 sizes:
 - full
 - half_vertical
 - quadrant
-usage: '{% render "homey_solar", solar: solar %}'
+usage: '{% render "homey_solar", devices: devices, match: match %}'
