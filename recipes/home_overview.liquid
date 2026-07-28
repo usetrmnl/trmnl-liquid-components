@@ -1,0 +1,12 @@
+{%- assign devices = homey.merge_variables.devices -%}
+{% if devices == blank %}
+  <div class="layout layout--col gap flex flex--center">
+    <span class="label label--gray">Waiting for the first push from Homey…</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">Home</span>
+    <span class="instance">Not connected</span>
+  </div>
+{% else %}
+  {% render "homey_climate_home", devices: devices %}
+{% endif %}

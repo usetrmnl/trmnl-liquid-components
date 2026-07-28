@@ -1,0 +1,13 @@
+{%- comment -%} `homey` is the plugin_instance_select field keyname — TRMNL aliases the installer's plugin under it, so this recipe reads on any account. {%- endcomment -%}
+{%- assign devices = homey.merge_variables.devices -%}
+{% if devices == blank %}
+  <div class="layout layout--col gap flex flex--center">
+    <span class="label label--gray">Waiting for the first push from Homey…</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">Energy</span>
+    <span class="instance">Not connected</span>
+  </div>
+{% else %}
+  {% render "homey_energy", devices: devices %}
+{% endif %}

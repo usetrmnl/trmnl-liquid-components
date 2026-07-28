@@ -16,7 +16,8 @@ nothing depends on plugin custom fields.
   the curated `energy`, `weather`, `solar`, `climate_home` screens.
 
 See [COMPONENTS.md](COMPONENTS.md) for the full catalog, usage, and chart
-recipes.
+recipes, and [RECIPES.md](RECIPES.md) for whole screens you can paste into a
+plugin and publish.
 
 ## Run with Docker (Mac / Windows / Linux)
 

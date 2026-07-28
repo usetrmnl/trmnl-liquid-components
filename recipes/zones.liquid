@@ -1,0 +1,21 @@
+{%- assign devices = homey.merge_variables.devices -%}
+{% if devices == blank %}
+  <div class="layout layout--col gap flex flex--center">
+    <span class="label label--gray">Waiting for the first push from Homey…</span>
+  </div>
+  <div class="title_bar">
+    <span class="title">Zones</span>
+    <span class="instance">Not connected</span>
+  </div>
+{% else %}
+  {%- assign zones = devices | map: "zone" | uniq -%}
+  <div class="layout layout--col gap">
+    {% for zone in zones limit: 2 %}
+      {% render "homey_zone_section", devices: devices, zone: zone %}
+    {% endfor %}
+  </div>
+  <div class="title_bar">
+    <span class="title">Zones</span>
+    <span class="instance">{{ zones | size }} zones · {{ devices | size }} devices</span>
+  </div>
+{% endif %}
