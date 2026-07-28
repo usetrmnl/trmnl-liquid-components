@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Posts a Homey snapshot to a TRMNL plugin, so a recipe can be exercised without
+# owning a Homey. Defaults to the captured sample in web/seeds/data.json.
+#
+#   bin/push-snapshot <uuid>                    # private plugin (webhook strategy)
+#   bin/push-snapshot <uuid> --native           # native homey plugin
+#   bin/push-snapshot <uuid> --file my.json
+
+require 'json'
+require 'net/http'
+require 'optparse'
+
+options = { host: 'https://trmnl.com', file: File.expand_path('../web/seeds/data.json', __dir__), native: false }
+
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: bin/push-snapshot <plugin-uuid> [options]'
+  opts.on('--native', 'Post to the native homey plugin endpoint') { options[:native] = true }
+  opts.on('--file PATH', 'Snapshot JSON to send') { options[:file] = it }
+  opts.on('--host URL', 'TRMNL host (default https://trmnl.com)') { options[:host] = it }
+end
+parser.parse!
+
+uuid = ARGV.shift
+abort parser.to_s if uuid.nil? || uuid.empty?
+abort "No such file: #{options[:file]}" unless File.exist?(options[:file])
+
+snapshot = JSON.parse(File.read(options[:file]))
+path = options[:native] ? "/api/plugin_settings/#{uuid}/data" : "/api/custom_plugins/#{uuid}"
+uri = URI.join(options[:host], path)
+
+# Both endpoints accept merge_variables; the native one also takes it bare, but this script always wraps it, to stay honest about either.
+response = Net::HTTP.post(uri, { merge_variables: snapshot }.to_json, 'Content-Type' => 'application/json')
+
+devices = snapshot['devices'] || []
+puts "POST #{uri}"
+puts "  sent    #{devices.size} devices, #{devices.filter_map { it['zone'] }.uniq.size} zones"
+puts "  status  #{response.code}"
+puts "  body    #{response.body.to_s.strip[0, 400]}"
+
+exit(response.code.to_i.between?(200, 299) ? 0 : 1)

@@ -25,6 +25,17 @@ So a field named `homey` makes `homey.merge_variables` resolve to the
 installer's own Homey data. Every recipe here reads exactly that, and a spec
 fails if one ever hardcodes `private_plugin_<id>`.
 
+## Trying one without a Homey
+
+The snapshot is just JSON, so you do not need the hardware to exercise a recipe.
+Create the source plugin, then push the captured sample at it:
+
+    bin/push-snapshot <plugin-uuid>            # private plugin, webhook strategy
+    bin/push-snapshot <plugin-uuid> --native   # native homey plugin
+
+It posts `web/seeds/data.json` — a real capture from a Homey Pro — and prints
+the response. Pass `--file` to send your own.
+
 ## Setting one up
 
 1. **Get Homey data into TRMNL.** Create a private plugin with strategy
