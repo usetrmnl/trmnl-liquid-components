@@ -37,15 +37,28 @@ components read the Homey snapshot shape.
 
 ## Homey — render any device
 
+These take the companion app's snapshot **as it arrives** — a flat `devices`
+list plus `zone_names` — and aggregate while rendering. That is the same wire
+format `Plugins::Homey::Snapshot` consumes server-side, so both ingestion paths
+feed the same components with no translation layer. Liquid cannot build an
+array, so there is no adapter to write and none to keep in step: each component
+sums, groups and ranks where it draws.
+
 | Component | Shows | Usage | Arguments |
 |---|---|---|---|
 | `cap_tile` | One capability (label + value + unit) | `{% render "homey_cap_tile", label: label, value: value, unit: unit %}` | — |
-| `device_card` | A device + all its capabilities | `{% render "homey_device_card", device: device %}` | — |
-| `zone_section` | Device cards grouped under a zone | `{% render "homey_zone_section", zone: zone %}` | — |
-| `energy` | Live power, per-zone split, top consumer | `{% render "homey_energy", energy: energy %}` | `show_chart`, `chart_type` |
-| `weather` | Indoor/outdoor temp, humidity, wind, rain | `{% render "homey_weather", weather: weather %}` | `columns` |
-| `solar` | Production now, today, grid feed-in | `{% render "homey_solar", solar: solar %}` | — |
-| `climate_home` | Avg + per-room temp, devices-on, alarms | `{% render "homey_climate_home", climate: climate, home: home %}` | — |
+| `device_card` | One device, from its flat snapshot fields | `{% render "homey_device_card", device: device %}` | — |
+| `zone_section` | Every device in one zone | `{% render "homey_zone_section", devices: devices, zone: zone %}` | — |
+| `energy` | Total power, per-zone split, top consumer | `{% render "homey_energy", devices: devices %}` | `show_chart`, `chart_type` |
+| `climate_home` | Average + per-zone temperature, devices on, alarms | `{% render "homey_climate_home", devices: devices %}` | — |
+| `weather` | Sample data only — see note below | `{% render "homey_weather", weather: weather %}` | `columns` |
+| `solar` | Sample data only — see note below | `{% render "homey_solar", solar: solar %}` | — |
+
+**`weather` and `solar` have no producer.** The snapshot carries eight fields per
+device — name, zone, class, power, temperature, humidity, on, alarms — with no
+indoor/outdoor split, no wind, rain or pressure, and no cumulative energy. Solar
+kWh totals are not derivable from instantaneous watts at all. Both components
+render their sample data and wait for the companion push to widen.
 
 **`sparkline` vs the chart engine:** the sparkline is pure SVG — no chart
 library, no async CDN load. On a flaky e-ink refresh it's the safest trend

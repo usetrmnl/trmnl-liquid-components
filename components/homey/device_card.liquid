@@ -2,9 +2,11 @@
 <div class="flex flex--col gap--small">
   <span class="title title--small">{{ device.name }}</span>
   <div class="grid grid--cols-2 gap">
-    {% for cap in device.capabilities %}
-      {% render "homey_cap_tile", label: cap.title, value: cap.value, unit: cap.unit %}
-    {% endfor %}
+    {% if device.power != nil %}{% render "homey_cap_tile", label: "Power", value: device.power, unit: "W" %}{% endif %}
+    {% if device.temperature != nil %}{% render "homey_cap_tile", label: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
+    {% if device.humidity != nil %}{% render "homey_cap_tile", label: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
+    {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
+    {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
   </div>
 </div>
 {% endtemplate %}

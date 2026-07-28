@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'json'
 require 'storybook/catalog'
 require 'storybook/renderer'
 
@@ -24,16 +25,26 @@ RSpec.describe 'components render' do
     expect(render('cap_tile')).to include('1,240')
   end
 
-  it 'renders device_card with each capability value' do
-    expect(render('device_card')).to include('5').and include('Yes')
+  it 'renders device_card from the flat capability fields the snapshot carries' do
+    expect(render('device_card')).to include('20').and include('53').and include('Thermometer SNZB-02D')
   end
 
-  it 'renders zone_section with the zone name' do
-    expect(render('zone_section')).to include('Living room')
+  it 'renders zone_section with only the devices in that zone' do
+    html = render('zone_section')
+    expect(html).to include('Lounge').and include('Button SNZB-01P')
+    expect(html).not_to include('Sample Kettle Plug')
   end
 
-  it 'renders the energy hero with total power and top consumer' do
-    expect(render('energy')).to include('1,240').and include('Oven')
+  it 'sums power and picks the top consumer out of the raw device list' do
+    expect(render('energy')).to include('1840').and include('Sample Kettle Plug')
+  end
+
+  it 'feeds the homey components the exact payload the companion app pushes' do
+    snapshot = JSON.parse(File.read(File.join(ROOT, 'web/seeds/data.json')))
+    %w[energy climate_home zone_section].each do |name|
+      expect(catalog.find(name).sample['devices']).to eq(snapshot['devices']), "#{name} sample has drifted from the wire snapshot"
+    end
+    expect(catalog.find('device_card').sample['device']).to eq(snapshot['devices'].first)
   end
 
   it 'renders the weather hero with outdoor temperature' do
@@ -44,8 +55,9 @@ RSpec.describe 'components render' do
     expect(render('solar')).to include('820')
   end
 
-  it 'renders the climate_home hero with devices-on count and a room' do
-    expect(render('climate_home')).to include('7').and include('Bedroom')
+  it 'averages sensor temperature and counts what is on, from the raw device list' do
+    html = render('climate_home')
+    expect(html).to include('20.0').and include('Lounge')
   end
 
   it 'plots one sparkline point per series entry' do

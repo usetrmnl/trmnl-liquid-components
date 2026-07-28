@@ -1,9 +1,35 @@
-zone:
-  name: Living room
-  devices:
-    - name: Floor lamp
-      capabilities:
-        - { title: Power, value: "5", unit: W }
-    - name: TV
-      capabilities:
-        - { title: Power, value: "60", unit: W }
+---
+devices:
+- name: Thermometer SNZB-02D
+  zone: Lounge
+  klass: sensor
+  power:
+  temperature: 20
+  humidity: 53
+  'on':
+  alarms: []
+- name: Button SNZB-01P
+  zone: Lounge
+  klass: button
+  power:
+  temperature:
+  humidity:
+  'on':
+  alarms: []
+- name: Sample Kettle Plug
+  zone: Kitchen
+  klass: socket
+  power: 1840
+  temperature:
+  humidity:
+  'on': true
+  alarms: []
+- name: Sample Bedside Lamp
+  zone: Bedroom
+  klass: light
+  power:
+  temperature:
+  humidity:
+  'on': false
+  alarms: []
+zone: Lounge

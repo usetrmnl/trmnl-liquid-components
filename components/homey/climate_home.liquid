@@ -1,24 +1,31 @@
 {% template homey_climate_home %}
+{% assign sensors = devices | where: "temperature" | sort: "zone" %}
+{% assign sensor_count = sensors | size %}
+{% assign temp_total = 0 %}
+{% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
+{% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
+{% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% else %}{% assign average = "—" %}{% endif %}
+{% assign on_devices = devices | where: "on", true %}
 <div class="layout layout--col gap">
   <div class="grid grid--cols-2 gap">
-    {% render "homey_cap_tile", label: "Avg temperature", value: climate.avg_temp.value, unit: climate.avg_temp.unit %}
-    {% render "homey_cap_tile", label: "Devices on", value: home.devices_on, unit: "" %}
+    {% render "homey_cap_tile", label: "Avg temperature", value: average, unit: "°C" %}
+    {% render "homey_cap_tile", label: "Devices on", value: on_devices.size, unit: "" %}
   </div>
   <div class="grid grid--cols-2 gap">
-    {% for sensor in climate.sensors %}
-      {% render "homey_cap_tile", label: sensor.name, value: sensor.value, unit: sensor.unit %}
+    {% for sensor in sensors %}
+      {% render "homey_cap_tile", label: sensor.zone, value: sensor.temperature, unit: "°C" %}
     {% endfor %}
   </div>
-  {% if home.alarms.size > 0 %}
-    <div class="flex flex--row flex--wrap gap--small">
-      {% for alarm in home.alarms %}
-        <span class="label label--outline">{{ alarm.zone }}: {{ alarm.type }}</span>
+  <div class="flex flex--row flex--wrap gap--small">
+    {% for device in devices %}
+      {% for alarm in device.alarms %}
+        <span class="label label--outline">{{ device.zone }}: {{ alarm }}</span>
       {% endfor %}
-    </div>
-  {% endif %}
+    {% endfor %}
+  </div>
 </div>
 <div class="title_bar">
   <span class="title">Home</span>
-  <span class="instance">Climate</span>
+  <span class="instance">{{ sensor_count }} sensors</span>
 </div>
 {% endtemplate %}

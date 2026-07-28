@@ -1,6 +1,8 @@
 ---
 title: Weather station
-description: Indoor/outdoor temperature, humidity, wind, rain, pressure.
+description: 'Indoor/outdoor temperature, humidity, wind, rain, pressure. NOTE: the
+  Homey snapshot carries none of these yet — it has no indoor/outdoor split and no
+  wind/rain/pressure. Sample data only until the companion push is widened.'
 sizes:
 - full
 - half_vertical

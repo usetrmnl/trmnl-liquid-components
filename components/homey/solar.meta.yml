@@ -1,6 +1,8 @@
 ---
 title: Solar / production
-description: Production now, produced today, and grid feed-in.
+description: 'Production now, produced today, and grid feed-in. NOTE: not derivable
+  from the Homey snapshot — power is instantaneous, so the kWh totals need a device
+  reporting meter_power. Sample data only.'
 sizes:
 - full
 - half_vertical

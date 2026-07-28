@@ -4,7 +4,7 @@ description: Live power, per-zone breakdown, and the biggest consumer.
 sizes:
 - full
 - half_vertical
-usage: '{% render "homey_energy", energy: energy %}'
+usage: '{% render "homey_energy", devices: devices %}'
 variants:
 - name: With chart
   args: {}

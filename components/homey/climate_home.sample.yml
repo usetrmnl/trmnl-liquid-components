@@ -1,9 +1,34 @@
-climate:
-  avg_temp: { value: "21.4", unit: "°C" }
-  sensors:
-    - { name: Bedroom, value: "20.1", unit: "°C" }
-    - { name: Office, value: "22.6", unit: "°C" }
-home:
-  devices_on: 7
-  alarms:
-    - { zone: Garage, type: motion }
+---
+devices:
+- name: Thermometer SNZB-02D
+  zone: Lounge
+  klass: sensor
+  power:
+  temperature: 20
+  humidity: 53
+  'on':
+  alarms: []
+- name: Button SNZB-01P
+  zone: Lounge
+  klass: button
+  power:
+  temperature:
+  humidity:
+  'on':
+  alarms: []
+- name: Sample Kettle Plug
+  zone: Kitchen
+  klass: socket
+  power: 1840
+  temperature:
+  humidity:
+  'on': true
+  alarms: []
+- name: Sample Bedside Lamp
+  zone: Bedroom
+  klass: light
+  power:
+  temperature:
+  humidity:
+  'on': false
+  alarms: []
