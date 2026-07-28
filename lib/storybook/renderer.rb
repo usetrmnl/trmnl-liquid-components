@@ -11,14 +11,14 @@ module Storybook
   class Renderer
     def initialize(catalog) = @catalog = catalog
 
-    def render(component, size:, data: component.sample, args: {}, markup: nil)
+    def render(component, size:, data: component.sample, args: {}, markup: nil, device: Framework::DEFAULT_DEVICE)
       context = stringify(data).merge('trmnl' => { 'plugin_settings' => { 'instance_name' => 'Sample' } })
       body = render_liquid("#{scope_for(component, markup)}\n#{render_call(component, args)}", context)
       # Fragment components (tiles/cards) declare `wrap: true` so previews frame
       # them in a layout the way a host plugin would; screen-level components
       # (heroes, zone_section) emit their own layout + title_bar.
       body = %(<div class="layout layout--col gap">\n#{body}\n</div>) if component.meta['wrap']
-      Framework.wrap(body, size:)
+      Framework.wrap(body, size:, device:)
     end
 
     # Mirrors a real private plugin: data as top-level vars, every template in scope.

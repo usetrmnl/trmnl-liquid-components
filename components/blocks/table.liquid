@@ -1,13 +1,14 @@
 {% template trmnl_table %}
 {% assign size = size | default: "small" %}
+{% assign lg_size = lg_size | default: "base" %}
 {% assign limit = limit | default: "yes" %}
-<table class="table table--{{ size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
+<table class="table table--{{ size }} lg:table--{{ lg_size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
   <thead>
-    <tr>{% for col in columns %}<th><span class="title title--small">{{ col }}</span></th>{% endfor %}</tr>
+    <tr>{% for col in columns %}<th><span class="title title--small lg:title--base">{{ col }}</span></th>{% endfor %}</tr>
   </thead>
   <tbody>
     {% for row in rows %}
-    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall value--tnums">{{ cell }}</span>{% else %}<span class="label">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
+    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall lg:value--small value--tnums">{{ cell }}</span>{% else %}<span class="label lg:label--large">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
     {% endfor %}
   </tbody>
 </table>

@@ -1,15 +1,16 @@
 {% template trmnl_list %}
 {% assign cols = columns | default: "1" %}
+{% assign lg_cols = lg_columns | default: "2" %}
 {% assign numbered = numbered | default: "no" %}
 {% assign n = items | size %}
 {% if n == 0 %}
-<span class="label">No data</span>
+<span class="label lg:label--large">No data</span>
 {% else %}
-<div class="grid grid--cols-{{ cols }} gap">
+<div class="grid grid--cols-{{ cols }} lg:grid--cols-{{ lg_cols }} gap">
   {% for item in items %}
   <div class="flex flex--row flex--between flex--center-y w--full">
-    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label">{{ item.label }}</span></span>
-    <span class="value value--small value--tnums">{{ item.value }}{{ item.unit }}</span>
+    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small lg:value--large value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label lg:label--large">{{ item.label }}</span></span>
+    <span class="value value--small lg:value--large value--tnums">{{ item.value }}{{ item.unit }}</span>
   </div>
   {% endfor %}
 </div>

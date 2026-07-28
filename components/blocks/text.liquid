@@ -1,7 +1,7 @@
 {% template trmnl_text %}
 {% assign clamp = clamp | default: "4" %}
 {% assign align = align | default: "left" %}
-{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+{% if title %}<span class="title title--small lg:title--base">{{ title }}</span>{% endif %}
 <div class="richtext richtext--{{ align }}">
   <div class="content content--base" data-clamp="{{ clamp }}">{{ body }}</div>
 </div>

@@ -20,6 +20,7 @@
       <div class="preview-wrap">
         <iframe id="preview" title="preview"></iframe>
       </div>
+      <div id="devices" class="controls"></div>
       <div id="variants" class="controls"></div>
       <details open>
         <summary>1. Shared markup — paste into your plugin's shared markup</summary>
@@ -34,7 +35,8 @@
     </main>
   </div>
   <%# escape </ so a component's own <script> tags can't terminate this inline script %>
-  <script>window.CATALOG = <%= catalog.gsub('</', '<\\/') %>;</script>
+  <script>window.DEVICES = <%= devices %>;
+    window.CATALOG = <%= catalog.gsub('</', '<\\/') %>;</script>
   <script src="sizes.js"></script>
   <script src="site.js"></script>
 </body>

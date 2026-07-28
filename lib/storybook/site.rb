@@ -30,11 +30,13 @@ module Storybook
     def write_previews(root, component)
       renderer = Renderer.new(@catalog)
       component.variants.flat_map do |variant|
-        component.sizes.map do |size|
-          path = File.join(root, 'c', component.name, self.class.slug(variant['name']), "#{size}.html")
-          FileUtils.mkdir_p(File.dirname(path))
-          File.write(path, renderer.render(component, size:, args: variant['args'] || {}))
-          path
+        component.sizes.flat_map do |size|
+          Framework::DEVICES.keys.map do |device|
+            path = File.join(root, 'c', component.name, self.class.slug(variant['name']), device, "#{size}.html")
+            FileUtils.mkdir_p(File.dirname(path))
+            File.write(path, renderer.render(component, size:, args: variant['args'] || {}, device:))
+            path
+          end
         end
       end
     end
@@ -54,6 +56,7 @@ module Storybook
 
     def index_html
       catalog = catalog_json
+      devices = Framework::DEVICES.map { |name, spec| { name:, label: spec[:label] } }.to_json
       ERB.new(File.read(File.join(WEB, 'views', 'site.erb'))).result(binding)
     end
   end

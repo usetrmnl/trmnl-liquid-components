@@ -5,17 +5,19 @@ const variantsBox = document.getElementById('variants');
 const titleBox = document.getElementById('title');
 const usageBox = document.getElementById('usage');
 const bundleBox = document.getElementById('bundle');
-const state = { component: null, size: null, variant: null };
+const devicesBox = document.getElementById('devices');
+const state = { component: null, size: null, variant: null, device: window.DEVICES[0].name };
 
 function applyDimensions(size) {
-  const [width, height] = window.DIMENSIONS[size] || window.DIMENSIONS.full;
+  const dimensions = window.DIMENSIONS_BY_DEVICE[state.device];
+  const [width, height] = dimensions[size] || dimensions.full;
   preview.style.width = `${width}px`;
   preview.style.height = `${height}px`;
 }
 
 function refresh() {
   applyDimensions(state.size);
-  preview.src = `c/${state.component.name}/${state.variant}/${state.size}.html`;
+  preview.src = `c/${state.component.name}/${state.variant}/${state.device}/${state.size}.html`;
 }
 
 function pickerButtons(box, items, activeValue, onPick) {
@@ -42,6 +44,7 @@ function selectComponent(component, link) {
   titleBox.textContent = component.title;
   usageBox.textContent = component.usage;
   bundleBox.textContent = component.bundle;
+  pickerButtons(devicesBox, window.DEVICES.map((d) => ({ label: d.label, value: d.name })), state.device, (v) => { state.device = v; });
   pickerButtons(sizesBox, component.sizes.map((s) => ({ label: s, value: s })), state.size, (v) => { state.size = v; });
   pickerButtons(variantsBox, component.variants.map((v) => ({ label: v.name, value: v.slug })), state.variant, (v) => { state.variant = v; });
   refresh();

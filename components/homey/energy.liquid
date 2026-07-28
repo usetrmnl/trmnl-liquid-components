@@ -19,22 +19,22 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ total_power }}</span>
-        <span class="label">Power now (W)</span>
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
+        <span class="label lg:label--large">Power now (W)</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
-        <span class="label">Top: {{ top.name | default: "None" }}</span>
+        <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
+        <span class="label lg:label--large">Top: {{ top.name | default: "None" }}</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large value--tnums">{{ zones | size }}</span>
-        <span class="label">Zones</span>
+        <span class="value value--large lg:value--xxlarge value--tnums">{{ zones | size }}</span>
+        <span class="label lg:label--large">Zones</span>
       </div>
     </div>
   </div>
@@ -43,7 +43,7 @@
   {% endif %}
 </div>
 <div class="title_bar">
-  <span class="title">Energy</span>
+  <span class="title lg:title--large">Energy</span>
   <span class="instance">{{ drawing | size }} drawing power</span>
 </div>
 {% if show_chart == "yes" %}

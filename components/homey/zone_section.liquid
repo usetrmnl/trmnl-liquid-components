@@ -1,7 +1,7 @@
 {% template homey_zone_section %}
 {% assign in_zone = devices | where: "zone", zone %}
 <div class="layout layout--col gap">
-  <span class="title">{{ zone }}</span>
+  <span class="title lg:title--large">{{ zone }}</span>
   <div class="grid grid--cols-2 gap">
     {% for device in in_zone %}
       {% render "homey_device_card", device: device %}

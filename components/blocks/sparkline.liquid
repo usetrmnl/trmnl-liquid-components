@@ -8,7 +8,7 @@
 {% assign PLOT_H = 82 %}
 {% assign n = series | size %}
 {% if n == 0 %}
-<div class="layout"><div class="item"><div class="content"><span class="label">No data</span></div></div></div>
+<div class="layout"><div class="item"><div class="content"><span class="label lg:label--large">No data</span></div></div></div>
 {% else %}
 {% comment %} scale: actual min/max for labels; bump hi when flat so range is never 0 (divide-by-zero guard). {% endcomment %}
 {% assign vmax = series.first.value %}
@@ -28,8 +28,8 @@
   <div class="item">
     <div class="meta"></div>
     <div class="content">
-      <span class="value value--large value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-      <span class="label">{{ title }}</span>
+      <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+      <span class="label lg:label--large">{{ title }}</span>
     </div>
   </div>
   <svg viewBox="0 0 320 100" width="100%" preserveAspectRatio="none" style="display:block;width:100%;height:120px;font-family:inherit;">
@@ -42,7 +42,7 @@
   </svg>
 </div>
 <div class="title_bar">
-  <span class="title">{{ title }}</span>
+  <span class="title lg:title--large">{{ title }}</span>
   <span class="instance">Trend</span>
 </div>
 {% endif %}

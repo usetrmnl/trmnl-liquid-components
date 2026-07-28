@@ -16,15 +16,21 @@ RSpec.describe Storybook::Site do
 
   attr_reader :root
 
-  it 'writes one page per component, variant and size' do
-    expected = catalog.components.sum { |c| c.variants.size * c.sizes.size }
+  it 'writes one page per component, variant, size and device' do
+    expected = catalog.components.sum { |c| c.variants.size * c.sizes.size } * Storybook::Framework::DEVICES.size
     expect(site.build(root).size).to eq(expected)
   end
 
   it 'renders each variant with its own arguments' do
     site.build(root)
-    expect(File.read(File.join(root, 'c/stat/mega/full.html'))).to include('value--mega')
-    expect(File.read(File.join(root, 'c/stat/default/full.html'))).to include('value--xxlarge')
+    expect(File.read(File.join(root, 'c/stat/mega/og/full.html'))).to include('value--mega')
+    expect(File.read(File.join(root, 'c/stat/default/og/full.html'))).to include('value--xxlarge')
+  end
+
+  it 'gives each device its own screen class, which is what activates responsive utilities' do
+    site.build(root)
+    expect(File.read(File.join(root, 'c/stat/default/og/full.html'))).to include('screen--md')
+    expect(File.read(File.join(root, 'c/stat/default/x/full.html'))).to include('screen--lg')
   end
 
   it 'writes an index that carries the catalog and needs no server' do

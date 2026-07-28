@@ -2,8 +2,8 @@
 {% assign style = style | default: "bar" %}
 {% assign size = size | default: "base" %}
 <div class="flex flex--row flex--between flex--center-y w--full">
-  <span class="label">{{ label }}</span>
-  <span class="value value--small value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
+  <span class="label lg:label--large">{{ label }}</span>
+  <span class="value value--small lg:value--large value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
 </div>
 {% if style == "dots" %}
 {% assign total_dots = total | default: 5 %}

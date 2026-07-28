@@ -9,22 +9,23 @@
 {% endtemplate %}
 
 {% template trmnl_divider %}
-{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+{% if title %}<span class="title title--small lg:title--base">{{ title }}</span>{% endif %}
 <div class="divider"></div>
 {% endtemplate %}
 
 {% template trmnl_list %}
 {% assign cols = columns | default: "1" %}
+{% assign lg_cols = lg_columns | default: "2" %}
 {% assign numbered = numbered | default: "no" %}
 {% assign n = items | size %}
 {% if n == 0 %}
-<span class="label">No data</span>
+<span class="label lg:label--large">No data</span>
 {% else %}
-<div class="grid grid--cols-{{ cols }} gap">
+<div class="grid grid--cols-{{ cols }} lg:grid--cols-{{ lg_cols }} gap">
   {% for item in items %}
   <div class="flex flex--row flex--between flex--center-y w--full">
-    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label">{{ item.label }}</span></span>
-    <span class="value value--small value--tnums">{{ item.value }}{{ item.unit }}</span>
+    <span class="flex flex--row flex--center-y gap--small">{% if numbered == "yes" %}<span class="value value--small lg:value--large value--tnums">{{ forloop.index }}.</span>{% endif %}<span class="label lg:label--large">{{ item.label }}</span></span>
+    <span class="value value--small lg:value--large value--tnums">{{ item.value }}{{ item.unit }}</span>
   </div>
   {% endfor %}
 </div>
@@ -35,8 +36,8 @@
 {% assign style = style | default: "bar" %}
 {% assign size = size | default: "base" %}
 <div class="flex flex--row flex--between flex--center-y w--full">
-  <span class="label">{{ label }}</span>
-  <span class="value value--small value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
+  <span class="label lg:label--large">{{ label }}</span>
+  <span class="value value--small lg:value--large value--tnums">{% if style == "dots" %}{{ value }} / {{ total | default: 5 }}{% else %}{{ value }}%{% endif %}</span>
 </div>
 {% if style == "dots" %}
 {% assign total_dots = total | default: 5 %}
@@ -61,7 +62,7 @@
 {% assign PLOT_H = 82 %}
 {% assign n = series | size %}
 {% if n == 0 %}
-<div class="layout"><div class="item"><div class="content"><span class="label">No data</span></div></div></div>
+<div class="layout"><div class="item"><div class="content"><span class="label lg:label--large">No data</span></div></div></div>
 {% else %}
 {% comment %} scale: actual min/max for labels; bump hi when flat so range is never 0 (divide-by-zero guard). {% endcomment %}
 {% assign vmax = series.first.value %}
@@ -81,8 +82,8 @@
   <div class="item">
     <div class="meta"></div>
     <div class="content">
-      <span class="value value--large value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-      <span class="label">{{ title }}</span>
+      <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ series.last.value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+      <span class="label lg:label--large">{{ title }}</span>
     </div>
   </div>
   <svg viewBox="0 0 320 100" width="100%" preserveAspectRatio="none" style="display:block;width:100%;height:120px;font-family:inherit;">
@@ -95,7 +96,7 @@
   </svg>
 </div>
 <div class="title_bar">
-  <span class="title">{{ title }}</span>
+  <span class="title lg:title--large">{{ title }}</span>
   <span class="instance">Trend</span>
 </div>
 {% endif %}
@@ -103,19 +104,20 @@
 
 {% template trmnl_stat %}
 {% assign size = size | default: "xxlarge" %}
+{% assign lg_size = lg_size | default: "giga" %}
 {% assign color_delta = color_delta | default: "no" %}
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--{{ size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
+    <span class="value value--{{ size }} lg:value--{{ lg_size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
     <div class="flex flex--row flex--center-y gap--small">
-      <span class="label">{{ label }}</span>
+      <span class="label lg:label--large">{{ label }}</span>
       {% if delta %}
       {% assign tone = "" %}
       {% if color_delta == "yes" %}{% if delta_dir == "down" %}{% assign tone = "text--error" %}{% else %}{% assign tone = "text--success" %}{% endif %}{% endif %}
       <span class="flex flex--row flex--center-y gap--xsmall {{ tone }}">
         <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">{% if delta_dir == "down" %}<path d="M1,3 L9,3 L5,9 Z" fill="currentColor"/>{% else %}<path d="M5,1 L9,7 L1,7 Z" fill="currentColor"/>{% endif %}</svg>
-        <span class="label">{{ delta }}</span>
+        <span class="label lg:label--large">{{ delta }}</span>
       </span>
       {% endif %}
     </div>
@@ -125,14 +127,15 @@
 
 {% template trmnl_table %}
 {% assign size = size | default: "small" %}
+{% assign lg_size = lg_size | default: "base" %}
 {% assign limit = limit | default: "yes" %}
-<table class="table table--{{ size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
+<table class="table table--{{ size }} lg:table--{{ lg_size }}"{% if limit == "yes" %} data-table-limit="true"{% endif %}>
   <thead>
-    <tr>{% for col in columns %}<th><span class="title title--small">{{ col }}</span></th>{% endfor %}</tr>
+    <tr>{% for col in columns %}<th><span class="title title--small lg:title--base">{{ col }}</span></th>{% endfor %}</tr>
   </thead>
   <tbody>
     {% for row in rows %}
-    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall value--tnums">{{ cell }}</span>{% else %}<span class="label">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
+    <tr>{% for cell in row %}{% assign a = align[forloop.index0] | default: "left" %}<td>{% if a == "right" %}<span class="value value--xxsmall lg:value--small value--tnums">{{ cell }}</span>{% else %}<span class="label lg:label--large">{{ cell }}</span>{% endif %}</td>{% endfor %}</tr>
     {% endfor %}
   </tbody>
 </table>
@@ -141,7 +144,7 @@
 {% template trmnl_text %}
 {% assign clamp = clamp | default: "4" %}
 {% assign align = align | default: "left" %}
-{% if title %}<span class="title title--small">{{ title }}</span>{% endif %}
+{% if title %}<span class="title title--small lg:title--base">{{ title }}</span>{% endif %}
 <div class="richtext richtext--{{ align }}">
   <div class="content content--base" data-clamp="{{ clamp }}">{{ body }}</div>
 </div>
@@ -228,8 +231,8 @@
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--large value--tnums" data-fit-value="true">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-    <span class="label">{{ label }}</span>
+    <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
+    <span class="label lg:label--large">{{ label }}</span>
   </div>
 </div>
 {% endtemplate %}
@@ -261,14 +264,14 @@
   </div>
 </div>
 <div class="title_bar">
-  <span class="title">Home</span>
+  <span class="title lg:title--large">Home</span>
   <span class="instance">{{ sensor_count }} sensors</span>
 </div>
 {% endtemplate %}
 
 {% template homey_device_card %}
 <div class="flex flex--col gap--small">
-  <span class="title title--small">{{ device.name }}</span>
+  <span class="title title--small lg:title--base">{{ device.name }}</span>
   <div class="grid grid--cols-2 gap">
     {% if device.power != nil %}{% render "homey_cap_tile", label: "Power", value: device.power, unit: "W" %}{% endif %}
     {% if device.temperature != nil %}{% render "homey_cap_tile", label: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
@@ -300,22 +303,22 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ total_power }}</span>
-        <span class="label">Power now (W)</span>
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
+        <span class="label lg:label--large">Power now (W)</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
-        <span class="label">Top: {{ top.name | default: "None" }}</span>
+        <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
+        <span class="label lg:label--large">Top: {{ top.name | default: "None" }}</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large value--tnums">{{ zones | size }}</span>
-        <span class="label">Zones</span>
+        <span class="value value--large lg:value--xxlarge value--tnums">{{ zones | size }}</span>
+        <span class="label lg:label--large">Zones</span>
       </div>
     </div>
   </div>
@@ -324,7 +327,7 @@
   {% endif %}
 </div>
 <div class="title_bar">
-  <span class="title">Energy</span>
+  <span class="title lg:title--large">Energy</span>
   <span class="instance">{{ drawing | size }} drawing power</span>
 </div>
 {% if show_chart == "yes" %}
@@ -360,8 +363,8 @@
   <div class="item">
     <div class="meta"></div>
     <div class="content">
-      <span class="value value--xxlarge value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
-      <span class="label">Producing now</span>
+      <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ solar.now.value }} {{ solar.now.unit }}</span>
+      <span class="label lg:label--large">Producing now</span>
     </div>
   </div>
   <div class="grid grid--cols-2 gap">
@@ -370,7 +373,7 @@
   </div>
 </div>
 <div class="title_bar">
-  <span class="title">Solar</span>
+  <span class="title lg:title--large">Solar</span>
   <span class="instance">Production</span>
 </div>
 {% endtemplate %}
@@ -388,7 +391,7 @@
   </div>
 </div>
 <div class="title_bar">
-  <span class="title">Weather</span>
+  <span class="title lg:title--large">Weather</span>
   <span class="instance">Home</span>
 </div>
 {% endtemplate %}
@@ -396,7 +399,7 @@
 {% template homey_zone_section %}
 {% assign in_zone = devices | where: "zone", zone %}
 <div class="layout layout--col gap">
-  <span class="title">{{ zone }}</span>
+  <span class="title lg:title--large">{{ zone }}</span>
   <div class="grid grid--cols-2 gap">
     {% for device in in_zone %}
       {% render "homey_device_card", device: device %}

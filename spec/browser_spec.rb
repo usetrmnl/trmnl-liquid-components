@@ -38,8 +38,8 @@ RSpec.describe 'the built site in a browser', :browser do
     FileUtils.remove_entry(@root) if @root
   end
 
-  it 'paints every preview inside its device screen' do
-    spilling = Dir.glob("#{@root}/c/*/*/*.html").sort.filter_map do |path|
+  it 'paints every preview inside its device screen, on every device' do
+    spilling = Dir.glob("#{@root}/c/*/*/*/*.html").sort.filter_map do |path|
       @page.go_to("file://#{path}")
       sleep 0.6
       spill = @page.evaluate(SPILL)
@@ -48,6 +48,17 @@ RSpec.describe 'the built site in a browser', :browser do
       "#{path.delete_prefix("#{@root}/c/").delete_suffix('.html')} (#{spill['down']}px down, #{spill['across']}px across)"
     end
     expect(spilling).to be_empty, "previews painting outside the screen:\n  #{spilling.join("\n  ")}"
+  end
+
+  it 'scales type up on X, so a preview is not OG-sized on a screen three times the area' do
+    og = "#{@root}/c/stat/default/og/full.html"
+    x  = "#{@root}/c/stat/default/x/full.html"
+    sizes = [og, x].map do |path|
+      @page.go_to("file://#{path}")
+      sleep 0.6
+      @page.evaluate('parseInt(getComputedStyle(document.querySelector(".value")).fontSize, 10)')
+    end
+    expect(sizes.last).to be > sizes.first
   end
 
   it 'runs the gallery script far enough to select a component' do

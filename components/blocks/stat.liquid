@@ -1,18 +1,19 @@
 {% template trmnl_stat %}
 {% assign size = size | default: "xxlarge" %}
+{% assign lg_size = lg_size | default: "giga" %}
 {% assign color_delta = color_delta | default: "no" %}
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--{{ size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
+    <span class="value value--{{ size }} lg:value--{{ lg_size }} value--tnums" data-fit-value="true">{{ value }}{{ unit }}</span>
     <div class="flex flex--row flex--center-y gap--small">
-      <span class="label">{{ label }}</span>
+      <span class="label lg:label--large">{{ label }}</span>
       {% if delta %}
       {% assign tone = "" %}
       {% if color_delta == "yes" %}{% if delta_dir == "down" %}{% assign tone = "text--error" %}{% else %}{% assign tone = "text--success" %}{% endif %}{% endif %}
       <span class="flex flex--row flex--center-y gap--xsmall {{ tone }}">
         <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true">{% if delta_dir == "down" %}<path d="M1,3 L9,3 L5,9 Z" fill="currentColor"/>{% else %}<path d="M5,1 L9,7 L1,7 Z" fill="currentColor"/>{% endif %}</svg>
-        <span class="label">{{ delta }}</span>
+        <span class="label lg:label--large">{{ delta }}</span>
       </span>
       {% endif %}
     </div>
