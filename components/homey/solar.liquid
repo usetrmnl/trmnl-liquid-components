@@ -1,6 +1,7 @@
 {% template homey_solar %}
 {% comment %} Nothing marks a device as an inverter, so match names the producing device(s); without it this totals every meter in the home. {% endcomment %}
 {% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign metered = pool | where: "energy" %}
 {% assign producing = pool | where: "power" %}
 {% assign current_power = 0 %}

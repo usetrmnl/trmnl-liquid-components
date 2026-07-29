@@ -1,12 +1,19 @@
 {% template homey_device_card %}
+{% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
 <div class="flex flex--col gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
-  <div class="grid grid--cols-2 gap">
-    {% if device.power != nil %}{% render "homey_cap_tile", label: "Power", value: device.power, unit: "W" %}{% endif %}
-    {% if device.temperature != nil %}{% render "homey_cap_tile", label: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
-    {% if device.humidity != nil %}{% render "homey_cap_tile", label: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
-    {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
-    {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
-  </div>
+  {% if device.available == false %}
+    <span class="label label--outline lg:label--large">Unreachable</span>
+  {% else %}
+    <div class="grid grid--cols-2 gap">
+      {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
+      {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
+      {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
+      {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
+      {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
+      {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
+      {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+    </div>
+  {% endif %}
 </div>
 {% endtemplate %}

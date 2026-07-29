@@ -4,7 +4,8 @@
 {% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
 {% assign chart_id = "homey-energy-chart" | append_random %}
 {% comment %} Aggregates the snapshot's flat device list — Liquid can't build an array, so totals are summed where they're rendered. {% endcomment %}
-{% assign drawing = devices | where: "power" %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign drawing = live | where: "power" %}
 {% assign total_power = 0 %}
 {% for device in drawing %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
 {% assign ranked = drawing | sort: "power" | reverse %}

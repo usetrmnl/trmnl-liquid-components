@@ -5,6 +5,8 @@ require 'json'
 require 'storybook/catalog'
 require 'storybook/renderer'
 
+WIRE_FIELDS = %w[name zone klass available power temperature humidity wind energy titles on alarms].sort.freeze
+
 RSpec.describe 'components render' do
   let(:catalog) { Storybook::Catalog.load(File.join(ROOT, 'components')) }
   let(:renderer) { Storybook::Renderer.new(catalog) }
@@ -26,25 +28,46 @@ RSpec.describe 'components render' do
   end
 
   it 'renders device_card from the flat capability fields the snapshot carries' do
-    expect(render('device_card')).to include('20').and include('53').and include('Thermometer SNZB-02D')
+    expect(render('device_card')).to include('820').and include('6.4').and include('Solar inverter')
+  end
+
+  it 'prefers the device\'s own localized capability title over the English fallback' do
+    weather = catalog.find('weather').sample['devices'].find { it['name'] == 'Weather station' }
+    html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => weather })
+    expect(html).to include('Temperatuur').and include('Windsnelheid')
+    expect(html).not_to include('>Temperature<')
   end
 
   it 'renders zone_section with only the devices in that zone' do
     html = render('zone_section')
-    expect(html).to include('Lounge').and include('Button SNZB-01P')
+    expect(html).to include('Garage').and include('Garage sensor')
     expect(html).not_to include('Sample Kettle Plug')
+  end
+
+  it 'marks an unreachable device instead of drawing its last known readings' do
+    html = render('zone_section')
+    expect(html).to include('Unreachable')
+    expect(html).not_to include('9999')
   end
 
   it 'sums power and picks the top consumer out of the raw device list' do
     expect(render('energy')).to include('1840').and include('Sample Kettle Plug')
   end
 
-  it 'feeds the homey components the exact payload the companion app pushes' do
-    snapshot = JSON.parse(File.read(File.join(ROOT, 'web/seeds/data.json')))
-    %w[energy climate_home zone_section].each do |name|
-      expect(catalog.find(name).sample['devices']).to eq(snapshot['devices']), "#{name} sample has drifted from the wire snapshot"
+  it 'gives every homey sample device the fields the companion app emits, since samples add devices the capture lacks' do
+    %w[energy climate_home zone_section weather solar].each do |name|
+      catalog.find(name).sample['devices'].each do |device|
+        expect(device.keys.sort).to eq(WIRE_FIELDS), "#{name} sample device #{device['name']} does not match the wire shape"
+      end
     end
-    expect(catalog.find('device_card').sample['device']).to eq(snapshot['devices'].first)
+    expect(catalog.find('device_card').sample['device'].keys.sort).to eq(WIRE_FIELDS)
+  end
+
+  it 'keeps web/seeds/data.json — the payload bin/push-snapshot sends and RECIPES.md calls a real capture — on the wire shape' do
+    snapshot = JSON.parse(File.read(File.join(ROOT, 'web/seeds/data.json')))
+    snapshot['devices'].each do |device|
+      expect(device.keys.sort).to eq(WIRE_FIELDS), "captured device #{device['name']} has drifted from the wire shape"
+    end
   end
 
   it 'reads temperature, humidity and wind off the matched weather device' do
@@ -67,7 +90,8 @@ RSpec.describe 'components render' do
 
   it 'averages sensor temperature and counts what is on, from the raw device list' do
     html = render('climate_home')
-    expect(html).to include('20.0').and include('Lounge')
+    expect(html).to include('16.2').and include('Lounge')
+    expect(html).not_to include('99'), 'the unreachable sensor must not skew the average'
   end
 
   it 'plots one sparkline point per series entry' do

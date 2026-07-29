@@ -1,11 +1,12 @@
 {% template homey_climate_home %}
-{% assign sensors = devices | where: "temperature" | sort: "zone" %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign sensors = live | where: "temperature" | sort: "zone" %}
 {% assign sensor_count = sensors | size %}
 {% assign temp_total = 0 %}
 {% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
 {% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% else %}{% assign average = "—" %}{% endif %}
-{% assign on_devices = devices | where: "on", true %}
+{% assign on_devices = live | where: "on", true %}
 <div class="layout layout--col gap">
   <div class="grid grid--cols-2 gap">
     {% render "homey_cap_tile", label: "Avg temperature", value: average, unit: "°C" %}

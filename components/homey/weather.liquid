@@ -1,6 +1,7 @@
 {% template homey_weather %}
 {% comment %} The snapshot has no indoor/outdoor flag, so which sensor is "outside" is the user's call — match filters devices by name. {% endcomment %}
 {% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign temps = pool | where: "temperature" %}
 {% assign humidities = pool | where: "humidity" %}
 {% assign winds = pool | where: "wind" %}

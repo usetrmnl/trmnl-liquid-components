@@ -238,13 +238,14 @@
 {% endtemplate %}
 
 {% template homey_climate_home %}
-{% assign sensors = devices | where: "temperature" | sort: "zone" %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign sensors = live | where: "temperature" | sort: "zone" %}
 {% assign sensor_count = sensors | size %}
 {% assign temp_total = 0 %}
 {% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
 {% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% else %}{% assign average = "—" %}{% endif %}
-{% assign on_devices = devices | where: "on", true %}
+{% assign on_devices = live | where: "on", true %}
 <div class="layout layout--col gap">
   <div class="grid grid--cols-2 gap">
     {% render "homey_cap_tile", label: "Avg temperature", value: average, unit: "°C" %}
@@ -270,15 +271,22 @@
 {% endtemplate %}
 
 {% template homey_device_card %}
+{% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
 <div class="flex flex--col gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
-  <div class="grid grid--cols-2 gap">
-    {% if device.power != nil %}{% render "homey_cap_tile", label: "Power", value: device.power, unit: "W" %}{% endif %}
-    {% if device.temperature != nil %}{% render "homey_cap_tile", label: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
-    {% if device.humidity != nil %}{% render "homey_cap_tile", label: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
-    {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
-    {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
-  </div>
+  {% if device.available == false %}
+    <span class="label label--outline lg:label--large">Unreachable</span>
+  {% else %}
+    <div class="grid grid--cols-2 gap">
+      {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
+      {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
+      {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
+      {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
+      {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
+      {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
+      {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+    </div>
+  {% endif %}
 </div>
 {% endtemplate %}
 
@@ -288,7 +296,8 @@
 {% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
 {% assign chart_id = "homey-energy-chart" | append_random %}
 {% comment %} Aggregates the snapshot's flat device list — Liquid can't build an array, so totals are summed where they're rendered. {% endcomment %}
-{% assign drawing = devices | where: "power" %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign drawing = live | where: "power" %}
 {% assign total_power = 0 %}
 {% for device in drawing %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
 {% assign ranked = drawing | sort: "power" | reverse %}
@@ -361,6 +370,7 @@
 {% template homey_solar %}
 {% comment %} Nothing marks a device as an inverter, so match names the producing device(s); without it this totals every meter in the home. {% endcomment %}
 {% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign metered = pool | where: "energy" %}
 {% assign producing = pool | where: "power" %}
 {% assign current_power = 0 %}
@@ -389,6 +399,7 @@
 {% template homey_weather %}
 {% comment %} The snapshot has no indoor/outdoor flag, so which sensor is "outside" is the user's call — match filters devices by name. {% endcomment %}
 {% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
+{% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign temps = pool | where: "temperature" %}
 {% assign humidities = pool | where: "humidity" %}
 {% assign winds = pool | where: "wind" %}

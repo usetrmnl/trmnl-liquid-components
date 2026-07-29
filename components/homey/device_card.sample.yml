@@ -1,10 +1,14 @@
 ---
 device:
-  name: Thermometer SNZB-02D
-  zone: Lounge
+  name: Solar inverter
+  zone: Roof
   klass: sensor
-  power:
-  temperature: 20
-  humidity: 53
+  available: true
+  power: 820
+  temperature:
+  humidity:
+  wind:
+  energy: 6.4
+  titles: {}
   'on':
   alarms: []

@@ -8,6 +8,10 @@ devices:
   humidity: 53
   'on':
   alarms: []
+  available: true
+  titles: {}
+  wind:
+  energy:
 - name: Button SNZB-01P
   zone: Lounge
   klass: button
@@ -16,6 +20,10 @@ devices:
   humidity:
   'on':
   alarms: []
+  available: true
+  titles: {}
+  wind:
+  energy:
 - name: Sample Kettle Plug
   zone: Kitchen
   klass: socket
@@ -24,6 +32,10 @@ devices:
   humidity:
   'on': true
   alarms: []
+  available: true
+  titles: {}
+  wind:
+  energy:
 - name: Sample Bedside Lamp
   zone: Bedroom
   klass: light
@@ -31,4 +43,46 @@ devices:
   temperature:
   humidity:
   'on': false
+  alarms: []
+  available: true
+  titles: {}
+  wind:
+  energy:
+- name: Weather station
+  zone: Garden
+  klass: sensor
+  available: true
+  power:
+  temperature: 12.4
+  humidity: 63
+  wind: 14
+  energy:
+  titles:
+    temperature: Temperatuur
+    wind: Windsnelheid
+  'on':
+  alarms: []
+- name: Solar inverter
+  zone: Roof
+  klass: sensor
+  available: true
+  power: 820
+  temperature:
+  humidity:
+  wind:
+  energy: 6.4
+  titles: {}
+  'on':
+  alarms: []
+- name: Garage sensor
+  zone: Garage
+  klass: sensor
+  available: false
+  power: 9999
+  temperature: 99
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on':
   alarms: []
