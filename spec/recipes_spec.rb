@@ -51,4 +51,14 @@ RSpec.describe 'recipes' do
   it 'groups devices by zone in the zones recipe' do
     expect(render('zones', merged(snapshot))).to include('Lounge').and include('Kitchen')
   end
+
+  # An unknown {% render %} produces BLANK output, never an error — so every
+  # template a recipe references must resolve to a catalog component.
+  it 'resolves every template a recipe renders to a catalog component' do
+    Dir.glob(File.join(ROOT, 'recipes', '*.liquid')).sort.each do |path|
+      File.read(path).scan(/\{%\s*render\s+"(\w+)"/).flatten.uniq.each do |template|
+        expect(catalog.by_template(template)).not_to be_nil, "#{File.basename(path)} renders unknown template #{template}"
+      end
+    end
+  end
 end
