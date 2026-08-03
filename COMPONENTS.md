@@ -50,7 +50,9 @@ sums, groups and ranks where it draws.
 | `device_card` | One device, from its flat snapshot fields | `{% render "homey_device_card", device: device %}` | — |
 | `zone_section` | Every device in one zone | `{% render "homey_zone_section", devices: devices, zone: zone %}` | — |
 | `energy` | Total power, per-zone split, top consumer | `{% render "homey_energy", devices: devices %}` | `show_chart`, `chart_type` |
-| `climate_home` | Average + per-zone temperature, devices on, alarms | `{% render "homey_climate_home", devices: devices %}` | — |
+| `climate` | Temperature hero (single-sensor aware) + humidity + sensor cards | `{% render "homey_climate", devices: devices %}` | — |
+| `home_status` | Devices on, lights on, alarm chips / all-clear | `{% render "homey_home_status", devices: devices %}` | — |
+| `insights` | Latest reading, 24h range, line chart from the insight series | `{% render "homey_insights", series: insight_series, title: insight_title, unit: insight_unit %}` | — |
 | `weather` | Sample data only — see note below | `{% render "homey_weather", weather: weather %}` | `columns` |
 | `solar` | Sample data only — see note below | `{% render "homey_solar", solar: solar %}` | — |
 

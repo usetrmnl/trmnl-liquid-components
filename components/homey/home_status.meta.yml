@@ -1,0 +1,7 @@
+---
+title: Home status
+description: Devices on, lights on, and active alarms — alarm chips when something is wrong, all-clear line when nothing is.
+sizes:
+- full
+- half_vertical
+usage: '{% render "homey_home_status", devices: devices %}'

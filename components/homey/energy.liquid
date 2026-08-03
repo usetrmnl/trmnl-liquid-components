@@ -11,6 +11,8 @@
 {% assign ranked = drawing | sort: "power" | reverse %}
 {% assign top = ranked | first %}
 {% assign zones = drawing | map: "zone" | uniq %}
+{% assign drawing_count = drawing | size %}
+{% if drawing_count == 0 %}{% assign show_chart = "no" %}{% endif %}
 {% if show_chart == "yes" %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
 <script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
@@ -34,13 +36,20 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large lg:value--xxlarge value--tnums">{{ zones | size }}</span>
-        <span class="label lg:label--large">Zones</span>
+        <span class="value value--large lg:value--xxlarge value--tnums">{{ drawing_count }} / {{ live | size }}</span>
+        <span class="label lg:label--large">Drawing power</span>
       </div>
     </div>
   </div>
   {% if show_chart == "yes" %}
   <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
+  {% elsif drawing_count == 0 %}
+  <div class="item">
+    <div class="content content--center">
+      <span class="value value--small">No power readings yet</span>
+      <span class="label">Watts appear once a device reports power</span>
+    </div>
+  </div>
   {% endif %}
 </div>
 <div class="title_bar">

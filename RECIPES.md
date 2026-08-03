@@ -46,7 +46,7 @@ the response. Pass `--file` to send your own.
 2. **Create the recipe plugin.** New private plugin, strategy **Plugin Merge**.
 3. **Add the picker.** One custom field, `field_type: plugin_instance_select`,
    `keyname: homey`. This is what installers use to choose their own source.
-4. **Paste the markup.** `rake 'build:shared[energy,climate_home,zone_section]'`
+4. **Paste the markup.** `rake 'build:shared[energy,climate,home_status,zone_section]'`
    into the plugin's shared markup, then a file from `recipes/` into the view.
 5. **Publish.** Forkers pick their Homey in step 3's field and the recipe
    renders their home.

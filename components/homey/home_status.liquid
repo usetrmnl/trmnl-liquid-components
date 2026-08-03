@@ -1,0 +1,52 @@
+{% template homey_home_status %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign on_devices = live | where: "on", true %}
+{% assign lights = live | where: "klass", "light" %}
+{% assign lights_on = lights | where: "on", true %}
+{% assign zones = devices | map: "zone" | uniq %}
+{% assign alarm_count = 0 %}
+{% for device in devices %}{% assign alarm_count = alarm_count | plus: device.alarms.size %}{% endfor %}
+<div class="layout layout--col gap--large">
+  <div class="grid grid--cols-2 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ on_devices | size }} / {{ live | size }}</span>
+        <span class="label">Devices on</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        {% if alarm_count > 0 %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ alarm_count }}</span>
+          <span class="label">Active alarms</span>
+        {% else %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ lights_on | size }} / {{ lights | size }}</span>
+          <span class="label">Lights on</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if alarm_count > 0 %}
+    <div class="flex flex--row flex--wrap gap--small">
+      {% for device in devices %}
+        {% for alarm in device.alarms %}
+          <span class="label label--outline">{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="item">
+      <div class="content content--center">
+        <span class="value value--small">All clear &mdash; no active alarms</span>
+        <span class="label">{{ zones | size }} zones &middot; {{ lights_on | size }} of {{ lights | size }} lights on</span>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<div class="title_bar">
+  <span class="title lg:title--large">Home</span>
+  <span class="instance">{{ live | size }} devices</span>
+</div>
+{% endtemplate %}

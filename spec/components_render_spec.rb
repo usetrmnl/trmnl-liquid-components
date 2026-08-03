@@ -55,7 +55,7 @@ RSpec.describe 'components render' do
   end
 
   it 'gives every homey sample device the fields the companion app emits, since samples add devices the capture lacks' do
-    %w[energy climate_home zone_section weather solar].each do |name|
+    %w[energy climate home_status zone_section weather solar].each do |name|
       catalog.find(name).sample['devices'].each do |device|
         expect(device.keys.sort).to eq(WIRE_FIELDS), "#{name} sample device #{device['name']} does not match the wire shape"
       end
@@ -88,10 +88,49 @@ RSpec.describe 'components render' do
     expect(unmatched).not_to include('Liquid error')
   end
 
-  it 'averages sensor temperature and counts what is on, from the raw device list' do
-    html = render('climate_home')
-    expect(html).to include('16.2').and include('Lounge')
-    expect(html).not_to include('99'), 'the unreachable sensor must not skew the average'
+  it 'averages temperature and humidity across reachable climate sensors' do
+    html = render('climate')
+    expect(html).to include('19.6').and include('51%')
+    expect(html).not_to include('99'), 'the unreachable sensor must not skew the averages'
+  end
+
+  it 'makes a lone sensor the climate hero instead of averaging one value' do
+    solo = catalog.find('climate').sample['devices'].first(1)
+    html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => solo })
+    expect(html).to include('Thermometer SNZB-02D')
+    expect(html).not_to include('Average')
+  end
+
+  it 'shows the climate empty state when no device reports temperature' do
+    html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => [] })
+    expect(html).to include('No temperature sensors yet')
+  end
+
+  it 'chips each active alarm with its zone on the status screen' do
+    html = render('home_status')
+    expect(html).to include('Kitchen: smoke').and include('Hall: contact')
+  end
+
+  it 'reports all clear when no alarms are active' do
+    calm = catalog.find('home_status').sample['devices'].reject { |device| device['alarms'].any? }
+    html = renderer.render(catalog.find('home_status'), size: 'full', data: { 'devices' => calm })
+    expect(html).to include('All clear')
+  end
+
+  it 'shows the energy empty state when nothing reports power' do
+    unpowered = catalog.find('climate').sample['devices']
+    html = renderer.render(catalog.find('energy'), size: 'full', data: { 'devices' => unpowered })
+    expect(html).to include('No power readings yet')
+  end
+
+  it 'summarizes the insight series as latest reading and 24h range' do
+    html = render('insights')
+    expect(html).to include('19.4°C').and include('18.1').and include('21.9')
+  end
+
+  it 'shows the insights empty state without a series' do
+    html = renderer.render(catalog.find('insights'), size: 'full', data: {})
+    expect(html).to include('No insight data yet')
   end
 
   it 'plots one sparkline point per series entry' do

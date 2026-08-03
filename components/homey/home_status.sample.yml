@@ -1,0 +1,52 @@
+---
+devices:
+- name: Ceiling Lamp
+  zone: Lounge
+  klass: light
+  available: true
+  power:
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on': true
+  alarms: []
+- name: Bedside Lamp
+  zone: Bedroom
+  klass: light
+  available: true
+  power:
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on': false
+  alarms: []
+- name: Smoke Sensor
+  zone: Kitchen
+  klass: sensor
+  available: true
+  power:
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on':
+  alarms:
+  - alarm_smoke
+- name: Door Sensor
+  zone: Hall
+  klass: sensor
+  available: true
+  power:
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on':
+  alarms:
+  - alarm_contact

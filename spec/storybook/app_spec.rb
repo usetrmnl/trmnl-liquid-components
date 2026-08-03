@@ -25,13 +25,15 @@ RSpec.describe Storybook::App do
     expect(last_response.body).to include('777')
   end
 
+  POWERED_HOME = { devices: [{ name: 'Kettle', zone: 'Kitchen', power: 1800, available: true }] }.freeze
+
   it 'shows the energy chart by default' do
-    post '/c/energy/full/render', { data: {} }.to_json, 'CONTENT_TYPE' => 'application/json'
+    post '/c/energy/full/render', { data: POWERED_HOME }.to_json, 'CONTENT_TYPE' => 'application/json'
     expect(last_response.body).to include('homey-energy-chart')
   end
 
   it 'applies posted options that alter the render' do
-    post '/c/energy/full/render', { data: {}, args: { show_chart: 'no' } }.to_json, 'CONTENT_TYPE' => 'application/json'
+    post '/c/energy/full/render', { data: POWERED_HOME, args: { show_chart: 'no' } }.to_json, 'CONTENT_TYPE' => 'application/json'
     expect(last_response.body).not_to include('homey-energy-chart')
   end
 

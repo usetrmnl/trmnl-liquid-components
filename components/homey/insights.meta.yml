@@ -1,0 +1,9 @@
+---
+title: Insights
+description: Latest reading, 24h range, and a line chart from the snapshot's insight series.
+sizes:
+- full
+- half_horizontal
+- half_vertical
+usage: '{% render "homey_insights", series: insight_series, title: insight_title,
+  unit: insight_unit %}'

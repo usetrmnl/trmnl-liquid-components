@@ -1,0 +1,68 @@
+{% template homey_insights %}
+{% assign point_count = series | size %}
+{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% assign chart_id = "homey-insights-chart" | append_random %}
+{% if point_count == 0 %}
+<div class="layout">
+  <div class="item">
+    <div class="content content--center">
+      <span class="value value--small">No insight data yet</span>
+      <span class="label">Pick a logged metric in plugin settings</span>
+    </div>
+  </div>
+</div>
+{% else %}
+{% assign latest_pair = series | last %}
+{% assign latest = latest_pair[1] %}
+{% assign low = latest %}
+{% assign high = latest %}
+{% for pair in series %}
+  {% if pair[1] != nil %}
+    {% if pair[1] < low %}{% assign low = pair[1] %}{% endif %}
+    {% if pair[1] > high %}{% assign high = pair[1] %}{% endif %}
+  {% endif %}
+{% endfor %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-2 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ latest | round: 1 }}{{ unit }}</span>
+        <span class="label" data-clamp="1">{{ title | default: "Insights" }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ low | round: 1 }}&ndash;{{ high | round: 1 }}{{ unit }}</span>
+        <span class="label">24h range</span>
+      </div>
+    </div>
+  </div>
+  <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
+</div>
+<script>
+  var homeyInsightsData = {{ series | json }};
+  var createHomeyInsightsChart = function () {
+    new Chartkick["LineChart"]("{{ chart_id }}", homeyInsightsData, {
+      colors: ["black"], legend: false, points: false, curve: true,
+      library: {
+        chart: { backgroundColor: "transparent" },
+        plotOptions: { series: { animation: false, lineWidth: 4 } },
+        yAxis: { gridLineColor: "#000", gridLineDashStyle: "dot", title: { text: null }, labels: { style: { color: "#000", fontSize: "14px" } } },
+        xAxis: { type: "datetime", lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "14px" } } },
+        credits: { enabled: false }, tooltip: { enabled: false }
+      }
+    });
+  };
+  if ("Chartkick" in window) { createHomeyInsightsChart(); }
+  else { window.addEventListener("chartkick:load", createHomeyInsightsChart, true); }
+</script>
+{% endif %}
+<div class="title_bar">
+  <span class="title lg:title--large">Insights</span>
+  <span class="instance">{{ title | default: "Last 24 hours" }}</span>
+</div>
+{% endtemplate %}

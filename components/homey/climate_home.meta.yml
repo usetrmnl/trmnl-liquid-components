@@ -1,6 +1,0 @@
----
-title: Climate + Home status
-description: Average + per-room temperature, devices-on count, active alarms.
-sizes:
-- full
-usage: '{% render "homey_climate_home", devices: devices %}'

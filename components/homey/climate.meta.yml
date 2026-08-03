@@ -1,0 +1,7 @@
+---
+title: Climate
+description: Temperature hero — single-sensor aware, with humidity, sensor cards, and an empty state.
+sizes:
+- full
+- half_vertical
+usage: '{% render "homey_climate", devices: devices %}'

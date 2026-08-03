@@ -13,7 +13,7 @@ nothing depends on plugin custom fields.
   `table`, `text`, `divider`) — generic, any data source.
 - **`trmnl_chart`** — a configurable chart engine plus ten one-line presets.
 - **`homey_*`** — Homey-shaped: `cap_tile`, `device_card`, `zone_section`, and
-  the curated `energy`, `weather`, `solar`, `climate_home` screens.
+  the curated `energy`, `climate`, `home_status`, `insights`, `weather`, `solar` screens.
 
 See [COMPONENTS.md](COMPONENTS.md) for the full catalog, usage, and chart
 recipes, and [RECIPES.md](RECIPES.md) for whole screens you can paste into a

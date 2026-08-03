@@ -237,35 +237,82 @@
 </div>
 {% endtemplate %}
 
-{% template homey_climate_home %}
+{% template homey_climate %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% assign sensors = live | where: "temperature" | sort: "zone" %}
 {% assign sensor_count = sensors | size %}
 {% assign temp_total = 0 %}
 {% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
-{% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% else %}{% assign average = "—" %}{% endif %}
-{% assign on_devices = live | where: "on", true %}
-<div class="layout layout--col gap">
-  <div class="grid grid--cols-2 gap">
-    {% render "homey_cap_tile", label: "Avg temperature", value: average, unit: "°C" %}
-    {% render "homey_cap_tile", label: "Devices on", value: on_devices.size, unit: "" %}
-  </div>
-  <div class="grid grid--cols-2 gap">
-    {% for sensor in sensors %}
-      {% render "homey_cap_tile", label: sensor.zone, value: sensor.temperature, unit: "°C" %}
-    {% endfor %}
-  </div>
-  <div class="flex flex--row flex--wrap gap--small">
-    {% for device in devices %}
-      {% for alarm in device.alarms %}
-        <span class="label label--outline">{{ device.zone }}: {{ alarm }}</span>
-      {% endfor %}
-    {% endfor %}
+{% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% assign humid = sensors | where: "humidity" %}
+{% assign humid_count = humid | size %}
+{% assign humid_total = 0 %}
+{% for sensor in humid %}{% assign humid_total = humid_total | plus: sensor.humidity %}{% endfor %}
+{% if humid_count > 0 %}{% assign average_humidity = humid_total | times: 1.0 | divided_by: humid_count | round %}{% endif %}
+{% if sensor_count == 0 %}
+<div class="layout">
+  <div class="item">
+    <div class="content content--center">
+      <span class="value value--small">No temperature sensors yet</span>
+      <span class="label">Readings appear once Homey has a climate device</span>
+    </div>
   </div>
 </div>
+{% else %}
+<div class="layout layout--col gap--large">
+  <div class="grid grid--cols-2 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        {% if sensor_count == 1 %}
+          {% assign solo = sensors | first %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ solo.temperature }}&deg;</span>
+          <span class="label" data-clamp="1">{{ solo.name }} &middot; {{ solo.zone }}</span>
+        {% else %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ average }}&deg;</span>
+          <span class="label">Average &middot; {{ sensor_count }} sensors</span>
+        {% endif %}
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{% if humid_count > 0 %}{{ average_humidity }}%{% else %}&mdash;{% endif %}</span>
+        <span class="label">{% if humid_count > 1 %}Average humidity{% else %}Humidity{% endif %}</span>
+      </div>
+    </div>
+  </div>
+  {% if sensor_count > 1 and sensor_count <= 4 %}
+  <div class="grid grid--cols-2 gap">
+    {% for sensor in sensors %}
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content">
+          <span class="value value--large value--tnums">{{ sensor.temperature }}&deg;{% if sensor.humidity %} &middot; {{ sensor.humidity }}%{% endif %}</span>
+          <span class="label" data-clamp="1">{{ sensor.name }} &middot; {{ sensor.zone }}</span>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {% elsif sensor_count > 4 %}
+  <table class="table">
+    <tbody>
+      {% for sensor in sensors limit: 8 %}
+      <tr>
+        <td><span class="title title--small" data-clamp="1">{{ sensor.name }}</span></td>
+        <td><span class="label">{{ sensor.zone }}</span></td>
+        <td class="text--right"><span class="value value--xsmall value--tnums">{{ sensor.temperature }}&deg;</span></td>
+        <td class="text--right"><span class="value value--xsmall value--tnums">{% if sensor.humidity %}{{ sensor.humidity }}%{% endif %}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+{% endif %}
 <div class="title_bar">
-  <span class="title lg:title--large">Home</span>
+  <span class="title lg:title--large">Climate</span>
   <span class="instance">{{ sensor_count }} sensors</span>
 </div>
 {% endtemplate %}
@@ -303,6 +350,8 @@
 {% assign ranked = drawing | sort: "power" | reverse %}
 {% assign top = ranked | first %}
 {% assign zones = drawing | map: "zone" | uniq %}
+{% assign drawing_count = drawing | size %}
+{% if drawing_count == 0 %}{% assign show_chart = "no" %}{% endif %}
 {% if show_chart == "yes" %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
 <script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
@@ -326,13 +375,20 @@
     <div class="item">
       <div class="meta"></div>
       <div class="content">
-        <span class="value value--large lg:value--xxlarge value--tnums">{{ zones | size }}</span>
-        <span class="label lg:label--large">Zones</span>
+        <span class="value value--large lg:value--xxlarge value--tnums">{{ drawing_count }} / {{ live | size }}</span>
+        <span class="label lg:label--large">Drawing power</span>
       </div>
     </div>
   </div>
   {% if show_chart == "yes" %}
   <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
+  {% elsif drawing_count == 0 %}
+  <div class="item">
+    <div class="content content--center">
+      <span class="value value--small">No power readings yet</span>
+      <span class="label">Watts appear once a device reports power</span>
+    </div>
+  </div>
   {% endif %}
 </div>
 <div class="title_bar">
@@ -365,6 +421,128 @@
   else { window.addEventListener("chartkick:load", createHomeyEnergyChart, true); }
 </script>
 {% endif %}
+{% endtemplate %}
+
+{% template homey_home_status %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% assign on_devices = live | where: "on", true %}
+{% assign lights = live | where: "klass", "light" %}
+{% assign lights_on = lights | where: "on", true %}
+{% assign zones = devices | map: "zone" | uniq %}
+{% assign alarm_count = 0 %}
+{% for device in devices %}{% assign alarm_count = alarm_count | plus: device.alarms.size %}{% endfor %}
+<div class="layout layout--col gap--large">
+  <div class="grid grid--cols-2 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ on_devices | size }} / {{ live | size }}</span>
+        <span class="label">Devices on</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        {% if alarm_count > 0 %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ alarm_count }}</span>
+          <span class="label">Active alarms</span>
+        {% else %}
+          <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ lights_on | size }} / {{ lights | size }}</span>
+          <span class="label">Lights on</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if alarm_count > 0 %}
+    <div class="flex flex--row flex--wrap gap--small">
+      {% for device in devices %}
+        {% for alarm in device.alarms %}
+          <span class="label label--outline">{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="item">
+      <div class="content content--center">
+        <span class="value value--small">All clear &mdash; no active alarms</span>
+        <span class="label">{{ zones | size }} zones &middot; {{ lights_on | size }} of {{ lights | size }} lights on</span>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<div class="title_bar">
+  <span class="title lg:title--large">Home</span>
+  <span class="instance">{{ live | size }} devices</span>
+</div>
+{% endtemplate %}
+
+{% template homey_insights %}
+{% assign point_count = series | size %}
+{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% assign chart_id = "homey-insights-chart" | append_random %}
+{% if point_count == 0 %}
+<div class="layout">
+  <div class="item">
+    <div class="content content--center">
+      <span class="value value--small">No insight data yet</span>
+      <span class="label">Pick a logged metric in plugin settings</span>
+    </div>
+  </div>
+</div>
+{% else %}
+{% assign latest_pair = series | last %}
+{% assign latest = latest_pair[1] %}
+{% assign low = latest %}
+{% assign high = latest %}
+{% for pair in series %}
+  {% if pair[1] != nil %}
+    {% if pair[1] < low %}{% assign low = pair[1] %}{% endif %}
+    {% if pair[1] > high %}{% assign high = pair[1] %}{% endif %}
+  {% endif %}
+{% endfor %}
+<script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
+<script src="https://trmnl.com/js/chartkick/5.0.1/chartkick.min.js"></script>
+<div class="layout layout--col gap">
+  <div class="grid grid--cols-2 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge value--tnums" data-fit-value="true">{{ latest | round: 1 }}{{ unit }}</span>
+        <span class="label" data-clamp="1">{{ title | default: "Insights" }}</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--large value--tnums" data-fit-value="true">{{ low | round: 1 }}&ndash;{{ high | round: 1 }}{{ unit }}</span>
+        <span class="label">24h range</span>
+      </div>
+    </div>
+  </div>
+  <div id="{{ chart_id }}" style="width: 100%; flex-grow: 1;"></div>
+</div>
+<script>
+  var homeyInsightsData = {{ series | json }};
+  var createHomeyInsightsChart = function () {
+    new Chartkick["LineChart"]("{{ chart_id }}", homeyInsightsData, {
+      colors: ["black"], legend: false, points: false, curve: true,
+      library: {
+        chart: { backgroundColor: "transparent" },
+        plotOptions: { series: { animation: false, lineWidth: 4 } },
+        yAxis: { gridLineColor: "#000", gridLineDashStyle: "dot", title: { text: null }, labels: { style: { color: "#000", fontSize: "14px" } } },
+        xAxis: { type: "datetime", lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "14px" } } },
+        credits: { enabled: false }, tooltip: { enabled: false }
+      }
+    });
+  };
+  if ("Chartkick" in window) { createHomeyInsightsChart(); }
+  else { window.addEventListener("chartkick:load", createHomeyInsightsChart, true); }
+</script>
+{% endif %}
+<div class="title_bar">
+  <span class="title lg:title--large">Insights</span>
+  <span class="instance">{{ title | default: "Last 24 hours" }}</span>
+</div>
 {% endtemplate %}
 
 {% template homey_solar %}
