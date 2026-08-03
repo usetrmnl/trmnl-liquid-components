@@ -1,8 +1,13 @@
-# trmnl-homey-components
+# trmnl-liquid-components
 
-Open-source Liquid component library for rendering [Homey](https://homey.app)
-smart-home data on [TRMNL](https://trmnl.com) e-ink screens, plus a storybook to
-preview components with editable sample data and copy their markup.
+> **Alpha.** This library is under active development and not ready for
+> production use yet. Names, shapes, and markup may still change without
+> notice.
+
+Open-source Liquid component library for [TRMNL](https://trmnl.com) e-ink
+screens, plus a storybook to preview components with editable sample data and
+copy their markup. Most components are generic; the [Homey](https://homey.app)
+smart-home components are the first integration built on them.
 
 The components are plain TRMNL `{% template %}` blocks — paste them into a
 private plugin's **shared markup** and `{% render %}` them against your data.
@@ -64,11 +69,21 @@ The same build writes the library as markdown for coding agents, following the
 
 ## Regenerate the copy-paste master
 
-    bundle exec rake build:shared                # all 26 templates
+    bundle exec rake build:shared                # all templates
     bundle exec rake 'build:shared[donut,stat]'  # just those, plus what they need
 
 Naming components writes only those and their dependencies — asking for `donut`
 brings `trmnl_chart` with it, because a preset renders blank without its engine.
+
+## Build recipe kits
+
+    bundle exec rake build:recipes    # writes dist/recipes/<name>/
+
+Each kit is two files ready to paste into a TRMNL plugin: `shared.liquid`
+(the recipe's components with dependencies resolved) and `view.liquid` (the
+screen markup). Start from `recipes/base.liquid` — its header documents every
+field the Homey source exposes, so it is the fork-me template for building
+anything.
 
 ## Contributing
 
