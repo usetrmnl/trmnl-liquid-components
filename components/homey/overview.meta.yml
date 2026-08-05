@@ -1,0 +1,7 @@
+---
+title: Home overview
+description: Average temperature, humidity and total power at a glance, over a compact device readout — the whole home on one screen.
+sizes:
+- full
+- half_vertical
+usage: '{% render "homey_overview", devices: devices %}'

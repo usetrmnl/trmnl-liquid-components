@@ -1,0 +1,64 @@
+{% template homey_overview %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% comment %} times: 1.0 first — divided_by truncates when both operands are integers {% endcomment %}
+{% assign sensors = live | where: "temperature" %}
+{% assign sensor_count = sensors | size %}
+{% assign temp_total = 0 %}
+{% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
+{% if sensor_count > 0 %}{% assign avg_temp = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% assign humidity_sensors = live | where: "humidity" %}
+{% assign humidity_count = humidity_sensors | size %}
+{% assign humidity_total = 0 %}
+{% for sensor in humidity_sensors %}{% assign humidity_total = humidity_total | plus: sensor.humidity %}{% endfor %}
+{% if humidity_count > 0 %}{% assign avg_humidity = humidity_total | times: 1.0 | divided_by: humidity_count | round %}{% endif %}
+{% assign devices_with_power = live | where: "power" %}
+{% assign total_power = 0 %}
+{% for device in devices_with_power %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
+{% assign zones = devices | map: "zone" | uniq %}
+<div class="layout layout--col gap--large">
+  <div class="grid grid--cols-3 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if sensor_count > 0 %}{{ avg_temp }}&deg;{% else %}&mdash;{% endif %}</span>
+        <span class="label lg:label--large">Avg temp</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if humidity_count > 0 %}{{ avg_humidity }}%{% else %}&mdash;{% endif %}</span>
+        <span class="label lg:label--large">Humidity</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
+        <span class="label lg:label--large">Watts now</span>
+      </div>
+    </div>
+  </div>
+  <table class="table">
+    <tbody>
+      {% for device in live limit: 8 %}
+      <tr>
+        <td><span class="title title--small" data-clamp="1">{{ device.name }}</span></td>
+        <td><span class="label">{{ device.zone }}</span></td>
+        <td class="text--right"><span class="value value--xsmall value--tnums">
+          {%- if device.temperature -%}{{ device.temperature }}&deg;{% if device.humidity %} &middot; {{ device.humidity }}%{% endif %}
+          {%- elsif device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
+          {%- elsif device.on == true -%}On
+          {%- elsif device.on == false -%}Off
+          {%- endif -%}
+        </span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="title_bar">
+  <span class="title lg:title--large">Home</span>
+  <span class="instance">{{ zones | size }} zones &middot; {{ live | size }} devices</span>
+</div>
+{% endtemplate %}

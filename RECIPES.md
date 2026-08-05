@@ -6,8 +6,10 @@ the installer picks their own Homey plugin.
 
 | Recipe | Shows |
 |---|---|
+| [`home_overview.liquid`](recipes/home_overview.liquid) | Average temperature, humidity and total power, over a compact device readout |
 | [`energy.liquid`](recipes/energy.liquid) | Total power, top consumer, per-zone chart |
-| [`home_overview.liquid`](recipes/home_overview.liquid) | Average temperature, devices on, per-zone sensors, alarms |
+| [`climate.liquid`](recipes/climate.liquid) | Average temperature and humidity, with a per-sensor breakdown |
+| [`home_status.liquid`](recipes/home_status.liquid) | Devices on, active alarms as chips, all-clear line when nothing is wrong |
 | [`zones.liquid`](recipes/zones.liquid) | The first two zones with every device in them |
 
 ## How the binding works
