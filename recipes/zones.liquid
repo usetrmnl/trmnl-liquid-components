@@ -1,4 +1,5 @@
-{%- assign devices = homey.merge_variables.devices -%}
+{%- assign homey_data = homey.merge_variables | default: homey -%}
+{%- assign devices = homey_data.devices -%}
 {% if devices == blank %}
   <div class="layout layout--col gap flex flex--center">
     <span class="label label--gray">Waiting for the first push from Homey…</span>

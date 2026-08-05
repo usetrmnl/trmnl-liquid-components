@@ -33,6 +33,15 @@ RSpec.describe 'recipes' do
       expect(html).not_to include('Waiting for the first push')
     end
 
+    context "when the source is a native Homey plugin whose snapshot is flat (no merge_variables wrapper)" do
+      it "renders #{recipe} instead of a blank binding" do
+        html = render(recipe, { 'homey' => snapshot })
+        expect(html).not_to include('Liquid error')
+        expect(html).to include('title_bar')
+        expect(html).not_to include('Waiting for the first push')
+      end
+    end
+
     it "shows #{recipe}'s not-connected state before the first push" do
       html = render(recipe, merged({}))
       expect(html).to include('Waiting for the first push')

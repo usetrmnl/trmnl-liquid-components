@@ -2,23 +2,26 @@
 Base Homey recipe — every field the source exposes, ready to fork.
 
 `homey` is the plugin_instance_select field keyname; TRMNL aliases the
-installer's chosen Homey instance under it. Available data:
+installer's chosen Homey instance under it. A native Homey plugin exposes its
+snapshot flat (`homey.devices`); a webhook source nests it (`homey.merge_variables.devices`).
+`homey_data` below resolves to whichever is present, then exposes:
 
-  homey.merge_variables.source          "companion" (push) or "cloud" (OAuth poll)
-  homey.merge_variables.zone_names      { zoneId => zone name }
-  homey.merge_variables.devices[]       name, zone, klass, available,
-                                        power (W), temperature (°C), humidity (%),
-                                        wind (km/h), energy (kWh),
-                                        titles { field => localized label },
-                                        on (true/false/null), alarms ["smoke", ...]
-  homey.merge_variables.insight_title   } optional — present when a push producer
-  homey.merge_variables.insight_unit    } includes a pre-fetched 24h series
-  homey.merge_variables.insight_series  } [[timestamp, value], ...]
+  homey_data.source          "companion" (push) or "cloud" (OAuth poll)
+  homey_data.zone_names      { zoneId => zone name }
+  homey_data.devices[]       name, zone, klass, available,
+                             power (W), temperature (°C), humidity (%),
+                             wind (km/h), energy (kWh),
+                             titles { field => localized label },
+                             on (true/false/null), alarms ["smoke", ...]
+  homey_data.insight_title   } optional — present when a push producer
+  homey_data.insight_unit    } includes a pre-fetched 24h series
+  homey_data.insight_series  } [[timestamp, value], ...]
 
 Aggregate in Liquid: filter with `where`/`where_exp`, order with `sort`,
 sum with a `plus` loop. Liquid cannot build arrays — aggregate where you render.
 {%- endcomment -%}
-{%- assign devices = homey.merge_variables.devices -%}
+{%- assign homey_data = homey.merge_variables | default: homey -%}
+{%- assign devices = homey_data.devices -%}
 {% if devices == blank %}
   <div class="layout layout--col gap flex flex--center">
     <span class="label label--gray">Waiting for the first push from Homey…</span>

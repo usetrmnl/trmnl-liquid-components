@@ -23,9 +23,18 @@ aliases whatever the installer picked under that field's keyname:
 locals_hash[keyname] = locals_hash[selected]
 ```
 
-So a field named `homey` makes `homey.merge_variables` resolve to the
-installer's own Homey data. Every recipe here reads exactly that, and a spec
-fails if one ever hardcodes `private_plugin_<id>`.
+So a field named `homey` aliases the installer's chosen instance under `homey`.
+A native Homey plugin exposes its snapshot flat (`homey.devices`); a webhook
+source nests it (`homey.merge_variables.devices`). Every recipe resolves
+whichever is present and reads from that:
+
+```liquid
+{%- assign homey_data = homey.merge_variables | default: homey -%}
+{%- assign devices = homey_data.devices -%}
+```
+
+A spec fails if a recipe ever hardcodes `private_plugin_<id>`, and another
+renders each recipe from both shapes.
 
 ## Trying one without a Homey
 
@@ -40,14 +49,16 @@ the response. Pass `--file` to send your own.
 
 ## Setting one up
 
-1. **Get Homey data into TRMNL.** Create a private plugin with strategy
-   **Webhook**, then point the companion app's `push_url` at
-   `https://trmnl.com/api/custom_plugins/<uuid>` so it posts
-   `{merge_variables: {...snapshot}}`. Hide it in your playlist — it is a data
-   source, not a screen.
+1. **Get Homey data into TRMNL.** Easiest is the native **Homey** plugin: point
+   the companion app's `push_url` at its
+   `https://trmnl.com/api/plugin_settings/<uuid>/data` endpoint — no Developer
+   Edition, no account link. (A private plugin on the **Webhook** strategy,
+   pushing to `/api/custom_plugins/<uuid>`, still works as a fallback.) Hide the
+   source in your playlist — it is data, not a screen.
 2. **Create the recipe plugin.** New private plugin, strategy **Plugin Merge**.
 3. **Add the picker.** One custom field, `field_type: plugin_instance_select`,
-   `keyname: homey`. This is what installers use to choose their own source.
+   `keyname: homey`, plus `plugin_keyname: homey` to limit the dropdown to Homey
+   plugins. This is what installers use to choose their own source.
 4. **Paste the markup.** `rake 'build:shared[energy,climate,home_status,zone_section]'`
    into the plugin's shared markup, then a file from `recipes/` into the view.
 5. **Publish.** Forkers pick their Homey in step 3's field and the recipe
