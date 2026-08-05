@@ -1,0 +1,62 @@
+---
+devices:
+- name: Thermometer SNZB-02
+  zone: Lounge
+  klass: sensor
+  available: true
+  power:
+  temperature: 19.4
+  humidity: 51
+  wind:
+  energy:
+  titles: {}
+  'on':
+  alarms: []
+- name: Bedroom Sensor
+  zone: Bedroom
+  klass: sensor
+  available: true
+  power:
+  temperature: 18.1
+  humidity: 55
+  wind:
+  energy:
+  titles: {}
+  'on':
+  alarms: []
+- name: Dishwasher
+  zone: Kitchen
+  klass: kettle
+  available: true
+  power: 1840
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on': true
+  alarms: []
+- name: Ceiling Lamp
+  zone: Lounge
+  klass: light
+  available: true
+  power: 9
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on': true
+  alarms: []
+- name: Bedside Lamp
+  zone: Bedroom
+  klass: light
+  available: true
+  power:
+  temperature:
+  humidity:
+  wind:
+  energy:
+  titles: {}
+  'on': false
+  alarms: []

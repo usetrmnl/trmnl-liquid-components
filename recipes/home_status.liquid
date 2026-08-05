@@ -6,9 +6,9 @@
     <span class="label label--gray">Waiting for the first push from Homey…</span>
   </div>
   <div class="title_bar">
-    <span class="title">Home</span>
+    <span class="title">Home status</span>
     <span class="instance">Not connected</span>
   </div>
 {% else %}
-  {% render "homey_overview", devices: devices %}
+  {% render "homey_home_status", devices: devices %}
 {% endif %}
