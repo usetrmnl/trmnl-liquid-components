@@ -54,6 +54,10 @@
         </span></td>
       </tr>
       {% endfor %}
+      {% assign overflow = live | size | minus: 8 %}
+      {% if overflow > 0 %}
+      <tr><td colspan="3"><span class="label">+{{ overflow }} more</span></td></tr>
+      {% endif %}
     </tbody>
   </table>
 </div>
