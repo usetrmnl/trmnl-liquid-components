@@ -44,6 +44,25 @@
       </div>
     </div>
   {% endif %}
+  <div class="hidden lg:block">
+    <table class="table">
+      <tbody>
+        {% for device in live limit: 12 %}
+        <tr>
+          <td><span class="title title--small" data-clamp="1">{{ device.name }}</span></td>
+          <td><span class="label">{{ device.zone }}</span></td>
+          <td class="text--right"><span class="value value--xsmall value--tnums">
+            {%- if device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
+            {%- elsif device.temperature -%}{{ device.temperature }}&deg;
+            {%- elsif device.on == true -%}On
+            {%- elsif device.on == false -%}Off
+            {%- endif -%}
+          </span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Home</span>
