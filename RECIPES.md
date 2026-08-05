@@ -11,6 +11,11 @@ the installer picks their own Homey plugin.
 | [`climate.liquid`](recipes/climate.liquid) | Average temperature and humidity, with a per-sensor breakdown |
 | [`home_status.liquid`](recipes/home_status.liquid) | Devices on, active alarms as chips, all-clear line when nothing is wrong |
 | [`zones.liquid`](recipes/zones.liquid) | The first two zones with every device in them |
+| [`compact.liquid`](recipes/compact.liquid) | One hero stat (devices on · watts) for the half and quadrant slots |
+
+The full recipes above target the full 800x480 slot. For a half or quadrant
+playlist slot, paste `compact.liquid` into that size's markup — one hero stat
+fits any smaller dimension.
 
 ## How the binding works
 
