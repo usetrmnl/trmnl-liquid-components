@@ -1,17 +1,14 @@
 {% template homey_energy %}
 {% assign show_chart = show_chart | default: "yes" %}
 {% assign chart_type = chart_type | default: "column" %}
-{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% comment %} unique id so two instances on one screen don't collide {% endcomment %}
 {% assign chart_id = "homey-energy-chart" | append_random %}
-{% comment %} Aggregates the snapshot's flat device list — Liquid can't build an array, so totals are summed where they're rendered. {% endcomment %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% assign drawing = live | where: "power" %}
-{% assign total_power = 0 %}
-{% for device in drawing %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
-{% assign ranked = drawing | sort: "power" | reverse %}
-{% assign top = ranked | first %}
-{% assign zones = drawing | map: "zone" | uniq %}
 {% assign drawing_count = drawing | size %}
+{% assign total_power = drawing | sum: "power" %}
+{% assign top = drawing | sort: "power" | reverse | first %}
+{% assign zones = drawing | map: "zone" | uniq %}
 {% if drawing_count == 0 %}{% assign show_chart = "no" %}{% endif %}
 {% if show_chart == "yes" %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
@@ -54,15 +51,13 @@
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Energy</span>
-  <span class="instance">{{ drawing | size }} drawing power</span>
+  <span class="instance">{{ drawing_count }} drawing power</span>
 </div>
 {% if show_chart == "yes" %}
 <script>
   var homeyEnergyData = [
     {% for zone in zones %}
-      {%- assign in_zone = drawing | where: "zone", zone -%}
-      {%- assign zone_watts = 0 -%}
-      {%- for device in in_zone %}{% assign zone_watts = zone_watts | plus: device.power %}{% endfor -%}
+      {%- assign zone_watts = drawing | where: "zone", zone | sum: "power" -%}
       ["{{ zone }}", {{ zone_watts }}]{% unless forloop.last %},{% endunless %}
     {% endfor %}
   ];

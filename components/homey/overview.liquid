@@ -3,17 +3,12 @@
 {% comment %} times: 1.0 first — divided_by truncates when both operands are integers {% endcomment %}
 {% assign sensors = live | where: "temperature" %}
 {% assign sensor_count = sensors | size %}
-{% assign temp_total = 0 %}
-{% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
-{% if sensor_count > 0 %}{% assign avg_temp = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% if sensor_count > 0 %}{% assign avg_temp = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
 {% assign humidity_sensors = live | where: "humidity" %}
 {% assign humidity_count = humidity_sensors | size %}
-{% assign humidity_total = 0 %}
-{% for sensor in humidity_sensors %}{% assign humidity_total = humidity_total | plus: sensor.humidity %}{% endfor %}
-{% if humidity_count > 0 %}{% assign avg_humidity = humidity_total | times: 1.0 | divided_by: humidity_count | round %}{% endif %}
+{% if humidity_count > 0 %}{% assign avg_humidity = humidity_sensors | sum: "humidity" | times: 1.0 | divided_by: humidity_count | round %}{% endif %}
 {% assign devices_with_power = live | where: "power" %}
-{% assign total_power = 0 %}
-{% for device in devices_with_power %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
+{% assign total_power = devices_with_power | sum: "power" %}
 {% assign zones = devices | map: "zone" | uniq %}
 <div class="layout layout--col gap--large">
   <div class="grid grid--cols-3 gap">

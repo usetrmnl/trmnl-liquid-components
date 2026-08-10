@@ -13,7 +13,7 @@
   {%- assign live = devices | where_exp: "device", "device.available != false" -%}
   {%- assign on_devices = live | where: "on", true -%}
   {%- assign devices_with_power = live | where: "power" -%}
-  {%- assign total_power = 0 -%}{% for device in devices_with_power %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
+  {%- assign total_power = devices_with_power | sum: "power" -%}
   <div class="layout layout--col flex flex--center">
     <span class="value value--xxlarge lg:value--giga value--tnums" data-fit-value="true">{{ on_devices | size }} / {{ live | size }}</span>
     <span class="label lg:label--large">Devices on{% if total_power > 0 %} &middot; {{ total_power }} W{% endif %}</span>

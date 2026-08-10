@@ -2,15 +2,11 @@
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% assign sensors = live | where: "temperature" | sort: "zone" %}
 {% assign sensor_count = sensors | size %}
-{% assign temp_total = 0 %}
-{% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
-{% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% if sensor_count > 0 %}{% assign average = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
 {% assign humid = sensors | where: "humidity" %}
 {% assign humid_count = humid | size %}
-{% assign humid_total = 0 %}
-{% for sensor in humid %}{% assign humid_total = humid_total | plus: sensor.humidity %}{% endfor %}
-{% if humid_count > 0 %}{% assign average_humidity = humid_total | times: 1.0 | divided_by: humid_count | round %}{% endif %}
+{% if humid_count > 0 %}{% assign average_humidity = humid | sum: "humidity" | times: 1.0 | divided_by: humid_count | round %}{% endif %}
 {% if sensor_count == 0 %}
 <div class="layout">
   <div class="item">
