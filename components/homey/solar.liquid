@@ -4,10 +4,8 @@
 {% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign metered = pool | where: "energy" %}
 {% assign producing = pool | where: "power" %}
-{% assign current_power = 0 %}
-{% for device in producing %}{% assign current_power = current_power | plus: device.power %}{% endfor %}
-{% assign total = 0 %}
-{% for device in metered %}{% assign total = total | plus: device.energy %}{% endfor %}
+{% assign current_power = producing | sum: "power" %}
+{% assign total = metered | sum: "energy" %}
 <div class="layout layout--col gap">
   <div class="item">
     <div class="meta"></div>
