@@ -16,7 +16,8 @@ a.nav-item { color: inherit; text-decoration: none; }
 .toolbar #sizes button.active { background: #111; color: #fff; border-color: #111; }
 .toolbar #copy { margin-left: auto; padding: .3rem .8rem; border: 1px solid #111; background: #fff; border-radius: 4px; cursor: pointer; }
 .preview-wrap { flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; background: #f4f4f5; border: 1px solid #e3e3e3; border-radius: 6px; padding: 1rem; }
-#preview { flex: none; border: 1px solid #ccc; background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.12); }
+#preview-scale { flex: none; box-shadow: 0 1px 6px rgba(0,0,0,.12); }
+#preview { display: block; border: 1px solid #ccc; background: #fff; }
 .controls { display: flex; flex-wrap: wrap; gap: .25rem; align-items: center; }
 .controls:empty { display: none; }
 .controls button { padding: .2rem .6rem; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; font-size: .8rem; }

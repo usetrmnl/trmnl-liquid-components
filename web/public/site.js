@@ -13,7 +13,21 @@ function applyDimensions(size) {
   const [width, height] = dimensions[size] || dimensions.full;
   preview.style.width = `${width}px`;
   preview.style.height = `${height}px`;
+
+  // Render at the device's true resolution, then scale the frame down to fit the
+  // preview area (never up) so a large screen like TRMNL X does not overflow.
+  const wrap = preview.closest('.preview-wrap');
+  const pad = 32;
+  const scale = Math.min(1, (wrap.clientWidth - pad) / width, (wrap.clientHeight - pad) / height);
+  preview.style.transform = `scale(${scale})`;
+  preview.style.transformOrigin = 'top left';
+
+  const box = document.getElementById('preview-scale');
+  box.style.width = `${width * scale}px`;
+  box.style.height = `${height * scale}px`;
 }
+
+window.addEventListener('resize', () => { if (state.size) applyDimensions(state.size); });
 
 function refresh() {
   applyDimensions(state.size);
