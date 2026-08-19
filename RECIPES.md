@@ -4,6 +4,17 @@ Ready-to-paste screens built from the components. Each one reads a Homey
 snapshot through a **Plugin Merge** reference, so it works on any account once
 the installer picks their own Homey plugin.
 
+All six are already live in the TRMNL catalog under the **Homey** group, so if
+you just want them on a screen you do not need this file at all. Search the
+recipe catalog for Homey, or follow the
+[setup guide](https://help.trmnl.com/en/articles/16527414-homey).
+
+This file is for the other case: you looked at one of them and wanted it
+different. Fork it, rearrange it, and publish your own. Ours are templates, and
+the ones worth installing usually come from someone solving their own problem.
+Published recipes also earn from the
+[Creator Fund](https://trmnl.com/blog/creator-fund).
+
 | Recipe | Shows |
 |---|---|
 | [`home_overview.liquid`](recipes/home_overview.liquid) | Average temperature, humidity and total power, over a compact device readout |
