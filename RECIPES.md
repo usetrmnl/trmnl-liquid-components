@@ -55,11 +55,16 @@ the response. Pass `--file` to send your own.
 ## Setting one up
 
 1. **Get Homey data into TRMNL.** Easiest is the native **Homey** plugin: point
-   the companion app's `push_url` at its
-   `https://trmnl.com/api/plugin_settings/<uuid>/data` endpoint — no Developer
-   Edition, no account link. (A private plugin on the **Webhook** strategy,
-   pushing to `/api/custom_plugins/<uuid>`, still works as a fallback.) Hide the
-   source in your playlist — it is data, not a screen.
+   the [companion app](https://github.com/usetrmnl/trmnl-homey-app)'s `push_url`
+   at its `https://trmnl.com/api/plugin_settings/<uuid>/data` endpoint — no
+   Developer Edition, no account link, no size cap. Without the app, paste
+   [`homeyscript/push.js`](https://github.com/usetrmnl/trmnl-homey-app/blob/main/homeyscript/push.js)
+   into Athom's HomeyScript and run it from a Flow; it sends the identical body.
+   (A private plugin on the **Webhook** strategy, pushing to
+   `/api/custom_plugins/<uuid>`, works as a fallback, but that endpoint needs
+   Developer Edition and caps the payload at 2 kB — 5 kB on TRMNL+ — which about
+   twenty devices will exceed.) Hide the source in your playlist — it is data,
+   not a screen.
 2. **Create the recipe plugin.** New private plugin, strategy **Plugin Merge**.
 3. **Add the picker.** One custom field, `field_type: plugin_instance_select`,
    `keyname: homey`, plus `plugin_keyname: homey` to limit the dropdown to Homey
