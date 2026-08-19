@@ -9,6 +9,8 @@ screens, plus a storybook to preview components with editable sample data and
 copy their markup. Most components are generic; the [Homey](https://homey.app)
 smart-home components are the first integration built on them.
 
+Browse the storybook at **[components.trmnl.com](https://components.trmnl.com)**.
+
 The components are plain TRMNL `{% template %}` blocks — paste them into a
 private plugin's **shared markup** and `{% render %}` them against your data.
 Options are render arguments, so every instance is configured independently and
