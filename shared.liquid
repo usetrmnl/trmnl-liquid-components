@@ -324,8 +324,12 @@
 
 {% template homey_device_card %}
 {% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
-{%- comment -%} A control the owner set (dim, colour) is not a reading, so only these components tile. {%- endcomment -%}
+{%- comment -%} A control the owner set (dim, color) is not a reading, so only these components tile. {%- endcomment -%}
 {%- assign tiled = "sensor,battery,toggle" | split: "," -%}
+{%- comment -%} Two columns, so nine tiles is a fifth row and paints past an OG screen. {%- endcomment -%}
+{%- assign tile_cap = 8 -%}
+{%- assign drawn = 0 -%}
+{%- assign held_back = 0 -%}
 <div class="flex flex--col gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
   {% if device.available == false %}
@@ -335,9 +339,10 @@
       {%- if device.capabilities != blank -%}
         {%- for pair in device.capabilities -%}
           {%- assign capability = pair[1] -%}
-          {%- if capability.display_value != blank and tiled contains capability.component -%}
-            {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
-          {%- endif -%}
+          {%- unless capability.display_value != blank and tiled contains capability.component -%}{%- continue -%}{%- endunless -%}
+          {%- assign drawn = drawn | plus: 1 -%}
+          {%- if drawn > tile_cap -%}{%- assign held_back = held_back | plus: 1 -%}{%- continue -%}{%- endif -%}
+          {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
         {%- endfor -%}
       {%- else -%}
         {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
@@ -349,6 +354,7 @@
         {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
       {%- endif -%}
     </div>
+    {%- if held_back > 0 -%}<span class="label">+{{ held_back }} more</span>{%- endif -%}
   {% endif %}
 </div>
 {% endtemplate %}

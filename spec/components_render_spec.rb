@@ -36,18 +36,22 @@ RSpec.describe 'components render' do
     expect(render('cap_tile')).to include('1,240')
   end
 
-  it 'renders device_card from the flat capability fields the snapshot carries' do
-    expect(render('device_card')).to include('820').and include('6.4').and include('Solar inverter')
+  it 'renders device_card from the capability bag the snapshot carries' do
+    expect(render('device_card')).to include('21.5').and include('48').and include('Living room climate')
   end
 
-  it 'tiles every capability the bag carries, not only the fields the wire shape names' do
-    expect(render('device_card')).to include('measure-power.svg').and include('meter-power.svg')
+  it 'tiles a capability the wire shape does not name at all' do
+    expect(render('device_card')).to include('measure-co2.svg')
+  end
+
+  it 'caps the tiles a device draws and says how many it held back' do
+    expect(render('device_card')).to include('more')
   end
 
   it 'falls back to the flat fields for a producer that sends no capability bag' do
     device = catalog.find('device_card').sample['device'].reject { |key, _| key == 'capabilities' }
     html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => device })
-    expect(html).to include('820').and include('6.4')
+    expect(html).to include('21.5').and include('48')
   end
 
   it 'draws no glyph on the fallback path, which has no icon to name' do
