@@ -12,7 +12,7 @@
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ on_devices | size }} / {{ live | size }}</span>
-        <span class="label">Devices on</span>
+        <span class="label">{% render "homey_glyph", icon: "onoff" %}Devices on</span>
       </div>
     </div>
     <div class="item">
@@ -20,10 +20,10 @@
       <div class="content">
         {% if alarm_count > 0 %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ alarm_count }}</span>
-          <span class="label">Active alarms</span>
+          <span class="label">{% render "homey_glyph", icon: "alarm-generic-active" %}Active alarms</span>
         {% else %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ lights_on | size }} / {{ lights | size }}</span>
-          <span class="label">Lights on</span>
+          <span class="label">{% render "homey_glyph", icon: "light-hue" %}Lights on</span>
         {% endif %}
       </div>
     </div>
@@ -32,7 +32,8 @@
     <div class="flex flex--row flex--wrap gap--small">
       {% for device in devices %}
         {% for alarm in device.alarms %}
-          <span class="label label--outline">{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
+          {%- assign alarm_icon = alarm | replace: "_", "-" | append: "-active" -%}
+          <span class="label label--outline">{% render "homey_glyph", icon: alarm_icon %}{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
         {% endfor %}
       {% endfor %}
     </div>
@@ -58,11 +59,12 @@
             {%- elsif device.on == false -%}Off
             {%- endif -%}
           </span></td>
+          <td class="text--right">{% assign battery = device.capabilities.measure_battery %}{% if battery != blank %}<span class="label{% if device.capabilities.alarm_battery.value == true %} label--error{% endif %}">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{% endif %}</td>
         </tr>
         {% endfor %}
         {% assign overflow = live | size | minus: 12 %}
         {% if overflow > 0 %}
-        <tr><td colspan="3"><span class="label">+{{ overflow }} more</span></td></tr>
+        <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
         {% endif %}
       </tbody>
     </table>

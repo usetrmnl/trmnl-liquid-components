@@ -47,6 +47,14 @@ RSpec.describe 'components render' do
     expect(html).not_to include('capabilities/')
   end
 
+  it "draws a raised alarm with Athom's active variant of its glyph" do
+    expect(render('home_status')).to include('capabilities/alarm-smoke-active.svg')
+  end
+
+  it 'shows the battery of a sensor that reports one, which the flat fields never carried' do
+    expect(render('climate')).to include('capabilities/measure-battery.svg')
+  end
+
   it 'renders the glyph a capability names' do
     expect(render('cap_tile')).to include('/images/plugins/homey/capabilities/measure-power.svg')
   end

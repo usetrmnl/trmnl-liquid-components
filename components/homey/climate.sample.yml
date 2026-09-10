@@ -35,6 +35,17 @@ devices:
       decimals: 2
       component: sensor
       display_value: '51'
+    measure_battery:
+      id: measure_battery
+      icon: measure-battery
+      title: Battery
+      units: "%"
+      value: 62
+      maximum: 100
+      minimum: 0
+      decimals: 2
+      component: battery
+      display_value: '62'
 - name: Kitchen Sensor
   zone: Kitchen
   klass: sensor
