@@ -231,8 +231,8 @@
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-    <span class="label lg:label--large">{{ label }}</span>
+    <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ value }}{% if unit != blank %} {{ unit }}{% endif %}</span>
+    <span class="label lg:label--large">{% if icon != blank %}{% render "homey_glyph", icon: icon %}{% endif %}{{ label }}</span>
   </div>
 </div>
 {% endtemplate %}
@@ -241,15 +241,11 @@
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% assign sensors = live | where: "temperature" | sort: "zone" %}
 {% assign sensor_count = sensors | size %}
-{% assign temp_total = 0 %}
-{% for sensor in sensors %}{% assign temp_total = temp_total | plus: sensor.temperature %}{% endfor %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
-{% if sensor_count > 0 %}{% assign average = temp_total | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% if sensor_count > 0 %}{% assign average = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
 {% assign humid = sensors | where: "humidity" %}
 {% assign humid_count = humid | size %}
-{% assign humid_total = 0 %}
-{% for sensor in humid %}{% assign humid_total = humid_total | plus: sensor.humidity %}{% endfor %}
-{% if humid_count > 0 %}{% assign average_humidity = humid_total | times: 1.0 | divided_by: humid_count | round %}{% endif %}
+{% if humid_count > 0 %}{% assign average_humidity = humid | sum: "humidity" | times: 1.0 | divided_by: humid_count | round %}{% endif %}
 {% if sensor_count == 0 %}
 <div class="layout">
   <div class="item">
@@ -306,6 +302,10 @@
         <td class="text--right"><span class="value value--xsmall value--tnums">{% if sensor.humidity %}{{ sensor.humidity }}%{% endif %}</span></td>
       </tr>
       {% endfor %}
+      {% assign overflow = sensor_count | minus: 8 %}
+      {% if overflow > 0 %}
+      <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
+      {% endif %}
     </tbody>
   </table>
   {% endif %}
@@ -319,19 +319,30 @@
 
 {% template homey_device_card %}
 {% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
+{%- comment -%} A control the owner set (dim, colour) is not a reading, so only these components tile. {%- endcomment -%}
+{%- assign tiled = "sensor,battery,toggle" | split: "," -%}
 <div class="flex flex--col gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
   {% if device.available == false %}
     <span class="label label--outline lg:label--large">Unreachable</span>
   {% else %}
     <div class="grid grid--cols-2 gap">
-      {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
-      {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
-      {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
-      {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
-      {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
-      {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
-      {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+      {%- if device.capabilities != blank -%}
+        {%- for pair in device.capabilities -%}
+          {%- assign capability = pair[1] -%}
+          {%- if capability.display_value != blank and tiled contains capability.component -%}
+            {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
+        {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
+        {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
+        {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
+        {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
+        {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
+        {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+      {%- endif -%}
     </div>
   {% endif %}
 </div>
@@ -340,17 +351,14 @@
 {% template homey_energy %}
 {% assign show_chart = show_chart | default: "yes" %}
 {% assign chart_type = chart_type | default: "column" %}
-{% comment %} unique id so two instances on one screen don't collide (prod pattern) {% endcomment %}
+{% comment %} unique id so two instances on one screen don't collide {% endcomment %}
 {% assign chart_id = "homey-energy-chart" | append_random %}
-{% comment %} Aggregates the snapshot's flat device list — Liquid can't build an array, so totals are summed where they're rendered. {% endcomment %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% assign drawing = live | where: "power" %}
-{% assign total_power = 0 %}
-{% for device in drawing %}{% assign total_power = total_power | plus: device.power %}{% endfor %}
-{% assign ranked = drawing | sort: "power" | reverse %}
-{% assign top = ranked | first %}
-{% assign zones = drawing | map: "zone" | uniq %}
 {% assign drawing_count = drawing | size %}
+{% assign total_power = drawing | sum: "power" %}
+{% assign top = drawing | sort: "power" | reverse | first %}
+{% assign zones = drawing | map: "zone" | uniq %}
 {% if drawing_count == 0 %}{% assign show_chart = "no" %}{% endif %}
 {% if show_chart == "yes" %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
@@ -393,15 +401,13 @@
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Energy</span>
-  <span class="instance">{{ drawing | size }} drawing power</span>
+  <span class="instance">{{ drawing_count }} drawing power</span>
 </div>
 {% if show_chart == "yes" %}
 <script>
   var homeyEnergyData = [
     {% for zone in zones %}
-      {%- assign in_zone = drawing | where: "zone", zone -%}
-      {%- assign zone_watts = 0 -%}
-      {%- for device in in_zone %}{% assign zone_watts = zone_watts | plus: device.power %}{% endfor -%}
+      {%- assign zone_watts = drawing | where: "zone", zone | sum: "power" -%}
       ["{{ zone }}", {{ zone_watts }}]{% unless forloop.last %},{% endunless %}
     {% endfor %}
   ];
@@ -411,8 +417,8 @@
       library: {
         chart: { backgroundColor: "transparent" },
         plotOptions: { series: { animation: false, borderWidth: 0 } },
-        yAxis: { gridLineColor: "#000", gridLineDashStyle: "dot", title: { text: null }, labels: { style: { color: "#000", fontSize: "14px" } } },
-        xAxis: { lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "14px" } } },
+        yAxis: { gridLineColor: "#000", title: { text: null }, labels: { style: { color: "#000", fontSize: "18px" } } },
+        xAxis: { lineColor: "#000", tickColor: "#000", labels: { style: { color: "#000", fontSize: "18px" } } },
         credits: { enabled: false }, tooltip: { enabled: false }
       }
     });
@@ -421,6 +427,10 @@
   else { window.addEventListener("chartkick:load", createHomeyEnergyChart, true); }
 </script>
 {% endif %}
+{% endtemplate %}
+
+{% template homey_glyph %}
+<img src="/images/plugins/homey/capabilities/{{ icon }}.svg" alt="" style="width: 1em; height: 1em; vertical-align: -0.15em; margin-right: 0.25em;">
 {% endtemplate %}
 
 {% template homey_home_status %}
@@ -469,6 +479,29 @@
       </div>
     </div>
   {% endif %}
+  <div class="hidden lg:block">
+    <table class="table">
+      <tbody>
+        {% for device in live limit: 12 %}
+        <tr>
+          <td><span class="title title--small" data-clamp="1">{{ device.name }}</span></td>
+          <td><span class="label">{{ device.zone }}</span></td>
+          <td class="text--right"><span class="value value--xsmall value--tnums">
+            {%- if device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
+            {%- elsif device.temperature -%}{{ device.temperature }}&deg;
+            {%- elsif device.on == true -%}On
+            {%- elsif device.on == false -%}Off
+            {%- endif -%}
+          </span></td>
+        </tr>
+        {% endfor %}
+        {% assign overflow = live | size | minus: 12 %}
+        {% if overflow > 0 %}
+        <tr><td colspan="3"><span class="label">+{{ overflow }} more</span></td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Home</span>
@@ -545,16 +578,97 @@
 </div>
 {% endtemplate %}
 
+{% template homey_overview %}
+{% assign live = devices | where_exp: "device", "device.available != false" %}
+{% comment %} times: 1.0 first — divided_by truncates when both operands are integers {% endcomment %}
+{% assign sensors = live | where: "temperature" %}
+{% assign sensor_count = sensors | size %}
+{% if sensor_count > 0 %}{% assign avg_temp = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
+{% assign humidity_sensors = live | where: "humidity" %}
+{% assign humidity_count = humidity_sensors | size %}
+{% if humidity_count > 0 %}{% assign avg_humidity = humidity_sensors | sum: "humidity" | times: 1.0 | divided_by: humidity_count | round %}{% endif %}
+{% assign devices_with_power = live | where: "power" %}
+{% assign total_power = devices_with_power | sum: "power" %}
+{% assign zones = devices | map: "zone" | uniq %}
+{% assign zone_count = zones | size %}
+{% assign device_count = live | size %}
+<div class="layout layout--col gap--large">
+  <div class="grid grid--cols-3 gap">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if sensor_count > 0 %}{{ avg_temp }}&deg;{% else %}&mdash;{% endif %}</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-temperature" %}Avg temp</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if humidity_count > 0 %}{{ avg_humidity }}%{% else %}&mdash;{% endif %}</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-humidity" %}Humidity</span>
+      </div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Watts now</span>
+      </div>
+    </div>
+  </div>
+  <table class="table">
+    <tbody>
+      {% for device in live limit: 8 %}
+      {% comment %} Homey raises alarm_battery at its own threshold, so a panel never guesses one. {% endcomment %}
+      {% assign battery = device.capabilities.measure_battery %}
+      {% assign battery_low = device.capabilities.alarm_battery %}
+      <tr>
+        <td><span class="title title--small" data-clamp="1">{{ device.name }}</span></td>
+        <td><span class="label">{{ device.zone }}</span></td>
+        <td class="text--right"><span class="value value--xsmall value--tnums">
+          {%- if device.capabilities != blank -%}
+            {%- for pair in device.capabilities -%}
+              {%- assign capability = pair[1] -%}
+              {%- if capability.component == "sensor" and capability.display_value != blank -%}
+                {% render "homey_glyph", icon: capability.icon %}{{ capability.display_value }}{{ capability.units }}&nbsp;&nbsp;
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- if device.temperature -%}{{ device.temperature }}&deg;{% if device.humidity %} &middot; {{ device.humidity }}%{% endif %}
+            {%- elsif device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
+            {%- elsif device.on == true -%}On
+            {%- elsif device.on == false -%}Off
+            {%- endif -%}
+          {%- endif -%}
+        </span></td>
+        <td class="text--right">
+          {%- if battery != blank -%}
+          <span class="label{% if battery_low.value == true %} label--error{% endif %}">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>
+          {%- endif -%}
+        </td>
+      </tr>
+      {% endfor %}
+      {% assign overflow = live | size | minus: 8 %}
+      {% if overflow > 0 %}
+      <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+<div class="title_bar">
+  <span class="title lg:title--large">Home</span>
+  <span class="instance">{{ zone_count }} zone{% if zone_count != 1 %}s{% endif %} &middot; {{ device_count }} device{% if device_count != 1 %}s{% endif %}</span>
+</div>
+{% endtemplate %}
+
 {% template homey_solar %}
 {% comment %} Nothing marks a device as an inverter, so match names the producing device(s); without it this totals every meter in the home. {% endcomment %}
 {% if match %}{% assign pool = devices | where_exp: "device", "device.name contains match" %}{% else %}{% assign pool = devices %}{% endif %}
 {% assign pool = pool | where_exp: "device", "device.available != false" %}
 {% assign metered = pool | where: "energy" %}
 {% assign producing = pool | where: "power" %}
-{% assign current_power = 0 %}
-{% for device in producing %}{% assign current_power = current_power | plus: device.power %}{% endfor %}
-{% assign total = 0 %}
-{% for device in metered %}{% assign total = total | plus: device.energy %}{% endfor %}
+{% assign current_power = producing | sum: "power" %}
+{% assign total = metered | sum: "energy" %}
 <div class="layout layout--col gap">
   <div class="item">
     <div class="meta"></div>

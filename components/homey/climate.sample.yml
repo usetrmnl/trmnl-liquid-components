@@ -12,6 +12,29 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 19.4
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '19.4'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 51
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '51'
 - name: Kitchen Sensor
   zone: Kitchen
   klass: sensor
@@ -24,6 +47,29 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 21.2
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '21.2'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 48
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '48'
 - name: Bedroom Sensor
   zone: Bedroom
   klass: sensor
@@ -36,6 +82,29 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 18.1
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '18.1'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 55
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '55'
 - name: Attic Sensor
   zone: Attic
   klass: sensor
@@ -48,3 +117,26 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 99
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '99'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 99
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '99'

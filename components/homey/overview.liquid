@@ -10,54 +10,73 @@
 {% assign devices_with_power = live | where: "power" %}
 {% assign total_power = devices_with_power | sum: "power" %}
 {% assign zones = devices | map: "zone" | uniq %}
+{% assign zone_count = zones | size %}
+{% assign device_count = live | size %}
 <div class="layout layout--col gap--large">
   <div class="grid grid--cols-3 gap">
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if sensor_count > 0 %}{{ avg_temp }}&deg;{% else %}&mdash;{% endif %}</span>
-        <span class="label lg:label--large">Avg temp</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-temperature" %}Avg temp</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{% if humidity_count > 0 %}{{ avg_humidity }}%{% else %}&mdash;{% endif %}</span>
-        <span class="label lg:label--large">Humidity</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-humidity" %}Humidity</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
-        <span class="label lg:label--large">Watts now</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Watts now</span>
       </div>
     </div>
   </div>
   <table class="table">
     <tbody>
       {% for device in live limit: 8 %}
+      {% comment %} Homey raises alarm_battery at its own threshold, so a panel never guesses one. {% endcomment %}
+      {% assign battery = device.capabilities.measure_battery %}
+      {% assign battery_low = device.capabilities.alarm_battery %}
       <tr>
         <td><span class="title title--small" data-clamp="1">{{ device.name }}</span></td>
         <td><span class="label">{{ device.zone }}</span></td>
         <td class="text--right"><span class="value value--xsmall value--tnums">
-          {%- if device.temperature -%}{{ device.temperature }}&deg;{% if device.humidity %} &middot; {{ device.humidity }}%{% endif %}
-          {%- elsif device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
-          {%- elsif device.on == true -%}On
-          {%- elsif device.on == false -%}Off
+          {%- if device.capabilities != blank -%}
+            {%- for pair in device.capabilities -%}
+              {%- assign capability = pair[1] -%}
+              {%- if capability.component == "sensor" and capability.display_value != blank -%}
+                {% render "homey_glyph", icon: capability.icon %}{{ capability.display_value }}{{ capability.units }}&nbsp;&nbsp;
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            {%- if device.temperature -%}{{ device.temperature }}&deg;{% if device.humidity %} &middot; {{ device.humidity }}%{% endif %}
+            {%- elsif device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}
+            {%- elsif device.on == true -%}On
+            {%- elsif device.on == false -%}Off
+            {%- endif -%}
           {%- endif -%}
         </span></td>
+        <td class="text--right">
+          {%- if battery != blank -%}
+          <span class="label{% if battery_low.value == true %} label--error{% endif %}">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>
+          {%- endif -%}
+        </td>
       </tr>
       {% endfor %}
       {% assign overflow = live | size | minus: 8 %}
       {% if overflow > 0 %}
-      <tr><td colspan="3"><span class="label">+{{ overflow }} more</span></td></tr>
+      <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
       {% endif %}
     </tbody>
   </table>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Home</span>
-  <span class="instance">{{ zones | size }} zones &middot; {{ live | size }} devices</span>
+  <span class="instance">{{ zone_count }} zone{% if zone_count != 1 %}s{% endif %} &middot; {{ device_count }} device{% if device_count != 1 %}s{% endif %}</span>
 </div>
 {% endtemplate %}

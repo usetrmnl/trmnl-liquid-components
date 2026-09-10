@@ -1,10 +1,10 @@
 ---
 title: Capability tile
-description: Generic tile for a single device capability (label + value + unit).
+description: Generic tile for a single device capability (label + value + unit), with an optional Athom glyph.
 sizes:
 - full
 - half_horizontal
 - half_vertical
 - quadrant
 wrap: true
-usage: '{% render "homey_cap_tile", label: label, value: value, unit: unit %}'
+usage: '{% render "homey_cap_tile", label: label, value: value, unit: unit, icon: icon %}'

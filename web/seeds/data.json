@@ -18,7 +18,33 @@
       "energy": null,
       "titles": {},
       "on": null,
-      "alarms": []
+      "alarms": [],
+      "capabilities": {
+        "measure_temperature": {
+          "id": "measure_temperature",
+          "icon": "measure-temperature",
+          "title": "Temperature",
+          "units": "°C",
+          "value": 20,
+          "maximum": null,
+          "minimum": null,
+          "decimals": 1,
+          "component": "sensor",
+          "display_value": "20"
+        },
+        "measure_humidity": {
+          "id": "measure_humidity",
+          "icon": "measure-humidity",
+          "title": "Humidity",
+          "units": "%",
+          "value": 53,
+          "maximum": null,
+          "minimum": null,
+          "decimals": 2,
+          "component": "sensor",
+          "display_value": "53"
+        }
+      }
     },
     {
       "name": "Button SNZB-01P",
@@ -32,7 +58,8 @@
       "energy": null,
       "titles": {},
       "on": null,
-      "alarms": []
+      "alarms": [],
+      "capabilities": {}
     },
     {
       "name": "Sample Kettle Plug",
@@ -46,7 +73,33 @@
       "energy": null,
       "titles": {},
       "on": true,
-      "alarms": []
+      "alarms": [],
+      "capabilities": {
+        "measure_power": {
+          "id": "measure_power",
+          "icon": "measure-power",
+          "title": "Power",
+          "units": "W",
+          "value": 1840,
+          "maximum": null,
+          "minimum": null,
+          "decimals": 2,
+          "component": "sensor",
+          "display_value": "1840"
+        },
+        "onoff": {
+          "id": "onoff",
+          "icon": "onoff",
+          "title": "Turned on",
+          "units": "",
+          "value": true,
+          "maximum": null,
+          "minimum": null,
+          "decimals": null,
+          "component": "toggle",
+          "display_value": "On"
+        }
+      }
     },
     {
       "name": "Sample Bedside Lamp",
@@ -60,7 +113,21 @@
       "energy": null,
       "titles": {},
       "on": false,
-      "alarms": []
+      "alarms": [],
+      "capabilities": {
+        "onoff": {
+          "id": "onoff",
+          "icon": "onoff",
+          "title": "Turned on",
+          "units": "",
+          "value": false,
+          "maximum": null,
+          "minimum": null,
+          "decimals": null,
+          "component": "toggle",
+          "display_value": "Off"
+        }
+      }
     }
   ]
 }

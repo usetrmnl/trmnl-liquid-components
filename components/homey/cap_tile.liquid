@@ -2,8 +2,8 @@
 <div class="item">
   <div class="meta"></div>
   <div class="content">
-    <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ value }}{% if unit != "" %} {{ unit }}{% endif %}</span>
-    <span class="label lg:label--large">{{ label }}</span>
+    <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ value }}{% if unit != blank %} {{ unit }}{% endif %}</span>
+    <span class="label lg:label--large">{% if icon != blank %}{% render "homey_glyph", icon: icon %}{% endif %}{{ label }}</span>
   </div>
 </div>
 {% endtemplate %}

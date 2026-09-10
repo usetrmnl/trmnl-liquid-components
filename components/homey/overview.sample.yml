@@ -12,6 +12,40 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 19.4
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '19.4'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 51
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '51'
+    measure_battery:
+      id: measure_battery
+      icon: measure-battery
+      title: Battery
+      units: "%"
+      value: 100
+      maximum: 100
+      minimum: 0
+      decimals: 2
+      component: battery
+      display_value: '100'
 - name: Bedroom Sensor
   zone: Bedroom
   klass: sensor
@@ -24,6 +58,51 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 18.1
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '18.1'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 55
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '55'
+    measure_battery:
+      id: measure_battery
+      icon: measure-battery
+      title: Battery
+      units: "%"
+      value: 8
+      maximum: 100
+      minimum: 0
+      decimals: 2
+      component: battery
+      display_value: '8'
+    alarm_battery:
+      id: alarm_battery
+      icon: alarm-battery
+      title: Battery alarm
+      units:
+      value: true
+      maximum:
+      minimum:
+      decimals:
+      component: sensor
+      display_value: 'On'
 - name: Dishwasher
   zone: Kitchen
   klass: kettle
@@ -36,6 +115,29 @@ devices:
   titles: {}
   'on': true
   alarms: []
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 1840
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '1840'
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: true
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'On'
 - name: Ceiling Lamp
   zone: Lounge
   klass: light
@@ -48,6 +150,29 @@ devices:
   titles: {}
   'on': true
   alarms: []
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 9
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '9'
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: true
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'On'
 - name: Bedside Lamp
   zone: Bedroom
   klass: light
@@ -60,3 +185,15 @@ devices:
   titles: {}
   'on': false
   alarms: []
+  capabilities:
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: false
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'Off'

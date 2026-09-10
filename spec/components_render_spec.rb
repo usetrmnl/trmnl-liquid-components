@@ -5,7 +5,7 @@ require 'json'
 require 'storybook/catalog'
 require 'storybook/renderer'
 
-WIRE_FIELDS = %w[name zone klass available power temperature humidity wind energy titles on alarms].sort.freeze
+WIRE_FIELDS = %w[name zone klass available power temperature humidity wind energy titles on alarms capabilities].sort.freeze
 
 RSpec.describe 'components render' do
   let(:catalog) { Storybook::Catalog.load(File.join(ROOT, 'components')) }
@@ -29,6 +29,32 @@ RSpec.describe 'components render' do
 
   it 'renders device_card from the flat capability fields the snapshot carries' do
     expect(render('device_card')).to include('820').and include('6.4').and include('Solar inverter')
+  end
+
+  it 'tiles every capability the bag carries, not only the fields the wire shape names' do
+    expect(render('device_card')).to include('measure-power.svg').and include('meter-power.svg')
+  end
+
+  it 'falls back to the flat fields for a producer that sends no capability bag' do
+    device = catalog.find('device_card').sample['device'].reject { |key, _| key == 'capabilities' }
+    html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => device })
+    expect(html).to include('820').and include('6.4')
+  end
+
+  it 'draws no glyph on the fallback path, which has no icon to name' do
+    device = catalog.find('device_card').sample['device'].reject { |key, _| key == 'capabilities' }
+    html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => device })
+    expect(html).not_to include('capabilities/')
+  end
+
+  it 'renders the glyph a capability names' do
+    expect(render('cap_tile')).to include('/images/plugins/homey/capabilities/measure-power.svg')
+  end
+
+  it 'omits the glyph when a caller passes no icon' do
+    html = renderer.render(catalog.find('cap_tile'), size: 'full',
+                           data: { 'label' => 'Power', 'value' => '9', 'unit' => 'W' })
+    expect(html).not_to include('<img')
   end
 
   it 'prefers the device\'s own localized capability title over the English fallback' do
