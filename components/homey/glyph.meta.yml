@@ -1,0 +1,10 @@
+---
+title: Capability glyph
+description: Athom's own icon for one capability. Sized in em, so it follows the text it sits in.
+sizes:
+- full
+- half_horizontal
+- half_vertical
+- quadrant
+wrap: true
+usage: '{% render "homey_glyph", icon: icon %}'

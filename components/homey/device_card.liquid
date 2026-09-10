@@ -1,18 +1,29 @@
 {% template homey_device_card %}
 {% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
+{%- comment -%} A control the owner set (dim, colour) is not a reading, so only these components tile. {%- endcomment -%}
+{%- assign tiled = "sensor,battery,toggle" | split: "," -%}
 <div class="flex flex--col gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
   {% if device.available == false %}
     <span class="label label--outline lg:label--large">Unreachable</span>
   {% else %}
     <div class="grid grid--cols-2 gap">
-      {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
-      {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
-      {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
-      {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
-      {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
-      {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
-      {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+      {%- if device.capabilities != blank -%}
+        {%- for pair in device.capabilities -%}
+          {%- assign capability = pair[1] -%}
+          {%- if capability.display_value != blank and tiled contains capability.component -%}
+            {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
+        {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
+        {% if device.humidity != nil %}{% render "homey_cap_tile", label: device.titles.humidity | default: "Humidity", value: device.humidity, unit: "%" %}{% endif %}
+        {% if device.wind != nil %}{% render "homey_cap_tile", label: device.titles.wind | default: "Wind", value: device.wind, unit: "km/h" %}{% endif %}
+        {% if device.energy != nil %}{% render "homey_cap_tile", label: device.titles.energy | default: "Energy", value: device.energy, unit: "kWh" %}{% endif %}
+        {% if device.on == true %}{% render "homey_cap_tile", label: "State", value: "On", unit: "" %}{% endif %}
+        {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
+      {%- endif -%}
     </div>
   {% endif %}
 </div>
