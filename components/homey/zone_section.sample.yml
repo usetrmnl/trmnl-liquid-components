@@ -12,6 +12,29 @@ devices:
   titles: {}
   wind:
   energy:
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 20
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '20'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 53
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '53'
 - name: Button SNZB-01P
   zone: Lounge
   klass: button
@@ -24,6 +47,7 @@ devices:
   titles: {}
   wind:
   energy:
+  capabilities: {}
 - name: Sample Kettle Plug
   zone: Kitchen
   klass: socket
@@ -36,6 +60,29 @@ devices:
   titles: {}
   wind:
   energy:
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 1840
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '1840'
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: true
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'On'
 - name: Sample Bedside Lamp
   zone: Bedroom
   klass: light
@@ -48,6 +95,18 @@ devices:
   titles: {}
   wind:
   energy:
+  capabilities:
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: false
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'Off'
 - name: Weather station
   zone: Garden
   klass: sensor
@@ -62,6 +121,40 @@ devices:
     wind: Windsnelheid
   'on':
   alarms: []
+  capabilities:
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperatuur
+      units: "°C"
+      value: 12.4
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '12.4'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 63
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '63'
+    measure_wind_strength:
+      id: measure_wind_strength
+      icon: measure-wind-strength
+      title: Windsnelheid
+      units: km/h
+      value: 14
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '14'
 - name: Solar inverter
   zone: Roof
   klass: sensor
@@ -74,6 +167,29 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 820
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '820'
+    meter_power:
+      id: meter_power
+      icon: meter-power
+      title: Energy
+      units: kWh
+      value: 6.4
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '6.4'
 - name: Garage sensor
   zone: Garage
   klass: sensor
@@ -86,4 +202,27 @@ devices:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 9999
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '9999'
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 99
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '99'
 zone: Garage

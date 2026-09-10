@@ -12,6 +12,18 @@ devices:
   titles: {}
   'on': true
   alarms: []
+  capabilities:
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: true
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'On'
 - name: Bedside Lamp
   zone: Bedroom
   klass: light
@@ -24,6 +36,18 @@ devices:
   titles: {}
   'on': false
   alarms: []
+  capabilities:
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units: ''
+      value: false
+      maximum:
+      minimum:
+      decimals:
+      component: toggle
+      display_value: 'Off'
 - name: Smoke Sensor
   zone: Kitchen
   klass: sensor
@@ -37,6 +61,7 @@ devices:
   'on':
   alarms:
   - alarm_smoke
+  capabilities: {}
 - name: Door Sensor
   zone: Hall
   klass: sensor
@@ -50,3 +75,4 @@ devices:
   'on':
   alarms:
   - alarm_contact
+  capabilities: {}

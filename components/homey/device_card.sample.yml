@@ -12,3 +12,26 @@ device:
   titles: {}
   'on':
   alarms: []
+  capabilities:
+    measure_power:
+      id: measure_power
+      icon: measure-power
+      title: Power
+      units: W
+      value: 820
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '820'
+    meter_power:
+      id: meter_power
+      icon: meter-power
+      title: Energy
+      units: kWh
+      value: 6.4
+      maximum:
+      minimum:
+      decimals: 2
+      component: sensor
+      display_value: '6.4'

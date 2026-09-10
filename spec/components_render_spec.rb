@@ -5,7 +5,7 @@ require 'json'
 require 'storybook/catalog'
 require 'storybook/renderer'
 
-WIRE_FIELDS = %w[name zone klass available power temperature humidity wind energy titles on alarms].sort.freeze
+WIRE_FIELDS = %w[name zone klass available power temperature humidity wind energy titles on alarms capabilities].sort.freeze
 
 RSpec.describe 'components render' do
   let(:catalog) { Storybook::Catalog.load(File.join(ROOT, 'components')) }
