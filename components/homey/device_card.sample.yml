@@ -1,37 +1,125 @@
 ---
 device:
-  name: Solar inverter
-  zone: Roof
-  klass: sensor
+  name: Living room climate
+  zone: Lounge
+  klass: thermostat
   available: true
-  power: 820
-  temperature:
-  humidity:
+  power:
+  temperature: 21.5
+  humidity: 48
   wind:
-  energy: 6.4
+  energy:
   titles: {}
-  'on':
+  'on': true
   alarms: []
   capabilities:
-    measure_power:
-      id: measure_power
-      icon: measure-power
-      title: Power
-      units: W
-      value: 820
+    measure_temperature:
+      id: measure_temperature
+      icon: measure-temperature
+      title: Temperature
+      units: "°C"
+      value: 21.5
       maximum:
       minimum:
-      decimals: 2
+      decimals: 1
       component: sensor
-      display_value: '820'
-    meter_power:
-      id: meter_power
-      icon: meter-power
-      title: Energy
-      units: kWh
-      value: 6.4
+      display_value: '21.5'
+    target_temperature:
+      id: target_temperature
+      icon: target-temperature
+      title: Target temperature
+      units: "°C"
+      value: 22.0
       maximum:
       minimum:
-      decimals: 2
+      decimals: 1
       component: sensor
-      display_value: '6.4'
+      display_value: '22'
+    measure_humidity:
+      id: measure_humidity
+      icon: measure-humidity
+      title: Humidity
+      units: "%"
+      value: 48
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '48'
+    measure_co2:
+      id: measure_co2
+      icon: measure-co2
+      title: CO2
+      units: ppm
+      value: 640
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '640'
+    measure_pm25:
+      id: measure_pm25
+      icon: measure-pm25
+      title: PM2.5
+      units: µg/m³
+      value: 12
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '12'
+    measure_luminance:
+      id: measure_luminance
+      icon: measure-luminance
+      title: Luminance
+      units: lx
+      value: 310
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '310'
+    measure_pressure:
+      id: measure_pressure
+      icon: measure-pressure
+      title: Pressure
+      units: mbar
+      value: 1013
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '1013'
+    measure_noise:
+      id: measure_noise
+      icon: measure-noise
+      title: Noise
+      units: dB
+      value: 38
+      maximum:
+      minimum:
+      decimals: 1
+      component: sensor
+      display_value: '38'
+    measure_battery:
+      id: measure_battery
+      icon: measure-battery
+      title: Battery
+      units: "%"
+      value: 74
+      maximum: 100
+      minimum: 0
+      decimals: 1
+      component: battery
+      display_value: '74'
+    onoff:
+      id: onoff
+      icon: onoff
+      title: Turned on
+      units:
+      value: true
+      maximum:
+      minimum:
+      decimals: 1
+      component: toggle
+      display_value: 'On'
