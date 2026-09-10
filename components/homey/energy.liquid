@@ -20,21 +20,21 @@
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
-        <span class="label lg:label--large">Power now (W)</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Power now (W)</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
-        <span class="label lg:label--large">Top: {{ top.name | default: "None" }}</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Top: {{ top.name | default: "None" }}</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--large lg:value--xxlarge value--tnums">{{ drawing_count }} / {{ live | size }}</span>
-        <span class="label lg:label--large">Drawing power</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "onoff" %}Drawing power</span>
       </div>
     </div>
   </div>

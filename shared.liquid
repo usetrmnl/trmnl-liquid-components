@@ -264,10 +264,12 @@
         {% if sensor_count == 1 %}
           {% assign solo = sensors | first %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ solo.temperature }}&deg;</span>
+          {%- assign solo_battery = solo.capabilities.measure_battery -%}
           <span class="label" data-clamp="1">{{ solo.name }} &middot; {{ solo.zone }}</span>
+          {%- if solo_battery != blank -%}<span class="label">{% render "homey_glyph", icon: "measure-battery" %}{{ solo_battery.display_value }}%</span>{%- endif -%}
         {% else %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ average }}&deg;</span>
-          <span class="label">Average &middot; {{ sensor_count }} sensors</span>
+          <span class="label">{% render "homey_glyph", icon: "measure-temperature" %}Average &middot; {{ sensor_count }} sensors</span>
         {% endif %}
       </div>
     </div>
@@ -275,7 +277,7 @@
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{% if humid_count > 0 %}{{ average_humidity }}%{% else %}&mdash;{% endif %}</span>
-        <span class="label">{% if humid_count > 1 %}Average humidity{% else %}Humidity{% endif %}</span>
+        <span class="label">{% render "homey_glyph", icon: "measure-humidity" %}{% if humid_count > 1 %}Average humidity{% else %}Humidity{% endif %}</span>
       </div>
     </div>
   </div>
@@ -286,7 +288,9 @@
         <div class="meta"></div>
         <div class="content">
           <span class="value value--large value--tnums">{{ sensor.temperature }}&deg;{% if sensor.humidity %} &middot; {{ sensor.humidity }}%{% endif %}</span>
+          {%- assign battery = sensor.capabilities.measure_battery -%}
           <span class="label" data-clamp="1">{{ sensor.name }} &middot; {{ sensor.zone }}</span>
+          {%- if battery != blank -%}<span class="label">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{%- endif -%}
         </div>
       </div>
     {% endfor %}
@@ -300,11 +304,12 @@
         <td><span class="label">{{ sensor.zone }}</span></td>
         <td class="text--right"><span class="value value--xsmall value--tnums">{{ sensor.temperature }}&deg;</span></td>
         <td class="text--right"><span class="value value--xsmall value--tnums">{% if sensor.humidity %}{{ sensor.humidity }}%{% endif %}</span></td>
+        <td class="text--right">{% assign battery = sensor.capabilities.measure_battery %}{% if battery != blank %}<span class="label{% if sensor.capabilities.alarm_battery.value == true %} label--error{% endif %}">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{% endif %}</td>
       </tr>
       {% endfor %}
       {% assign overflow = sensor_count | minus: 8 %}
       {% if overflow > 0 %}
-      <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
+      <tr><td colspan="5"><span class="label">+{{ overflow }} more</span></td></tr>
       {% endif %}
     </tbody>
   </table>
@@ -370,21 +375,21 @@
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--giga value--tnums" data-fit-value="true">{{ total_power }}</span>
-        <span class="label lg:label--large">Power now (W)</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Power now (W)</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--large lg:value--xxlarge value--tnums" data-fit-value="true">{{ top.power | default: 0 }}</span>
-        <span class="label lg:label--large">Top: {{ top.name | default: "None" }}</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "measure-power" %}Top: {{ top.name | default: "None" }}</span>
       </div>
     </div>
     <div class="item">
       <div class="meta"></div>
       <div class="content">
         <span class="value value--large lg:value--xxlarge value--tnums">{{ drawing_count }} / {{ live | size }}</span>
-        <span class="label lg:label--large">Drawing power</span>
+        <span class="label lg:label--large">{% render "homey_glyph", icon: "onoff" %}Drawing power</span>
       </div>
     </div>
   </div>
@@ -447,7 +452,7 @@
       <div class="meta"></div>
       <div class="content">
         <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ on_devices | size }} / {{ live | size }}</span>
-        <span class="label">Devices on</span>
+        <span class="label">{% render "homey_glyph", icon: "onoff" %}Devices on</span>
       </div>
     </div>
     <div class="item">
@@ -455,10 +460,10 @@
       <div class="content">
         {% if alarm_count > 0 %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ alarm_count }}</span>
-          <span class="label">Active alarms</span>
+          <span class="label">{% render "homey_glyph", icon: "alarm-generic-active" %}Active alarms</span>
         {% else %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ lights_on | size }} / {{ lights | size }}</span>
-          <span class="label">Lights on</span>
+          <span class="label">{% render "homey_glyph", icon: "light-hue" %}Lights on</span>
         {% endif %}
       </div>
     </div>
@@ -467,7 +472,8 @@
     <div class="flex flex--row flex--wrap gap--small">
       {% for device in devices %}
         {% for alarm in device.alarms %}
-          <span class="label label--outline">{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
+          {%- assign alarm_icon = alarm | replace: "_", "-" | append: "-active" -%}
+          <span class="label label--outline">{% render "homey_glyph", icon: alarm_icon %}{{ device.zone }}: {{ alarm | replace: "alarm_", "" }}</span>
         {% endfor %}
       {% endfor %}
     </div>
@@ -479,7 +485,7 @@
       </div>
     </div>
   {% endif %}
-  <div class="hidden lg:block">
+  <div class="hidden lg:block w--full">
     <table class="table">
       <tbody>
         {% for device in live limit: 12 %}
@@ -493,11 +499,12 @@
             {%- elsif device.on == false -%}Off
             {%- endif -%}
           </span></td>
+          <td class="text--right">{% assign battery = device.capabilities.measure_battery %}{% if battery != blank %}<span class="label{% if device.capabilities.alarm_battery.value == true %} label--error{% endif %}">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{% endif %}</td>
         </tr>
         {% endfor %}
         {% assign overflow = live | size | minus: 12 %}
         {% if overflow > 0 %}
-        <tr><td colspan="3"><span class="label">+{{ overflow }} more</span></td></tr>
+        <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
         {% endif %}
       </tbody>
     </table>
