@@ -23,6 +23,15 @@ RSpec.describe 'components render' do
     html.gsub(/(chart)[0-9a-f]{4}/, '\1').gsub(/\s+/, ' ').strip
   end
 
+  # data-clamp truncates by rewriting the element's text, which drops any <img> inside it —
+  # the glyph vanishes with no error, and only a screenshot shows it.
+  it 'never renders a glyph inside a data-clamp element, which would silently drop it' do
+    offenders = Dir[File.join(ROOT, 'components', '**', '*.liquid')].select do |path|
+      File.read(path).scan(%r{<span[^>]*data-clamp[^>]*>(.*?)</span>}m).flatten.any? { it.include?('homey_glyph') }
+    end
+    expect(offenders).to be_empty
+  end
+
   it 'renders cap_tile with its sample value' do
     expect(render('cap_tile')).to include('1,240')
   end
@@ -45,6 +54,12 @@ RSpec.describe 'components render' do
     device = catalog.find('device_card').sample['device'].reject { |key, _| key == 'capabilities' }
     html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => device })
     expect(html).not_to include('capabilities/')
+  end
+
+  it 'shows the battery on a single-sensor climate panel, which is the common home' do
+    solo = catalog.find('climate').sample['devices'].select { it['capabilities']['measure_temperature'] }.first(1)
+    html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => solo })
+    expect(html).to include('capabilities/measure-battery.svg')
   end
 
   it "draws a raised alarm with Athom's active variant of its glyph" do

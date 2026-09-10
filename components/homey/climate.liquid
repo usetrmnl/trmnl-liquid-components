@@ -25,7 +25,9 @@
         {% if sensor_count == 1 %}
           {% assign solo = sensors | first %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ solo.temperature }}&deg;</span>
-          <span class="label" data-clamp="1">{% render "homey_glyph", icon: "measure-temperature" %}{{ solo.name }} &middot; {{ solo.zone }}</span>
+          {%- assign solo_battery = solo.capabilities.measure_battery -%}
+          <span class="label" data-clamp="1">{{ solo.name }} &middot; {{ solo.zone }}</span>
+          {%- if solo_battery != blank -%}<span class="label">{% render "homey_glyph", icon: "measure-battery" %}{{ solo_battery.display_value }}%</span>{%- endif -%}
         {% else %}
           <span class="value value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">{{ average }}&deg;</span>
           <span class="label">{% render "homey_glyph", icon: "measure-temperature" %}Average &middot; {{ sensor_count }} sensors</span>
@@ -48,7 +50,8 @@
         <div class="content">
           <span class="value value--large value--tnums">{{ sensor.temperature }}&deg;{% if sensor.humidity %} &middot; {{ sensor.humidity }}%{% endif %}</span>
           {%- assign battery = sensor.capabilities.measure_battery -%}
-          <span class="label" data-clamp="1">{{ sensor.name }} &middot; {{ sensor.zone }}{% if battery != blank %} &middot; {% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%{% endif %}</span>
+          <span class="label" data-clamp="1">{{ sensor.name }} &middot; {{ sensor.zone }}</span>
+          {%- if battery != blank -%}<span class="label">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{%- endif -%}
         </div>
       </div>
     {% endfor %}
