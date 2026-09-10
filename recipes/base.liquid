@@ -12,13 +12,30 @@ snapshot flat (`homey.devices`); a webhook source nests it (`homey.merge_variabl
                              power (W), temperature (°C), humidity (%),
                              wind (km/h), energy (kWh),
                              titles { field => localized label },
-                             on (true/false/null), alarms ["smoke", ...]
+                             on (true/false/null), alarms ["smoke", ...],
+                             capabilities { id => capability }
   homey_data.insight_title   } optional — present when a push producer
   homey_data.insight_unit    } includes a pre-fetched 24h series
   homey_data.insight_series  } [[timestamp, value], ...]
 
-Aggregate in Liquid: filter with `where`/`where_exp`, order with `sort`,
-sum with a `plus` loop. Liquid cannot build arrays — aggregate where you render.
+A capability is one reading a device actually reports, and the bag carries every
+one of them — battery, air quality, modes — not only the handful the flat fields
+above name. Each holds:
+
+  id             "measure_battery"
+  icon           "measure-battery" — names Athom's own glyph, which the
+                 homey_glyph component draws
+  title          localized by Homey, already resolved
+  units          "%" · value 8 · minimum 0 · maximum 100 · decimals 2
+  component      sensor, battery, toggle, slider, picker, …
+  display_value  "8" — formatted, so render this rather than value
+
+The flat fields stay for producers that predate the bag: check
+`device.capabilities != blank` and fall back to them. Homey raises
+`alarm_battery` at its own threshold, so read that rather than picking one.
+
+Aggregate in Liquid: filter with `where`/`where_exp`, order with `sort`, total
+with `sum`. Liquid cannot build arrays — aggregate where you render.
 {%- endcomment -%}
 {%- assign homey_data = homey.merge_variables | default: homey -%}
 {%- assign devices = homey_data.devices -%}

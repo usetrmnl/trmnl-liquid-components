@@ -46,8 +46,9 @@ sums, groups and ranks where it draws.
 
 | Component | Shows | Usage | Arguments |
 |---|---|---|---|
-| `cap_tile` | One capability (label + value + unit) | `{% render "homey_cap_tile", label: label, value: value, unit: unit %}` | — |
-| `device_card` | One device, from its flat snapshot fields | `{% render "homey_device_card", device: device %}` | — |
+| `glyph` | Athom's own icon for one capability, sized in em so it follows its text | `{% render "homey_glyph", icon: icon %}` | — |
+| `cap_tile` | One capability (label + value + unit), with an optional glyph | `{% render "homey_cap_tile", label: label, value: value, unit: unit, icon: icon %}` | `icon` |
+| `device_card` | One device, tiling every capability it reports | `{% render "homey_device_card", device: device %}` | — |
 | `zone_section` | Every device in one zone | `{% render "homey_zone_section", devices: devices, zone: zone %}` | — |
 | `energy` | Total power, per-zone split, top consumer | `{% render "homey_energy", devices: devices %}` | `show_chart`, `chart_type` |
 | `climate` | Temperature hero (single-sensor aware) + humidity + sensor cards | `{% render "homey_climate", devices: devices %}` | — |
