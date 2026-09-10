@@ -23,6 +23,27 @@ RSpec.describe 'recipes' do
     Liquid::Template.parse("#{catalog.shared_markup}\n#{markup}", environment: TRMNL::Liquid.new).render(data)
   end
 
+  # `.layout` is the framework's top-level container. One nested inside another collapses, and the
+  # inner content renders to nothing at all — silently, with no Liquid error to find it by.
+  def deepest_layout_nesting(html)
+    depth = 0
+    open_layouts = []
+    worst = 0
+    html.scan(%r{<div[^>]*>|</div>}).each do |tag|
+      if tag == '</div>'
+        open_layouts.pop if open_layouts.last == depth
+        depth -= 1
+      else
+        depth += 1
+        next unless tag.match?(/class="[^"]*\blayout\b/)
+
+        open_layouts.push(depth)
+        worst = [worst, open_layouts.size].max
+      end
+    end
+    worst
+  end
+
   Dir.glob(File.join(File.expand_path('..', __dir__), 'recipes', '*.liquid')).sort.each do |path|
     recipe = File.basename(path, '.liquid')
 
@@ -50,6 +71,10 @@ RSpec.describe 'recipes' do
 
     it "never hardcodes #{recipe} to the author's plugin id, which a fork would resolve through the alias and render blank" do
       expect(File.read(path)).not_to match(/private_plugin_\d+/)
+    end
+
+    it "never nests a layout container in #{recipe}, which collapses the inner content to nothing" do
+      expect(deepest_layout_nesting(render(recipe, merged(snapshot)))).to be <= 1
     end
   end
 
