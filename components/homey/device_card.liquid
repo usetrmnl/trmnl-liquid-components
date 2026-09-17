@@ -7,7 +7,7 @@
 {%- assign tile_columns = tile_columns | default: 2 -%}
 {%- assign drawn = 0 -%}
 {%- assign held_back = 0 -%}
-<div class="flex flex--col gap--small">
+<div class="flex flex--col flex--stretch-x gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
   {% if device.available == false %}
     <span class="label label--outline lg:label--large">Unreachable</span>

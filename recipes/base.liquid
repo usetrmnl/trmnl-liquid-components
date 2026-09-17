@@ -49,6 +49,7 @@ with `sum`. Liquid cannot build arrays — aggregate where you render.
   </div>
 {% else %}
   {%- assign zones = devices | map: "zone" | uniq -%}
+  {%- assign zone_count = zones | size -%}
   <div class="layout layout--col gap">
     {% for zone in zones limit: 2 %}
       {% render "homey_zone_section", devices: devices, zone: zone %}
@@ -56,6 +57,6 @@ with `sum`. Liquid cannot build arrays — aggregate where you render.
   </div>
   <div class="title_bar">
     <span class="title">Homey</span>
-    <span class="instance">{{ zones | size }} zones &middot; {{ devices | size }} devices</span>
+    <span class="instance">{% if zone_count > 2 %}2 of {% endif %}{{ zone_count }} zones &middot; {{ devices | size }} devices</span>
   </div>
 {% endif %}

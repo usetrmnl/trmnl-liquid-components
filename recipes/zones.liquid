@@ -10,6 +10,7 @@
   </div>
 {% else %}
   {%- assign zones = devices | map: "zone" | uniq -%}
+  {%- assign zone_count = zones | size -%}
   <div class="layout layout--col gap">
     {% for zone in zones limit: 2 %}
       {% render "homey_zone_section", devices: devices, zone: zone %}
@@ -17,6 +18,6 @@
   </div>
   <div class="title_bar">
     <span class="title">Zones</span>
-    <span class="instance">{{ zones | size }} zones · {{ devices | size }} devices</span>
+    <span class="instance">{% if zone_count > 2 %}2 of {% endif %}{{ zone_count }} zones · {{ devices | size }} devices</span>
   </div>
 {% endif %}
