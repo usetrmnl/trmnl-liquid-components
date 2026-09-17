@@ -45,6 +45,7 @@ module Storybook
         <!DOCTYPE html>
         <html>
           <head>
+            <base href="https://trmnl.com/"> <!-- glyphs are root-relative and only trmnl.com serves them -->
             <link rel="stylesheet" href="#{css_url}" />
             <script src="#{js_url}"></script>
             <link rel="preconnect" href="https://fonts.googleapis.com">
