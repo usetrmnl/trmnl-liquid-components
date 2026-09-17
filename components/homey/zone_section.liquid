@@ -1,10 +1,15 @@
 {% template homey_zone_section %}
 {% assign in_zone = devices | where: "zone", zone %}
-<div class="flex flex--col gap">
-  <span class="title lg:title--large">{{ zone }}</span>
+{%- comment -%} One row of two cards, two readings each: two zones of this fit an OG screen, a second row does not. {%- endcomment -%}
+{% assign held_back = in_zone.size | minus: 2 %}
+<div class="flex flex--col flex--stretch-x gap">
+  <div class="flex flex--row flex--left gap--small">
+    <span class="title lg:title--large">{{ zone }}</span>
+    {% if held_back > 0 %}<span class="label label--gray">+{{ held_back }} more</span>{% endif %}
+  </div>
   <div class="grid grid--cols-2 gap">
-    {% for device in in_zone %}
-      {% render "homey_device_card", device: device %}
+    {% for device in in_zone limit: 2 %}
+      {% render "homey_device_card", device: device, tile_cap: 2, tile_columns: 2, note_held_back: false %}
     {% endfor %}
   </div>
 </div>

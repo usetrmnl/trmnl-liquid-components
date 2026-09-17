@@ -2,8 +2,9 @@
 {% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
 {%- comment -%} A control the owner set (dim, color) is not a reading, so only these components tile. {%- endcomment -%}
 {%- assign tiled = "sensor,battery,toggle" | split: "," -%}
-{%- comment -%} Two columns, so nine tiles is a fifth row and paints past an OG screen. {%- endcomment -%}
-{%- assign tile_cap = 8 -%}
+{%- comment -%} Two columns, so nine tiles is a fifth row and paints past an OG screen. A host that stacks cards passes its own bound. {%- endcomment -%}
+{%- assign tile_cap = tile_cap | default: 8 -%}
+{%- assign tile_columns = tile_columns | default: 2 -%}
 {%- assign drawn = 0 -%}
 {%- assign held_back = 0 -%}
 <div class="flex flex--col gap--small">
@@ -11,7 +12,7 @@
   {% if device.available == false %}
     <span class="label label--outline lg:label--large">Unreachable</span>
   {% else %}
-    <div class="grid grid--cols-2 gap">
+    <div class="grid grid--cols-{{ tile_columns }} gap">
       {%- if device.capabilities != blank -%}
         {%- for pair in device.capabilities -%}
           {%- assign capability = pair[1] -%}
@@ -30,7 +31,7 @@
         {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
       {%- endif -%}
     </div>
-    {%- if held_back > 0 -%}<span class="label">+{{ held_back }} more</span>{%- endif -%}
+    {%- if held_back > 0 and note_held_back != false -%}<span class="label">+{{ held_back }} more</span>{%- endif -%}
   {% endif %}
 </div>
 {% endtemplate %}

@@ -1,0 +1,364 @@
+{
+  "source": "companion",
+  "zone_names": {
+    "Living room": "Living room",
+    "Kitchen": "Kitchen",
+    "Bedroom": "Bedroom"
+  },
+  "devices": [
+    {
+      "name": "Floor lamp",
+      "zone": "Living room",
+      "klass": "light",
+      "available": true,
+      "on": true,
+      "alarms": [],
+      "titles": {
+        "power": "Power"
+      },
+      "power": 11,
+      "temperature": null,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "onoff": {
+          "id": "onoff",
+          "value": true,
+          "title": "Turned on",
+          "units": null,
+          "decimals": null,
+          "component": "toggle",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "On",
+          "icon": "onoff"
+        },
+        "dim": {
+          "id": "dim",
+          "value": 0.6,
+          "title": "Dim level",
+          "units": "%",
+          "decimals": 2,
+          "component": "slider",
+          "minimum": 0,
+          "maximum": 1,
+          "display_value": "60",
+          "icon": "dim"
+        },
+        "measure_power": {
+          "id": "measure_power",
+          "value": 11,
+          "title": "Power",
+          "units": "W",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "11",
+          "icon": "measure-power"
+        }
+      }
+    },
+    {
+      "name": "Thermostat",
+      "zone": "Living room",
+      "klass": "thermostat",
+      "available": true,
+      "on": null,
+      "alarms": [],
+      "titles": {
+        "temperature": "Temperature"
+      },
+      "power": null,
+      "temperature": 20.4,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "measure_temperature": {
+          "id": "measure_temperature",
+          "value": 20.4,
+          "title": "Temperature",
+          "units": "°C",
+          "decimals": 1,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "20.4",
+          "icon": "measure-temperature"
+        },
+        "target_temperature": {
+          "id": "target_temperature",
+          "value": 21,
+          "title": "Target temperature",
+          "units": "°C",
+          "decimals": 1,
+          "component": "thermostat",
+          "minimum": 4,
+          "maximum": 35,
+          "display_value": "21",
+          "icon": "target-temperature"
+        },
+        "thermostat_mode": {
+          "id": "thermostat_mode",
+          "value": "heat",
+          "title": "Thermostat mode",
+          "units": null,
+          "decimals": null,
+          "component": "picker",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "Heat",
+          "icon": "thermostat-mode"
+        }
+      }
+    },
+    {
+      "name": "TV",
+      "zone": "Living room",
+      "klass": "tv",
+      "available": true,
+      "on": true,
+      "alarms": [],
+      "titles": {
+        "power": "Power"
+      },
+      "power": 96,
+      "temperature": null,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "onoff": {
+          "id": "onoff",
+          "value": true,
+          "title": "Turned on",
+          "units": null,
+          "decimals": null,
+          "component": "toggle",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "On",
+          "icon": "onoff"
+        },
+        "measure_power": {
+          "id": "measure_power",
+          "value": 96,
+          "title": "Power",
+          "units": "W",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "96",
+          "icon": "measure-power"
+        },
+        "volume_set": {
+          "id": "volume_set",
+          "value": 0.22,
+          "title": "Set volume",
+          "units": "%",
+          "decimals": 2,
+          "component": "slider",
+          "minimum": 0,
+          "maximum": 1,
+          "display_value": "22",
+          "icon": "volume-set"
+        }
+      }
+    },
+    {
+      "name": "Dishwasher",
+      "zone": "Kitchen",
+      "klass": "dishwasher",
+      "available": true,
+      "on": true,
+      "alarms": [],
+      "titles": {
+        "power": "Power"
+      },
+      "power": 1840,
+      "temperature": null,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "onoff": {
+          "id": "onoff",
+          "value": true,
+          "title": "Turned on",
+          "units": null,
+          "decimals": null,
+          "component": "toggle",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "On",
+          "icon": "onoff"
+        },
+        "measure_power": {
+          "id": "measure_power",
+          "value": 1840,
+          "title": "Power",
+          "units": "W",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "1840",
+          "icon": "measure-power"
+        },
+        "progress": {
+          "id": "progress",
+          "value": 62,
+          "title": "Progress",
+          "units": "%",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": 0,
+          "maximum": 100,
+          "display_value": "62",
+          "icon": "progress"
+        }
+      }
+    },
+    {
+      "name": "Fridge",
+      "zone": "Kitchen",
+      "klass": "fridge",
+      "available": true,
+      "on": null,
+      "alarms": [],
+      "titles": {
+        "power": "Power",
+        "temperature": "Temperature"
+      },
+      "power": 78,
+      "temperature": 4.2,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "measure_temperature": {
+          "id": "measure_temperature",
+          "value": 4.2,
+          "title": "Temperature",
+          "units": "°C",
+          "decimals": 1,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "4.2",
+          "icon": "measure-temperature"
+        },
+        "measure_power": {
+          "id": "measure_power",
+          "value": 78,
+          "title": "Power",
+          "units": "W",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "78",
+          "icon": "measure-power"
+        }
+      }
+    },
+    {
+      "name": "Air monitor",
+      "zone": "Bedroom",
+      "klass": "sensor",
+      "available": true,
+      "on": null,
+      "alarms": [],
+      "titles": {
+        "temperature": "Temperature",
+        "humidity": "Humidity"
+      },
+      "power": null,
+      "temperature": 19.1,
+      "humidity": 47.5,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "measure_co2": {
+          "id": "measure_co2",
+          "value": 812,
+          "title": "CO₂",
+          "units": "ppm",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "812",
+          "icon": "measure-co2"
+        },
+        "measure_humidity": {
+          "id": "measure_humidity",
+          "value": 47.5,
+          "title": "Humidity",
+          "units": "%",
+          "decimals": 2,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "47.5",
+          "icon": "measure-humidity"
+        },
+        "measure_temperature": {
+          "id": "measure_temperature",
+          "value": 19.1,
+          "title": "Temperature",
+          "units": "°C",
+          "decimals": 1,
+          "component": "sensor",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "19.1",
+          "icon": "measure-temperature"
+        }
+      }
+    },
+    {
+      "name": "Blinds",
+      "zone": "Bedroom",
+      "klass": "blinds",
+      "available": true,
+      "on": null,
+      "alarms": [],
+      "titles": {},
+      "power": null,
+      "temperature": null,
+      "humidity": null,
+      "wind": null,
+      "energy": null,
+      "capabilities": {
+        "windowcoverings_set": {
+          "id": "windowcoverings_set",
+          "value": 0.4,
+          "title": "Position",
+          "units": "%",
+          "decimals": 2,
+          "component": "slider",
+          "minimum": 0,
+          "maximum": 1,
+          "display_value": "40",
+          "icon": "windowcoverings-set"
+        },
+        "windowcoverings_state": {
+          "id": "windowcoverings_state",
+          "value": "idle",
+          "title": "Window coverings state",
+          "units": null,
+          "decimals": null,
+          "component": "ternary",
+          "minimum": null,
+          "maximum": null,
+          "display_value": "Idle",
+          "icon": "windowcoverings-state"
+        }
+      }
+    }
+  ]
+}

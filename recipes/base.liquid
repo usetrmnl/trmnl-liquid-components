@@ -50,7 +50,7 @@ with `sum`. Liquid cannot build arrays — aggregate where you render.
 {% else %}
   {%- assign zones = devices | map: "zone" | uniq -%}
   <div class="layout layout--col gap">
-    {% for zone in zones limit: 3 %}
+    {% for zone in zones limit: 2 %}
       {% render "homey_zone_section", devices: devices, zone: zone %}
     {% endfor %}
   </div>
