@@ -1,8 +1,11 @@
 # trmnl-liquid-components
 
-> **Alpha.** This library is under active development and not ready for
-> production use yet. Names, shapes, and markup may still change without
-> notice.
+> **Stable:** the `trmnl_*` blocks and `trmnl_chart` with its presets. Their
+> template names and render arguments will not change. Markup inside them may
+> still improve.
+>
+> **Alpha:** the `homey_*` components. Names, shapes, and markup may still
+> change without notice.
 
 Open-source Liquid component library for [TRMNL](https://trmnl.com) e-ink
 screens, plus a storybook to preview components with editable sample data and
