@@ -326,16 +326,17 @@
 {% comment %} Homey localizes every capability title, so prefer the device's own label over the English fallback. {% endcomment %}
 {%- comment -%} A control the owner set (dim, color) is not a reading, so only these components tile. {%- endcomment -%}
 {%- assign tiled = "sensor,battery,toggle" | split: "," -%}
-{%- comment -%} Two columns, so nine tiles is a fifth row and paints past an OG screen. {%- endcomment -%}
-{%- assign tile_cap = 8 -%}
+{%- comment -%} Two columns, so nine tiles is a fifth row and paints past an OG screen. A host that stacks cards passes its own bound. {%- endcomment -%}
+{%- assign tile_cap = tile_cap | default: 8 -%}
+{%- assign tile_columns = tile_columns | default: 2 -%}
 {%- assign drawn = 0 -%}
 {%- assign held_back = 0 -%}
-<div class="flex flex--col gap--small">
+<div class="flex flex--col flex--stretch-x gap--small">
   <span class="title title--small lg:title--base">{{ device.name }}</span>
   {% if device.available == false %}
     <span class="label label--outline lg:label--large">Unreachable</span>
   {% else %}
-    <div class="grid grid--cols-2 gap">
+    <div class="grid grid--cols-{{ tile_columns }} gap">
       {%- if device.capabilities != blank -%}
         {%- for pair in device.capabilities -%}
           {%- assign capability = pair[1] -%}
@@ -354,7 +355,7 @@
         {% if device.on == false %}{% render "homey_cap_tile", label: "State", value: "Off", unit: "" %}{% endif %}
       {%- endif -%}
     </div>
-    {%- if held_back > 0 -%}<span class="label">+{{ held_back }} more</span>{%- endif -%}
+    {%- if held_back > 0 and note_held_back != false -%}<span class="label">+{{ held_back }} more</span>{%- endif -%}
   {% endif %}
 </div>
 {% endtemplate %}
@@ -631,7 +632,8 @@
   </div>
   <table class="table">
     <tbody>
-      {% for device in live limit: 8 %}
+      {%- comment -%} Six rows is what the heroes leave of an OG screen; the title bar carries the full count. {%- endcomment -%}
+      {% for device in live limit: 6 %}
       {% comment %} Homey raises alarm_battery at its own threshold, so a panel never guesses one. {% endcomment %}
       {% assign battery = device.capabilities.measure_battery %}
       {% assign battery_low = device.capabilities.alarm_battery %}
@@ -661,16 +663,12 @@
         </td>
       </tr>
       {% endfor %}
-      {% assign overflow = live | size | minus: 8 %}
-      {% if overflow > 0 %}
-      <tr><td colspan="4"><span class="label">+{{ overflow }} more</span></td></tr>
-      {% endif %}
     </tbody>
   </table>
 </div>
 <div class="title_bar">
   <span class="title lg:title--large">Home</span>
-  <span class="instance">{{ zone_count }} zone{% if zone_count != 1 %}s{% endif %} &middot; {{ device_count }} device{% if device_count != 1 %}s{% endif %}</span>
+  <span class="instance">{{ zone_count }} zone{% if zone_count != 1 %}s{% endif %} &middot; {% if device_count > 6 %}6 of {% endif %}{{ device_count }} device{% if device_count != 1 %}s{% endif %}</span>
 </div>
 {% endtemplate %}
 
@@ -729,11 +727,16 @@
 
 {% template homey_zone_section %}
 {% assign in_zone = devices | where: "zone", zone %}
-<div class="flex flex--col gap">
-  <span class="title lg:title--large">{{ zone }}</span>
+{%- comment -%} One row of two cards, two readings each: two zones of this fit an OG screen, a second row does not. {%- endcomment -%}
+{% assign held_back = in_zone.size | minus: 2 %}
+<div class="flex flex--col flex--stretch-x gap">
+  <div class="flex flex--row flex--left gap--small">
+    <span class="title lg:title--large">{{ zone }}</span>
+    {% if held_back > 0 %}<span class="label label--gray">+{{ held_back }} more</span>{% endif %}
+  </div>
   <div class="grid grid--cols-2 gap">
-    {% for device in in_zone %}
-      {% render "homey_device_card", device: device %}
+    {% for device in in_zone limit: 2 %}
+      {% render "homey_device_card", device: device, tile_cap: 2, tile_columns: 2, note_held_back: false %}
     {% endfor %}
   </div>
 </div>
