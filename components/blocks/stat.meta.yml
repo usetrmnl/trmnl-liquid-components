@@ -14,6 +14,6 @@ variants:
 - name: Mega
   args:
     size: mega
-- name: Coloured delta
+- name: Colored delta
   args:
     color_delta: 'yes'

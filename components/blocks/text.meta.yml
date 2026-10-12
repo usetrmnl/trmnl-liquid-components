@@ -10,7 +10,7 @@ usage: '{% render "trmnl_text", title: title, body: body %}'
 variants:
 - name: Default
   args: {}
-- name: Centred, two lines
+- name: Centered, two lines
   args:
     clamp: '2'
     align: center

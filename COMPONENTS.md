@@ -92,7 +92,7 @@ tooltip/animation/credits).
 ### Engine arguments
 
 `chart_type` (line/column/bar/area/pie/scatter), `color_scheme`
-(black/grey/black+grey), `curve`, `points`, `legend` (none/bottom/right),
+(black/gray/black+gray), `curve`, `points`, `legend` (none/bottom/right),
 `stacked`, `data_labels`, `gridlines` (dotted/solid/none), `modules` (load
 `highcharts-more` + `pattern-fill`), and `library` — a raw Highcharts JSON
 object deep-merged last, your escape hatch for anything the knobs don't cover.
@@ -111,10 +111,10 @@ put their config so it survives.
   Keep `chart_type: line` — the column constructor rebuilds series and drops the
   per-series type.
 - **Donut** — `library`: `{"plotOptions":{"pie":{"innerSize":"60%"}},"colors":["#000000","#606060","#a0a0a0","#d0d0d0"]}`.
-  The grey ramp matters: one colour makes every slice dither to the same texture.
-- **Stacked** — use `color_scheme: black+grey` so the two segments stay legible.
+  The gray ramp matters: one color makes every slice dither to the same texture.
+- **Stacked** — use `color_scheme: black+gray` so the two segments stay legible.
 - **Waterfall** — `modules: yes` and `library`: `{"chart":{"type":"waterfall"}}`,
-  with `chart_type: line` (only the line constructor honours a library chart type).
+  with `chart_type: line` (only the line constructor honors a library chart type).
 - **Pattern area** — `modules: yes` and a `library` `plotOptions.series.fillColor`
   pattern. Hatching reads better than solid black once dithered.
 - **Heatmap is not available** — `trmnl.com` serves no heatmap module.
@@ -122,5 +122,5 @@ put their config so it survives.
 ### E-ink chart rules
 
 Black on transparent; dotted gridlines; no tooltips. Pies and stacks need
-distinct **grey shades** (or patterns), never colour. Keep series to 2–3 — e-ink
+distinct **gray shades** (or patterns), never color. Keep series to 2–3 — e-ink
 can't separate more. For a simple trend, prefer `sparkline` over the engine.

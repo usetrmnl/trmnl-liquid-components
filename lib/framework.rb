@@ -3,7 +3,7 @@
 module Storybook
   # Wraps rendered component HTML in the TRMNL design-system frame so a preview
   # looks like production e-ink. CSS/JS are served per-version from the TRMNL CDN.
-  # Pinned so previews are reproducible (matches trmnlp's pin-not-drift behaviour).
+  # Pinned so previews are reproducible (matches trmnlp's pin-not-drift behavior).
   module Framework
     VERSION = '3.1.1'
     SIZES = %w[full half_horizontal half_vertical quadrant].freeze

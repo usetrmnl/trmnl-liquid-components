@@ -166,7 +166,7 @@
 {% assign modules = modules | default: "no" %}
 {% assign library = library | default: "{}" %}
 {% assign chart_id = "homey-chart" | append_random %}
-{% if color_scheme == "grey" %}{% assign colors = '["#888888"]' %}{% elsif color_scheme == "black+grey" %}{% assign colors = '["#000000","#888888"]' %}{% else %}{% assign colors = '["#000000"]' %}{% endif %}
+{% if color_scheme == "gray" %}{% assign colors = '["#888888"]' %}{% elsif color_scheme == "black+gray" %}{% assign colors = '["#000000","#888888"]' %}{% else %}{% assign colors = '["#000000"]' %}{% endif %}
 {% if gridlines == "solid" %}{% assign dash = "Solid" %}{% assign gw = 1 %}{% elsif gridlines == "none" %}{% assign dash = "Solid" %}{% assign gw = 0 %}{% else %}{% assign dash = "Dot" %}{% assign gw = 1 %}{% endif %}
 {% if legend == "none" %}{% assign legend_js = "false" %}{% else %}{% assign legend_js = legend | prepend: '"' | append: '"' %}{% endif %}
 <script src="https://trmnl.com/js/highcharts/12.3.0/highcharts.js"></script>
@@ -223,7 +223,7 @@
 
 {% template trmnl_chart_scatter %}{% render "trmnl_chart", data: data, chart_type: "scatter", points: "yes" %}{% endtemplate %}
 
-{% template trmnl_chart_stacked_column %}{% render "trmnl_chart", data: data, chart_type: "column", color_scheme: "black+grey", legend: "bottom", stacked: "yes" %}{% endtemplate %}
+{% template trmnl_chart_stacked_column %}{% render "trmnl_chart", data: data, chart_type: "column", color_scheme: "black+gray", legend: "bottom", stacked: "yes" %}{% endtemplate %}
 
 {% template trmnl_chart_waterfall %}{% render "trmnl_chart", data: data, modules: "yes", library: '{"chart":{"type":"waterfall"}}' %}{% endtemplate %}
 

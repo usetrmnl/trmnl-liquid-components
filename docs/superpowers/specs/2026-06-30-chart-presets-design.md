@@ -47,7 +47,7 @@ The non-native flavors (combo, waterfall, heatmap, pattern_area) get their ident
 | Control | Type | Maps to |
 |---|---|---|
 | `chart_type` | select: line/column/area/pie/scatter | Chartkick constructor |
-| `color_scheme` | select: black / grey / black+grey | Chartkick `colors` (`['#000']` / `['#888']` / `['#000','#888']`) |
+| `color_scheme` | select: black / gray / black+gray | Chartkick `colors` (`['#000']` / `['#888']` / `['#000','#888']`) |
 | `curve` | boolean | Chartkick `curve` (line/area) |
 | `points` | boolean | Chartkick `points` |
 | `legend` | select: none/bottom/right | Chartkick `legend` |
@@ -123,5 +123,5 @@ Engine ~130 · 10 presets × ~15 ≈ 150 · storybook.js textarea ~15 · specs ~
 
 - GeoChart / maps, BubbleChart (low value for Homey, more modules).
 - Binding presets to real Homey Insights history (that's Project A's `Snapshot#to_merge_variables`).
-- PNG/e-ink dithering export, color beyond black/grey.
+- PNG/e-ink dithering export, color beyond black/gray.
 - A visual drag-config GUI — the controls panel + raw box are enough.

@@ -10,10 +10,10 @@ usage: '{% render "trmnl_chart", data: data %}'
 variants:
 - name: Line
   args: {}
-- name: Column, grey
+- name: Column, gray
   args:
     chart_type: column
-    color_scheme: grey
+    color_scheme: gray
 - name: Legend + data labels
   args:
     legend: bottom

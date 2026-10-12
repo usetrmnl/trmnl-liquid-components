@@ -321,7 +321,7 @@ RSpec.describe 'components render' do
     'bar' => 'Chartkick["BarChart"]',
     'combo' => '"type":"spline"',          # per-series type rides on the data, not library.series
     'donut' => 'innerSize',                # ring hole via raw library
-    'stacked_column' => '#888888',         # grey second series so the stack is legible
+    'stacked_column' => '#888888',         # gray second series so the stack is legible
     'waterfall' => 'highcharts-more.js',   # waterfall series type lives in the more module
     'pattern_area' => 'pattern-fill.js'    # dithered fill needs the pattern module
   }.each do |preset, marker|
