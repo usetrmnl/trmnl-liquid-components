@@ -69,7 +69,7 @@ The same build writes the library as markdown for coding agents, following the
 | File | For |
 |---|---|
 | `llms.txt` | Index — every component, one line each, linked |
-| `llms-full.txt` | Every component inline (~31KB), so one fetch is enough |
+| `llms-full.txt` | Every component inline (~80KB), so one fetch is enough |
 | `c/<name>.md` | One component: template, usage, variants, sample data, markup |
 
 ## Regenerate the copy-paste master
@@ -78,7 +78,7 @@ The same build writes the library as markdown for coding agents, following the
     bundle exec rake 'build:shared[donut,stat]'  # just those, plus what they need
 
 Naming components writes only those and their dependencies — asking for `donut`
-brings `trmnl_chart` with it, because a preset renders blank without its engine.
+brings `trmnl_chart` with it, because a preset prints `Liquid error: Template not found` without its engine.
 
 ## Build recipe kits
 

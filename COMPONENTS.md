@@ -8,8 +8,8 @@ A cheat-sheet for every component in the library. For setup, Docker, and the
 1. Paste the component's **shared markup** into your plugin's shared markup. The
    gallery shows exactly what to copy — the component plus every template it
    renders. Copying the template alone is not enough for the chart presets or
-   anything built on `homey_cap_tile`: Liquid renders an unknown `{% render %}`
-   as blank, so the content silently disappears.
+   anything built on `homey_cap_tile`: an unknown `{% render %}` prints
+   `Liquid error: Template not found` on the screen instead of the content.
 2. Paste the `{% render %}` call into a view, passing your data.
 3. Options are `{% render %}` arguments — pass them inline, per instance. Two
    `trmnl_stat`s on one screen can use different sizes. Omit an argument and the
