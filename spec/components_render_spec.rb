@@ -91,6 +91,33 @@ RSpec.describe 'components render' do
     expect(html).not_to include('>Temperature<')
   end
 
+  context 'when a device reports only a state picker, like an alarm panel' do
+    let(:alarm_panel) do
+      { 'name' => 'Alarm panel', 'zone' => 'Hallway', 'available' => true,
+        'capabilities' => { 'homealarm_state' => { 'title' => 'Home alarm state', 'component' => 'picker',
+                                                   'display_value' => 'Partially armed', 'icon' => 'homealarm-state' } } }
+    end
+
+    it 'tiles the state on its device card' do
+      html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => alarm_panel })
+      expect(html).to include('Partially armed')
+    end
+
+    it 'leaves a picker off a card that already has a reading, where it would squeeze the reading' do
+      thermostat = alarm_panel.merge('capabilities' => {
+        'measure_temperature' => { 'title' => 'Temperature', 'component' => 'sensor', 'display_value' => '20.4' },
+        'thermostat_mode' => { 'title' => 'Thermostat mode', 'component' => 'picker', 'display_value' => 'Heat' }
+      })
+      html = renderer.render(catalog.find('device_card'), size: 'full', data: { 'device' => thermostat })
+      expect(html).not_to include('Heat')
+    end
+
+    it 'shows the state in its overview row' do
+      html = renderer.render(catalog.find('overview'), size: 'full', data: { 'devices' => [alarm_panel] })
+      expect(html).to include('Partially armed')
+    end
+  end
+
   it 'renders zone_section with only the devices in that zone' do
     html = render('zone_section')
     expect(html).to include('Garage').and include('Garage sensor')
