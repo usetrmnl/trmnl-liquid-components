@@ -1,7 +1,9 @@
 {% template homey_overview %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% comment %} times: 1.0 first — divided_by truncates when both operands are integers {% endcomment %}
-{% assign sensors = live | where: "temperature" %}
+{% comment %} Room climate only: appliances (fridge, plug, boiler) report their own heat. No klass = a hand-built payload, keep it {% endcomment %}
+{% assign room_classes = "sensor,thermostat,airconditioning,fan" | split: "," %}
+{% assign sensors = live | where: "temperature" | where_exp: "device", "device.klass == nil or room_classes contains device.klass" %}
 {% assign sensor_count = sensors | size %}
 {% if sensor_count > 0 %}{% assign avg_temp = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
 {% assign humidity_sensors = live | where: "humidity" %}
