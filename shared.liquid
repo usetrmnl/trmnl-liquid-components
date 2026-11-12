@@ -345,6 +345,16 @@
           {%- if drawn > tile_cap -%}{%- assign held_back = held_back | plus: 1 -%}{%- continue -%}{%- endif -%}
           {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
         {%- endfor -%}
+        {%- comment -%} An alarm panel has no reading, only a state; tile that rather than leave the card blank. {%- endcomment -%}
+        {%- if drawn == 0 -%}
+          {%- for pair in device.capabilities -%}
+            {%- assign capability = pair[1] -%}
+            {%- if capability.component == "picker" and capability.display_value != blank -%}
+              {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       {%- else -%}
         {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
         {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
@@ -606,6 +616,7 @@
 {% assign zones = devices | map: "zone" | uniq %}
 {% assign zone_count = zones | size %}
 {% assign device_count = live | size %}
+{%- assign states = "picker,toggle" | split: "," -%}
 <div class="layout layout--col gap--large">
   <div class="grid grid--cols-3 gap">
     <div class="item">
@@ -642,12 +653,23 @@
         <td><span class="label">{{ device.zone }}</span></td>
         <td class="text--right"><span class="value value--xsmall value--tnums">
           {%- if device.capabilities != blank -%}
+            {%- assign row_drawn = false -%}
             {%- for pair in device.capabilities -%}
               {%- assign capability = pair[1] -%}
               {%- if capability.component == "sensor" and capability.display_value != blank -%}
+                {%- assign row_drawn = true -%}
                 {% render "homey_glyph", icon: capability.icon %}{{ capability.display_value }}{{ capability.units }}&nbsp;&nbsp;
               {%- endif -%}
             {%- endfor -%}
+            {%- comment -%} A lock or an alarm panel has no reading, only a state; show that rather than a blank cell. {%- endcomment -%}
+            {%- unless row_drawn -%}
+              {%- for pair in device.capabilities -%}
+                {%- assign capability = pair[1] -%}
+                {%- if capability.display_value != blank and states contains capability.component -%}
+                  {% render "homey_glyph", icon: capability.icon %}{{ capability.display_value }}{%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endunless -%}
           {%- else -%}
             {%- if device.temperature -%}{{ device.temperature }}&deg;{% if device.humidity %} &middot; {{ device.humidity }}%{% endif %}
             {%- elsif device.power -%}{{ device.power }} W{% if device.on == true %} &middot; On{% endif %}

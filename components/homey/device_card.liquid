@@ -21,6 +21,16 @@
           {%- if drawn > tile_cap -%}{%- assign held_back = held_back | plus: 1 -%}{%- continue -%}{%- endif -%}
           {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
         {%- endfor -%}
+        {%- comment -%} An alarm panel has no reading, only a state; tile that rather than leave the card blank. {%- endcomment -%}
+        {%- if drawn == 0 -%}
+          {%- for pair in device.capabilities -%}
+            {%- assign capability = pair[1] -%}
+            {%- if capability.component == "picker" and capability.display_value != blank -%}
+              {% render "homey_cap_tile", label: capability.title, value: capability.display_value, unit: capability.units, icon: capability.icon %}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
       {%- else -%}
         {% if device.power != nil %}{% render "homey_cap_tile", label: device.titles.power | default: "Power", value: device.power, unit: "W" %}{% endif %}
         {% if device.temperature != nil %}{% render "homey_cap_tile", label: device.titles.temperature | default: "Temperature", value: device.temperature, unit: "°C" %}{% endif %}
