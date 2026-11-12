@@ -174,6 +174,36 @@ RSpec.describe 'components render' do
     expect(html).not_to include('99'), 'the unreachable sensor must not skew the averages'
   end
 
+  context 'when an appliance reports its own temperature, like a fridge' do
+    let :devices do
+      [{ 'name' => 'Thermostat', 'zone' => 'Living room', 'klass' => 'thermostat', 'temperature' => 20.4 },
+       { 'name' => 'Air monitor', 'zone' => 'Bedroom', 'klass' => 'sensor', 'temperature' => 19.1, 'humidity' => 47.5 },
+       { 'name' => 'Fridge', 'zone' => 'Kitchen', 'klass' => 'fridge', 'temperature' => 4.2 },
+       { 'name' => 'Plug', 'zone' => 'Kitchen', 'klass' => 'socket', 'temperature' => 41 }]
+    end
+
+    it 'leaves the appliance out of the climate average' do
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('19.8&deg;')
+    end
+
+    it 'gives the appliance no climate tile' do
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => devices })
+      expect(html).not_to include('Fridge')
+    end
+
+    it 'keeps a device that names no klass, as a hand-built payload may not' do
+      unnamed = devices.map { it.except('klass') }
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => unnamed })
+      expect(html).to include('Fridge')
+    end
+
+    it 'leaves the appliance out of the overview average' do
+      html = renderer.render(catalog.find('overview'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('19.8&deg;')
+    end
+  end
+
   it 'gives a sensor tile one value, so temperature and humidity never wrap onto two lines' do
     html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => [
       { 'name' => 'Thermostat', 'zone' => 'Living room', 'klass' => 'thermostat', 'temperature' => 20.4 },
