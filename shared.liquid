@@ -287,9 +287,10 @@
       <div class="item">
         <div class="meta"></div>
         <div class="content">
-          <span class="value value--large value--tnums">{{ sensor.temperature }}&deg;{% if sensor.humidity %} &middot; {{ sensor.humidity }}%{% endif %}</span>
+          <span class="value value--large value--tnums">{{ sensor.temperature }}&deg;</span>
           {%- assign battery = sensor.capabilities.measure_battery -%}
           <span class="label" data-clamp="1">{{ sensor.name }} &middot; {{ sensor.zone }}</span>
+          {%- if sensor.humidity -%}<span class="label">{% render "homey_glyph", icon: "measure-humidity" %}{{ sensor.humidity }}%</span>{%- endif -%}
           {%- if battery != blank -%}<span class="label">{% render "homey_glyph", icon: "measure-battery" %}{{ battery.display_value }}%</span>{%- endif -%}
         </div>
       </div>
