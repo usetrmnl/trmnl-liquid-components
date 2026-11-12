@@ -174,6 +174,14 @@ RSpec.describe 'components render' do
     expect(html).not_to include('99'), 'the unreachable sensor must not skew the averages'
   end
 
+  it 'gives a sensor tile one value, so temperature and humidity never wrap onto two lines' do
+    html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => [
+      { 'name' => 'Thermostat', 'zone' => 'Living room', 'klass' => 'thermostat', 'temperature' => 20.4 },
+      { 'name' => 'Air monitor', 'zone' => 'Bedroom', 'klass' => 'sensor', 'temperature' => 19.1, 'humidity' => 47.5 }
+    ] })
+    expect(html).to match(%r{<span class="value value--large value--tnums">19\.1&deg;</span>})
+  end
+
   it 'makes a lone sensor the climate hero instead of averaging one value' do
     solo = catalog.find('climate').sample['devices'].first(1)
     html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => solo })
