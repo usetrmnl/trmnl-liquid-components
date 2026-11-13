@@ -204,6 +204,50 @@ RSpec.describe 'components render' do
     end
   end
 
+  context 'when the Homey Pro hub reports its own chip temperature' do
+    let :hub do
+      { 'name' => 'Homey Pro (Early 2023)', 'zone' => 'Hall', 'klass' => 'sensor', 'temperature' => 60.3,
+        'capabilities' => { 'homeyModelId' => { 'id' => 'homeyModelId', 'value' => 'homey-pro-2023' } } }
+    end
+    let :devices do
+      [{ 'name' => 'Thermostat', 'zone' => 'Living room', 'klass' => 'thermostat', 'temperature' => 20.4 },
+       { 'name' => 'Air monitor', 'zone' => 'Bedroom', 'klass' => 'sensor', 'temperature' => 19.1, 'humidity' => 47.5 }, hub]
+    end
+
+    it 'leaves the hub out of the climate average' do
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('19.8&deg;')
+    end
+
+    it 'leaves the hub out of the overview average' do
+      html = renderer.render(catalog.find('overview'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('19.8&deg;')
+    end
+  end
+
+  context 'when no room device reports a temperature, like a home with only a car' do
+    let :devices do
+      [{ 'name' => 'Car', 'zone' => 'Garage', 'klass' => 'car', 'temperature' => 12.5 },
+       { 'name' => 'Homey Pro (Early 2023)', 'zone' => 'Hall', 'klass' => 'sensor', 'temperature' => 60.3,
+         'capabilities' => { 'homeyModelId' => { 'id' => 'homeyModelId', 'value' => 'homey-pro-2023' } } }]
+    end
+
+    it 'shows the readings it has instead of the empty state' do
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('12.5&deg;')
+    end
+
+    it 'still leaves the hub out' do
+      html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => devices })
+      expect(html).not_to include('Homey Pro')
+    end
+
+    it 'shows the readings it has in the overview' do
+      html = renderer.render(catalog.find('overview'), size: 'full', data: { 'devices' => devices })
+      expect(html).to include('12.5&deg;')
+    end
+  end
+
   it 'gives a sensor tile one value, so temperature and humidity never wrap onto two lines' do
     html = renderer.render(catalog.find('climate'), size: 'full', data: { 'devices' => [
       { 'name' => 'Thermostat', 'zone' => 'Living room', 'klass' => 'thermostat', 'temperature' => 20.4 },

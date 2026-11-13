@@ -239,9 +239,11 @@
 
 {% template homey_climate %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
-{% comment %} Room climate only: appliances (fridge, plug, boiler) report their own heat. No klass = a hand-built payload, keep it {% endcomment %}
+{% comment %} Room climate first: appliances report their own heat, the hub (homeyModelId) its chip. No klass = hand-built, keep it {% endcomment %}
 {% assign room_classes = "sensor,thermostat,airconditioning,fan" | split: "," %}
-{% assign sensors = live | where: "temperature" | where_exp: "device", "device.klass == nil or room_classes contains device.klass" | sort: "zone" %}
+{% assign readings = live | where: "temperature" | where_exp: "device", "device.capabilities.homeyModelId == nil" %}
+{% assign sensors = readings | where_exp: "device", "device.klass == nil or room_classes contains device.klass" | sort: "zone" %}
+{% if sensors.size == 0 %}{% assign sensors = readings | sort: "zone" %}{% endif %}
 {% assign sensor_count = sensors | size %}
 {% comment %} times: 1.0 first — divided_by truncates when both sides are integers {% endcomment %}
 {% if sensor_count > 0 %}{% assign average = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
@@ -608,9 +610,11 @@
 {% template homey_overview %}
 {% assign live = devices | where_exp: "device", "device.available != false" %}
 {% comment %} times: 1.0 first — divided_by truncates when both operands are integers {% endcomment %}
-{% comment %} Room climate only: appliances (fridge, plug, boiler) report their own heat. No klass = a hand-built payload, keep it {% endcomment %}
+{% comment %} Room climate first: appliances report their own heat, the hub (homeyModelId) its chip. No klass = hand-built, keep it {% endcomment %}
 {% assign room_classes = "sensor,thermostat,airconditioning,fan" | split: "," %}
-{% assign sensors = live | where: "temperature" | where_exp: "device", "device.klass == nil or room_classes contains device.klass" %}
+{% assign readings = live | where: "temperature" | where_exp: "device", "device.capabilities.homeyModelId == nil" %}
+{% assign sensors = readings | where_exp: "device", "device.klass == nil or room_classes contains device.klass" %}
+{% if sensors.size == 0 %}{% assign sensors = readings %}{% endif %}
 {% assign sensor_count = sensors | size %}
 {% if sensor_count > 0 %}{% assign avg_temp = sensors | sum: "temperature" | times: 1.0 | divided_by: sensor_count | round: 1 %}{% endif %}
 {% assign humidity_sensors = live | where: "humidity" %}
